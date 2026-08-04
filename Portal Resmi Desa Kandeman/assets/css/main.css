@@ -249,7 +249,7 @@
 
     .eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
-      font-size: 11.5px; font-weight: 600; letter-spacing: .13em;
+      font-size: 12.5px; font-weight: 700; letter-spacing: .13em;
       text-transform: uppercase; color: var(--emerald);
       margin-bottom: 14px;
     }
@@ -261,13 +261,13 @@
 
     .section-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(32px, 4vw, 46px);
-      font-weight: 600; line-height: 1.15;
+      font-size: clamp(36px, 4.25vw, 52px);
+      font-weight: 700; line-height: 1.12;
       color: var(--text);
     }
     .section-forest .section-title { color: #fff; }
     .section-sub {
-      font-size: 16px; color: var(--text-sec);
+      font-size: clamp(17px, 1.4vw, 18px); font-weight: 500; color: var(--text-sec);
       line-height: 1.8; margin-top: 12px; max-width: 580px;
     }
     .section-forest .section-sub { color: rgba(255,255,255,.55); }
@@ -351,21 +351,18 @@
 
     .hero h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(38px, 6vw, 72px);
-      font-weight: 600; line-height: 1.1;
-      margin-bottom: 12px;
+      font-size: clamp(42px, 6.5vw, 78px);
+      font-weight: 700; line-height: 1.06;
+      margin-bottom: 20px;
     }
+    .hero-title-line { display: block; }
     .hero h1 em {
       font-style: italic; color: var(--mint);
     }
-
-    .hero-subtitle {
-      font-size: 15px; font-weight: 600; letter-spacing: .02em;
-      color: rgba(255,255,255,.88); margin-bottom: 14px;
-    }
+    .hero-title-continuation { display: block; }
 
     .hero-desc {
-      font-size: 15px; color: rgba(255,255,255,.68);
+      font-size: clamp(16px, 1.5vw, 17px); font-weight: 500; color: rgba(255,255,255,.78);
       line-height: 1.8; max-width: 560px; margin-bottom: 36px;
     }
 
@@ -2603,7 +2600,7 @@
     ══════════════════════════════════════ */
     @media (max-width: 640px) {
       .hero { min-height: 75vh; padding: 60px 5% 40px; }
-      .hero h1 { font-size: clamp(32px, 8vw, 50px); }
+      .hero h1 { font-size: clamp(38px, 10vw, 56px); }
       .hero-search { max-width: 100%; }
       .hero-tags { justify-content: flex-start; }
       .alur-block { padding: 24px 18px; }
@@ -2676,25 +2673,23 @@
     .navbar      { opacity:0; transform:translateY(-100%); }
     .hero-loc    { opacity:0; transform:translateY(14px); }
     .hero h1     { opacity:0; transform:translateY(18px); }
-    .hero-subtitle { opacity:0; transform:translateY(14px); }
     .hero-desc   { opacity:0; transform:translateY(14px); }
     .hero-search { opacity:0; transform:translateY(14px); }
     .hero-tags   { opacity:0; transform:translateY(10px); }
 
     .page-ready .navbar      { animation: slideDown .55s cubic-bezier(.22,1,.36,1) both; }
     .page-ready .hero-loc    { animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both; animation-delay:.12s; }
-    .page-ready .hero h1       { animation: fadeUp .7s cubic-bezier(.22,1,.36,1) both; animation-delay:.22s; }
-    .page-ready .hero-subtitle { animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both; animation-delay:.36s; }
-    .page-ready .hero-desc     { animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both; animation-delay:.46s; }
-    .page-ready .hero-search   { animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both; animation-delay:.56s; }
-    .page-ready .hero-tags     { animation: fadeUp .5s cubic-bezier(.22,1,.36,1) both; animation-delay:.66s; }
+    .page-ready .hero h1     { animation: fadeUp .7s cubic-bezier(.22,1,.36,1) both; animation-delay:.22s; }
+    .page-ready .hero-desc   { animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both; animation-delay:.46s; }
+    .page-ready .hero-search { animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both; animation-delay:.56s; }
+    .page-ready .hero-tags   { animation: fadeUp .5s cubic-bezier(.22,1,.36,1) both; animation-delay:.66s; }
 
     @keyframes slideDown { from{opacity:0;transform:translateY(-100%)} to{opacity:1;transform:translateY(0)} }
     @keyframes fadeUp    { from{opacity:0;transform:translateY(18px)}  to{opacity:1;transform:translateY(0)} }
 
     @media (prefers-reduced-motion: reduce) {
       #page-intro { display: none !important; }
-      .navbar,.hero-loc,.hero h1,.hero-subtitle,.hero-desc,.hero-search,.hero-tags
+      .navbar,.hero-loc,.hero h1,.hero-desc,.hero-search,.hero-tags
         { opacity:1 !important; transform:none !important; animation:none !important; }
     }
 
@@ -2901,7 +2896,7 @@
       }
       .hero h1 { font-size: 22pt !important; color: #000 !important; }
       .hero-desc { color: #333 !important; }
-      .hero-loc, .hero-subtitle { color: #555 !important; }
+      .hero-loc { color: #555 !important; }
 
       /* Buka semua accordion */
       .surat-item .surat-body { display: block !important; }
