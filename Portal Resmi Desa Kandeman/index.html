@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIKANDA — Sistem Informasi Kandeman Digital</title>
+  <!-- Content Security Policy: batasi sumber skrip & aset yang boleh dimuat -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' https://*.supabase.co;
+             script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+             style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+             font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+             img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com;
+             connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+             frame-src 'self' https://www.google.com https://maps.google.com;" />
+  <meta name="description" content="Portal informasi resmi Desa Kandeman, Kecamatan Kandeman, Kabupaten Batang — profil, layanan, potensi, dan pemerintahan desa." />
+
+  <!-- SEO & Indexing -->
+  <meta name="keywords" content="Desa Kandeman, Batang, SIKANDA, layanan desa, surat keterangan, pemerintahan desa, potensi desa, APBDes, KTP, SKTM, pengantar nikah, Jawa Tengah" />
+  <meta name="author" content="KKN Undip 2026 — Desa Kandeman" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0D2B1A" />
+  <link rel="canonical" href="https://sikanda-kandeman.vercel.app/" />
+
+  <!-- Open Graph (Facebook, WhatsApp preview) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SIKANDA — Portal Resmi Desa Kandeman" />
+  <meta property="og:description" content="Portal informasi dan layanan terpadu Desa Kandeman — profil desa, pemerintahan, alur pemberkasan, potensi lokal, dan transparansi anggaran." />
+  <meta property="og:url" content="https://sikanda-kandeman.vercel.app/" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=85" />
+  <meta property="og:locale" content="id_ID" />
+  <meta property="og:site_name" content="SIKANDA Desa Kandeman" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SIKANDA — Portal Resmi Desa Kandeman" />
+  <meta name="twitter:description" content="Portal informasi dan layanan terpadu Desa Kandeman, Kabupaten Batang, Jawa Tengah." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=85" />
+  <!-- Favicon SVG SIKANDA -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2096%2096'%3E%3Ccircle%20cx='48'%20cy='48'%20r='46'%20fill='%230D2B1A'/%3E%3Crect%20x='45'%20y='38'%20width='6'%20height='26'%20rx='2'%20fill='%236B4423'/%3E%3Ccircle%20cx='48'%20cy='30'%20r='18'%20fill='%233D8B54'/%3E%3Ccircle%20cx='35'%20cy='38'%20r='11'%20fill='%234A9C61'/%3E%3Ccircle%20cx='61'%20cy='38'%20r='11'%20fill='%234A9C61'/%3E%3Ccircle%20cx='42'%20cy='26'%20r='3.5'%20fill='%23E8A33D'/%3E%3Ccircle%20cx='55'%20cy='30'%20r='3.5'%20fill='%23E8A33D'/%3E%3Cpath%20d='M14,66%20Q28,58%2048,64%20Q68,70%2082,60%20L82,90%20L14,90%20Z'%20fill='%231E5C94'/%3E%3Cpath%20d='M14,76%20Q28,70%2048,74%20Q68,78%2082,71%20L82,90%20L14,90%20Z'%20fill='%23164873'/%3E%3C/svg%3E" />
+  <!-- Preload hero background image — kritis untuk LCP -->
+  <link rel="preload" as="image"
+    href="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80"
+    imagesrcset="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=75 800w,
+                 https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200&q=80 1200w,
+                 https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=85 1600w"
+    imagesizes="100vw"
+    fetchpriority="high" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Google Fonts: display=swap memastikan teks tampil dengan system font dulu, lalu diganti -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+  <!-- Font Awesome: dimuat non-blocking, switch ke all.css setelah page load -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /></noscript>
+  <!-- Supabase dipindah ke bawah body agar tidak blok rendering -->
+
+  <!-- Structured Data (JSON-LD) untuk Google -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "GovernmentOrganization",
+    "name": "Pemerintah Desa Kandeman",
+    "alternateName": "SIKANDA",
+    "url": "https://sikanda-kandeman.vercel.app/",
+    "description": "Portal informasi dan layanan terpadu Desa Kandeman, Kecamatan Kandeman, Kabupaten Batang, Jawa Tengah.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Jl. Raya Kandeman",
+      "addressLocality": "Kandeman",
+      "addressRegion": "Kabupaten Batang",
+      "addressCountry": "ID",
+      "postalCode": "51261"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -6.9004,
+      "longitude": 109.7497
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday"],
+        "opens": "07:30",
+        "closes": "14:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Friday",
+        "opens": "07:30",
+        "closes": "11:30"
+      }
+    ],
+    "sameAs": []
+  }
+  </script>
+
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body>
+<a href="#beranda" class="skip-link">Lewati ke konten utama</a>
+
+<!-- Indikator progres baca -->
+<div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-bar" id="scrollProgressBar"></div></div>
+
+<div id="page-intro" role="status" aria-label="Memuat SIKANDA">
+  <div class="intro-logo">
+    <img class="logo-desa" src="assets/images/logo-desa.png" alt="Logo Desa Kandeman" decoding="async" />
+  </div>
+  <div class="intro-text">
+    <div class="intro-name">SIKANDA</div>
+    <div class="intro-sub">Desa Kandeman · Kabupaten Batang</div>
+  </div>
+  <div class="intro-bar"><div class="intro-bar-fill"></div></div>
+</div>
+
+<!-- ═══════════════════
+     WHATSAPP FLOAT + BACK TO TOP
+═══════════════════ -->
+<!-- TODO: Isi nomor WhatsApp resmi Balai Desa Kandeman. -->
+<a href="https://wa.me/6285XXXXXXXXXX?text=Halo%2C%20saya%20ingin%20bertanya%20mengenai%20layanan%20Desa%20Kandeman."
+   target="_blank" rel="noopener noreferrer"
+   class="wa-float" aria-label="Chat WhatsApp Balai Desa">
+  <span class="wa-tooltip">Chat Balai Desa</span>
+  <i class="fa-brands fa-whatsapp"></i>
+</a>
+
+<button type="button" class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Kembali ke atas">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+
+<!-- ═══════════════════
+     SEARCH OVERLAY
+═══════════════════ -->
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-modal="true" aria-label="Pencarian informasi desa" aria-hidden="true" onclick="closeSearch(event)">
+  <div class="search-box" onclick="event.stopPropagation()">
+    <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:15px;"></i>
+    <input type="search" id="searchInput" placeholder="Cari informasi desa, layanan, atau potensi…" onkeydown="if(event.key==='Escape')closeSearch()" autocomplete="off" aria-label="Cari informasi desa" />
+    <button type="button" class="search-btn" onclick="doSearch()">Cari</button>
+  </div>
+  <button type="button" class="search-close" onclick="closeSearch()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+
+
+<!-- ═══════════════════
+     NAVBAR
+═══════════════════ -->
+<nav class="navbar" id="mainNav">
+  <a class="nav-brand" href="#beranda">
+    <div class="nav-logo" style="background:#fff;border:1px solid var(--border);">
+      <img class="logo-desa" src="assets/images/logo-desa.png" alt="Logo SIKANDA Desa Kandeman" style="width:100%;height:100%;object-fit:contain;padding:2px;" />
+    </div>
+    <div>
+      <div class="nav-brand-name">SIKANDA</div>
+      <div class="nav-brand-sub">Desa Kandeman</div>
+    </div>
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+
+    <li class="nav-item active">
+      <a href="#beranda">Beranda</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="#profil" onclick="handleDropdownClick(event, this)">
+        Profil Desa <i class="fa-solid fa-chevron-down caret"></i>
+      </a>
+      <div class="dropdown">
+        <a href="#profil-sejarah"><i class="fa-solid fa-circle-info"></i> Sejarah & Profil</a>
+        <a href="#visi-misi"><i class="fa-solid fa-star"></i> Moto &amp; Maklumat Pelayanan</a>
+        <a href="#profil-geografis"><i class="fa-solid fa-map-location-dot"></i> Letak Geografis</a>
+        <a href="#peta-wilayah"><i class="fa-solid fa-map"></i> Peta Wilayah</a>
+        <a href="#profil-demografi"><i class="fa-solid fa-users"></i> Demografi</a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a href="#pemerintahan" onclick="handleDropdownClick(event, this)">
+        Pemerintahan <i class="fa-solid fa-chevron-down caret"></i>
+      </a>
+      <div class="dropdown">
+        <a href="#struktur-org"><i class="fa-solid fa-sitemap"></i> Struktur Organisasi</a>
+        <a href="#perangkat-desa"><i class="fa-solid fa-id-badge"></i> Perangkat Desa</a>
+        <a href="#lembaga"><i class="fa-solid fa-people-group"></i> Lembaga Desa</a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a href="#potensi">Potensi Desa</a>
+    </li>
+
+    <li class="nav-item">
+      <a href="#transparansi" onclick="handleDropdownClick(event, this)">
+        Transparansi <i class="fa-solid fa-chevron-down caret"></i>
+      </a>
+      <div class="dropdown">
+        <a href="#apbdes"><i class="fa-solid fa-coins"></i> APBDes</a>
+        <a href="#realisasi"><i class="fa-solid fa-chart-bar"></i> Realisasi Anggaran</a>
+        <a href="#transparency-hub"><i class="fa-solid fa-folder-open"></i> Transparency Hub</a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a href="#layanan" onclick="handleDropdownClick(event, this)">
+        Layanan Desa <i class="fa-solid fa-chevron-down caret"></i>
+      </a>
+      <div class="dropdown">
+        <a href="#alur-pelayanan"><i class="fa-solid fa-route"></i> Alur Pelayanan</a>
+        <a href="#persyaratan"><i class="fa-solid fa-file-lines"></i> Persyaratan Administrasi</a>
+        <a href="#kesehatan"><i class="fa-solid fa-heart-pulse"></i> Layanan Kesehatan</a>
+        <a href="#umkm"><i class="fa-solid fa-store"></i> UMKM Desa</a>
+        <a href="#hukum-edukasi"><i class="fa-solid fa-gavel"></i> Hukum &amp; Edukasi</a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a href="#informasi" onclick="handleDropdownClick(event, this)">
+        Informasi <i class="fa-solid fa-chevron-down caret"></i>
+      </a>
+      <div class="dropdown">
+        <a href="#berita"><i class="fa-solid fa-newspaper"></i> Berita Desa</a>
+        <a href="#berita"><i class="fa-solid fa-bullhorn"></i> Pengumuman</a>
+        <a href="#galeri"><i class="fa-solid fa-images"></i> Galeri</a>
+        <a href="#agenda"><i class="fa-solid fa-calendar-days"></i> Agenda Desa</a>
+        <a href="#statistik"><i class="fa-solid fa-chart-pie"></i> Statistik Warga</a>
+        <a href="#aspirasi"><i class="fa-solid fa-comment-dots"></i> Kirim Aspirasi</a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a href="#prestasi" onclick="handleDropdownClick(event, this)">
+        Prestasi <i class="fa-solid fa-chevron-down caret"></i>
+      </a>
+      <div class="dropdown">
+        <a href="#penghargaan"><i class="fa-solid fa-trophy"></i> Penghargaan</a>
+        <a href="#capaian"><i class="fa-solid fa-medal"></i> Capaian Desa</a>
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <a href="#kontak">Hubungi Kami</a>
+    </li>
+
+  </ul>
+
+  <div class="nav-right">
+    <button type="button" class="nav-search-btn" onclick="openSearch()" title="Cari informasi desa" aria-label="Buka pencarian">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
+    <button type="button" class="nav-hamburger" id="hamburger" onclick="toggleNav()" aria-label="Buka menu navigasi" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════
+     HERO
+═══════════════════ -->
+<section class="hero" id="beranda">
+  <div class="hero-inner">
+    <!-- Kiri: teks -->
+    <div class="hero-left">
+      <div class="hero-loc">
+        <i class="fa-solid fa-location-dot"></i>
+        Kandeman · Kabupaten Batang · Jawa Tengah
+      </div>
+
+      <div class="hero-tagline" id="hero-tagline-el">— Portal Desa Digital #SIKANDA</div>
+
+      <h1 aria-label="Harmoni Pesisir & Kearifan Lokal Bumi Kandeman">
+        <span class="hw">Harmoni</span>
+        <span class="hw">Pesisir</span>
+        <span class="hw">&amp;</span><br>
+        <em>
+          <span class="hw">Kearifan</span>
+          <span class="hw">Lokal</span>
+          <span class="hw">Bumi</span>
+        </em><br>
+        <span class="hw">Kandeman</span>
+      </h1>
+
+      <p class="hero-desc">
+        Portal resmi informasi dan layanan terpadu Desa Kandeman — berita desa, struktur pemerintahan, potensi lokal, alur administrasi, dan transparansi anggaran dalam satu platform digital.
+      </p>
+
+      <div class="hero-search">
+        <input type="search" id="heroSearch" placeholder="Cari layanan, berita, atau informasi desa…" onkeydown="if(event.key==='Enter')doHeroSearch()" autocomplete="off" aria-label="Cari informasi desa" />
+        <button type="button" onclick="doHeroSearch()">Cari</button>
+      </div>
+
+      <div class="hero-tags">
+        <span class="hero-tags-label">Populer:</span>
+        <a href="#persyaratan" class="hero-tag">KTP Baru</a>
+        <a href="#persyaratan" class="hero-tag">SKTM</a>
+        <a href="#potensi" class="hero-tag">Wisata Religi</a>
+        <a href="#persyaratan" class="hero-tag">Pengantar Nikah</a>
+      </div>
+    </div>
+
+    <!-- Kanan: dihapus — info sudah ada di marquee bawah -->
+  </div>
+
+  <!-- Ombak beranimasi -->
+  <div class="hero-waves" aria-hidden="true">
+    <svg viewBox="0 0 2400 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path class="wave-layer-3" fill="#0D2B1A"
+        d="M0,50 C150,20 350,75 600,48 C850,20 1050,72 1200,50 C1350,20 1550,75 1800,48 C2050,20 2250,72 2400,50 L2400,90 L0,90 Z" />
+      <path class="wave-layer-2" fill="#174D2E"
+        d="M0,62 C200,38 400,80 600,60 C800,40 1000,82 1200,62 C1400,38 1600,80 1800,60 C2000,40 2200,82 2400,62 L2400,90 L0,90 Z" />
+      <path class="wave-layer-1" fill="#F5F1EA"
+        d="M0,74 C180,58 380,88 600,72 C820,56 1020,90 1200,74 C1380,58 1580,88 1800,72 C2020,56 2220,90 2400,74 L2400,90 L0,90 Z" />
+    </svg>
+  </div>
+</section>
+<div class="hero-stats" id="heroStats">
+  <div class="hero-stats-inner">
+    <!-- Set 1 -->
+    <div class="hero-stat">
+      <div class="hero-stat-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+      <div>
+        <div class="hero-stat-val"><span id="hero-luas-wilayah" class="count-up" data-count="0" data-prefix="±" data-suffix=" Ha" data-empty="true">—</span></div>
+        <div class="hero-stat-lbl">Luas Wilayah</div>
+      </div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-icon"><i class="fa-solid fa-users"></i></div>
+      <div>
+        <div class="hero-stat-val"><span id="hero-total-penduduk" class="count-up" data-count="0" data-prefix="±" data-sep="true" data-empty="true">—</span></div>
+        <div class="hero-stat-lbl">Jumlah Penduduk</div>
+      </div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-icon"><i class="fa-solid fa-landmark"></i></div>
+      <div>
+        <div class="hero-stat-val" id="hero-rt-rw">—</div>
+        <div class="hero-stat-lbl">Rukun Tetangga/Warga</div>
+      </div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-icon"><i class="fa-solid fa-compass"></i></div>
+      <div>
+        <div class="hero-stat-val">Pesisir Utara</div>
+        <div class="hero-stat-lbl">Karakter Wilayah</div>
+      </div>
+    </div>
+    <!-- Set 2 — persis identik untuk loop seamless -->
+    <div class="hero-stat" aria-hidden="true">
+      <div class="hero-stat-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+      <div>
+        <div class="hero-stat-val" id="hero-luas-wilayah-duplikat">—</div>
+        <div class="hero-stat-lbl">Luas Wilayah</div>
+      </div>
+    </div>
+    <div class="hero-stat" aria-hidden="true">
+      <div class="hero-stat-icon"><i class="fa-solid fa-users"></i></div>
+      <div>
+        <div class="hero-stat-val" id="hero-total-penduduk-duplikat">—</div>
+        <div class="hero-stat-lbl">Jumlah Penduduk</div>
+      </div>
+    </div>
+    <div class="hero-stat" aria-hidden="true">
+      <div class="hero-stat-icon"><i class="fa-solid fa-landmark"></i></div>
+      <div>
+        <div class="hero-stat-val" id="hero-rt-rw-duplikat">—</div>
+        <div class="hero-stat-lbl">Rukun Tetangga/Warga</div>
+      </div>
+    </div>
+    <div class="hero-stat" aria-hidden="true">
+      <div class="hero-stat-icon"><i class="fa-solid fa-compass"></i></div>
+      <div>
+        <div class="hero-stat-val">Pesisir Utara</div>
+        <div class="hero-stat-lbl">Karakter Wilayah</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════
+     TENTANG SIKANDA
+═══════════════════ -->
+<section class="section section-cream reveal" id="tentang">
+  <div class="container">
+    <div class="tentang-grid">
+      <!-- Kiri: penjelasan & akronim -->
+      <div>
+        <div class="eyebrow">Tentang Kami</div>
+        <h2 class="section-title" style="margin-bottom:16px;">Apa itu SIKANDA?</h2>
+        <p style="font-size:15.5px;line-height:1.9;color:var(--text-sec);">
+          SIKANDA adalah portal digital resmi Desa Kandeman — tempat warga menemukan informasi
+          pemerintahan, memantau penggunaan anggaran, dan mengurus keperluan administrasi
+          tanpa harus bolak-balik ke balai desa.
+        </p>
+
+        <div class="akronim-list">
+          <div class="akronim-row"><span class="akronim-huruf">S</span><span class="akronim-kata">Sistem</span></div>
+          <div class="akronim-row"><span class="akronim-huruf">I</span><span class="akronim-kata">Informasi</span></div>
+          <div class="akronim-row"><span class="akronim-huruf">KAN</span><span class="akronim-kata">Kandeman</span></div>
+          <div class="akronim-row"><span class="akronim-huruf">DA</span><span class="akronim-kata">Digital &amp; Aspiratif</span></div>
+        </div>
+
+        <div class="tentang-kutip">
+          "Desa yang terbuka adalah desa yang dipercaya warganya."
+        </div>
+      </div>
+
+      <!-- Kanan: tiga pilar -->
+      <div class="pilar-stack">
+        <div class="pilar-item">
+          <div class="pilar-icon pi-green"><i class="fa-solid fa-eye"></i></div>
+          <div class="pilar-body">
+            <h4>Terbuka</h4>
+            <p>Anggaran desa, realisasi belanja, dan dokumen resmi dapat dilihat serta diunduh siapa saja, kapan saja.</p>
+          </div>
+        </div>
+        <div class="pilar-item">
+          <div class="pilar-icon pi-gold"><i class="fa-solid fa-bolt"></i></div>
+          <div class="pilar-body">
+            <h4>Cepat</h4>
+            <p>Syarat berkas, alur pelayanan, dan jadwal kegiatan tersaji lengkap — warga datang ke balai desa sudah siap.</p>
+          </div>
+        </div>
+        <div class="pilar-item">
+          <div class="pilar-icon pi-sky"><i class="fa-solid fa-comments"></i></div>
+          <div class="pilar-body">
+            <h4>Aspiratif</h4>
+            <p>Saran dan keluhan warga masuk langsung ke perangkat desa untuk ditinjau dan ditindaklanjuti.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#FFFFFF" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PROFIL DESA
+═══════════════════ -->
+<section class="section section-white reveal" id="profil">
+  <div class="container">
+    <div class="section-header" id="profil-sejarah">
+      <div class="eyebrow">Profil Desa</div>
+      <h2 class="section-title">Mengenal Desa Kandeman</h2>
+      <p class="section-sub">Sejarah, identitas, dan data geografis Desa Kandeman, Kecamatan Kandeman, Kabupaten Batang.</p>
+    </div>
+
+    <div class="profil-grid">
+      <!-- Kiri -->
+      <div>
+        <div class="profil-prose">
+          <p>Desa Kandeman merupakan salah satu desa di Kecamatan Kandeman, Kabupaten Batang, Jawa Tengah. Terletak di wilayah pesisir utara Jawa, desa ini dikelilingi oleh hamparan sawah dan memiliki akses langsung ke kawasan pantai, menjadikannya desa dengan potensi pertanian dan kelautan yang cukup besar.</p>
+          <p>Desa Kandeman telah berdiri sejak zaman pra-kemerdekaan dan terus berkembang menjadi desa yang mandiri dengan beragam sektor unggulan — mulai dari pertanian padi, perikanan, UMKM, hingga wisata religi yang menarik pengunjung dari berbagai daerah.</p>
+        </div>
+
+        <!-- Moto Pelayanan STARS -->
+        <div class="moto-block" id="visi-misi">
+          <div class="moto-label">Moto Pelayanan</div>
+          <div class="moto-judul">Kantor Desa Kandeman</div>
+
+          <div class="stars-row-wrap">
+            <div class="stars-badge" aria-hidden="true">
+              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <polygon class="bintang"
+                  points="50,6 61.8,37.6 95.1,38.2 68.6,58.4 78.5,90.3 50,71.2 21.5,90.3 31.4,58.4 4.9,38.2 38.2,37.6" />
+                <text class="teks-stars" x="50" y="56" text-anchor="middle">STARS</text>
+              </svg>
+            </div>
+
+            <div class="stars-list">
+              <div class="stars-item">
+                <span class="stars-huruf">S</span>
+                <span class="stars-arti">Sapa masyarakat dengan ramah senyum</span>
+              </div>
+              <div class="stars-item">
+                <span class="stars-huruf">T</span>
+                <span class="stars-arti">Tanya keperluan</span>
+              </div>
+              <div class="stars-item">
+                <span class="stars-huruf">A</span>
+                <span class="stars-arti">Atasi permasalahan</span>
+              </div>
+              <div class="stars-item">
+                <span class="stars-huruf">R</span>
+                <span class="stars-arti">Respek kepelayanan</span>
+              </div>
+              <div class="stars-item">
+                <span class="stars-huruf">S</span>
+                <span class="stars-arti">Sampaikan terima kasih</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Maklumat Pelayanan -->
+        <div class="maklumat-block">
+          <div class="maklumat-label">Maklumat Pelayanan</div>
+          <div class="maklumat-judul">Komitmen Kami</div>
+          <div class="maklumat-intro">Kami berupaya bersungguh-sungguh untuk:</div>
+
+          <div class="maklumat-item">
+            <i class="fa-solid fa-star maklumat-star"></i>
+            <p>Menyambut masyarakat dengan senyum, salam, dan sapa dalam memberikan pelayanan sesuai dengan SOP yang benar, cepat, dan akurat.</p>
+          </div>
+          <div class="maklumat-item">
+            <i class="fa-solid fa-star maklumat-star"></i>
+            <p>Melayani dengan setulus hati, sepenuh hati, dan berhati-hati serta berperilaku baik dan santun guna memberikan pelayanan terbaik.</p>
+          </div>
+          <div class="maklumat-item">
+            <i class="fa-solid fa-star maklumat-star"></i>
+            <p>Apabila kami tidak memberikan pelayanan yang sesuai dengan standar yang ditetapkan, kami siap menerima sanksi sesuai peraturan perundang-undangan.</p>
+          </div>
+
+          <div class="maklumat-ttd">
+            <div class="jab">Kepala Desa Kandeman</div>
+            <div class="nm">Budy Warnoto</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kanan -->
+      <div id="profil-geografis">
+        <div class="geo-label" id="profil-demografi">Data Geografis & Demografis</div>
+        <div class="geo-grid">
+          <div class="geo-card">
+            <div class="val" id="profil-luas-wilayah">—</div>
+            <div class="lbl">Luas Wilayah</div>
+          </div>
+          <div class="geo-card">
+            <div class="val" id="profil-total-kk">—</div>
+            <div class="lbl">Kepala Keluarga</div>
+          </div>
+          <div class="geo-card">
+            <div class="val" id="profil-total-rt">—</div>
+            <div class="lbl">Rukun Tetangga</div>
+          </div>
+          <div class="geo-card">
+            <div class="val" id="profil-total-rw">—</div>
+            <div class="lbl">Rukun Warga</div>
+          </div>
+          <div class="geo-card">
+            <div class="val">9 m</div>
+            <div class="lbl">Ketinggian (dpl)</div>
+          </div>
+          <div class="geo-card">
+            <div class="val">Pesisir</div>
+            <div class="lbl">Tipe Wilayah</div>
+          </div>
+        </div>
+
+        <table class="batas-table">
+          <thead>
+            <tr>
+              <th>Arah</th>
+              <th>Berbatasan dengan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Utara</td><td>Laut Jawa</td></tr>
+            <tr><td>Selatan</td><td>Desa Tegalsari</td></tr>
+            <tr><td>Barat</td><td>Desa Ketanggan</td></tr>
+            <tr><td>Timur</td><td>Desa Ujungnegoro</td></tr>
+          </tbody>
+        </table>
+
+        <div class="kode-box mt-12">
+          <p style="font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); margin-bottom:8px;">Kode & Nomor Desa</p>
+          <!-- TODO: Isi kode desa resmi setelah data dikonfirmasi. -->
+          <p>Kode Desa: <strong>[Isi Kode]</strong></p>
+          <p>Kode Pos: <strong>51261</strong></p>
+          <p>Kecamatan: <strong>Kandeman</strong></p>
+          <p>Kabupaten: <strong>Batang</strong></p>
+        </div>
+
+        <!-- Peta Interaktif QGIS / Google My Maps -->
+        <div class="mt-24" id="peta-wilayah">
+          <p style="font-size:15px; font-weight:600; margin-bottom:6px;">
+            <i class="fa-solid fa-map-location-dot" style="color:var(--emerald); margin-right:6px;"></i>
+            Peta Wilayah & Fasilitas Umum
+          </p>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px; line-height:1.6;">
+            Peta interaktif hasil pemetaan QGIS menampilkan batas wilayah desa serta sebaran fasilitas umum di Desa Kandeman.
+          </p>
+          <div class="peta-tools">
+            <button type="button" class="peta-tool-btn active" onclick="switchPetaLayer('semua',this)"><i class="fa-solid fa-layer-group"></i> Semua</button>
+            <button type="button" class="peta-tool-btn" onclick="switchPetaLayer('fasilitas',this)"><i class="fa-solid fa-building"></i> Fasilitas Umum</button>
+            <button type="button" class="peta-tool-btn" onclick="switchPetaLayer('batas',this)"><i class="fa-solid fa-draw-polygon"></i> Batas Wilayah</button>
+          </div>
+          <div class="peta-embed" style="border-radius:var(--r-md); overflow:hidden;">
+            <!-- TODO: Ganti dengan URL embed Google Maps Desa Kandeman yang telah dikonfirmasi jika peta batas/layer resmi sudah tersedia. -->
+            <iframe id="peta-iframe"
+              src="https://www.google.com/maps?q=-6.9004%2C109.7497&amp;z=14&amp;output=embed"
+              loading="lazy"
+              allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Peta Interaktif Wilayah Desa Kandeman"
+              style="width:100%; min-height:400px; border:none;">
+            </iframe>
+          </div>
+          <div class="peta-legend">
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#1C6B3E;"></span> Kantor Desa</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#C0392B;"></span> Fasilitas Kesehatan</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#1A5080;"></span> Sekolah</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#B07D2A;"></span> Tempat Ibadah</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#7A3E9E;"></span> Batas Dusun</div>
+          </div>
+          <p style="font-size:11.5px; color:var(--text-muted); margin-top:10px; line-height:1.5;">
+            <i class="fa-solid fa-circle-info" style="color:var(--emerald);"></i>
+            Peta batas wilayah dan fasilitas dapat dilengkapi setelah URL Google My Maps resmi tersedia.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PEMERINTAHAN
+═══════════════════ -->
+<section class="section section-cream reveal" id="pemerintahan">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Pemerintahan Desa</div>
+      <h2 class="section-title">Struktur Organisasi & Perangkat Desa</h2>
+      <p class="section-sub">Susunan pemerintahan Desa Kandeman yang melayani masyarakat.</p>
+    </div>
+
+    <div class="org-wrap" id="struktur-org">
+      <div class="org-tree">
+
+        <!-- ── Level 1: Kepala Desa ── -->
+        <div class="org-level">
+          <div class="org-node head">
+            <div class="org-avatar" id="kades-avatar-org"><i class="fa-solid fa-star" style="font-size:14px;"></i></div>
+            <div class="org-name" id="kades-name-org">–</div>
+            <div class="org-role">Kepala Desa</div>
+          </div>
+        </div>
+
+        <div class="org-connector-v"></div>
+
+        <!-- ── Level 2: Sekretaris Desa ── -->
+        <div class="org-level">
+          <div class="org-node sekdes">
+            <div class="org-avatar av-sky" id="sekdes-avatar-org">SD</div>
+            <div class="org-name" id="sekdes-name-org">–</div>
+            <div class="org-role">Sekretaris Desa</div>
+          </div>
+        </div>
+
+        <div class="org-connector-v"></div>
+
+        <!-- ── Level 3: Kaur + Kasi (sejajar horizontal) ── -->
+        <!-- Garis horizontal induk -->
+        <div style="position:relative; width:100%; display:flex; justify-content:center;">
+          <!-- Garis H dari sekdes ke kaur/kasi -->
+          <svg width="560" height="20" style="overflow:visible; display:block;">
+            <!-- Garis vertikal pendek ke bawah -->
+            <line x1="280" y1="0" x2="280" y2="20" stroke="var(--border)" stroke-width="2"/>
+            <!-- Garis horizontal dari kaur ke kasi -->
+            <line x1="140" y1="20" x2="420" y2="20" stroke="var(--border)" stroke-width="2"/>
+            <!-- Turun ke kolom kiri (Kaur) -->
+            <line x1="140" y1="20" x2="140" y2="40" stroke="var(--border)" stroke-width="2"/>
+            <!-- Turun ke kolom kanan (Kasi) -->
+            <line x1="420" y1="20" x2="420" y2="40" stroke="var(--border)" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <div class="org-mid-row" style="margin-top:-20px;">
+          <!-- Kaur -->
+          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <div class="org-group-label">Kepala Urusan</div>
+            <div class="org-node" style="border-color:#F5E8C8;">
+              <div class="org-avatar av-gold" id="kaur-tu-av">TU</div>
+              <div class="org-name" id="kaur-tu-name">–</div>
+              <div class="org-role">Kaur TU &amp; Umum</div>
+            </div>
+            <div class="org-connector-v" style="height:6px;"></div>
+            <div class="org-node" style="border-color:#F5E8C8;">
+              <div class="org-avatar av-gold" id="kaur-ku-av">KU</div>
+              <div class="org-name" id="kaur-ku-name">–</div>
+              <div class="org-role">Kaur Keuangan</div>
+            </div>
+            <div class="org-connector-v" style="height:6px;"></div>
+            <div class="org-node" style="border-color:#F5E8C8;">
+              <div class="org-avatar av-gold" id="kaur-kp-av">KP</div>
+              <div class="org-name" id="kaur-kp-name">–</div>
+              <div class="org-role">Kaur Perencanaan</div>
+            </div>
+          </div>
+
+          <!-- Kasi -->
+          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <div class="org-group-label">Kepala Seksi</div>
+            <div class="org-node" style="border-color:#D4EDE8;">
+              <div class="org-avatar av-teal" id="kasi-pm-av">KP</div>
+              <div class="org-name" id="kasi-pm-name">–</div>
+              <div class="org-role">Kasi Pemerintahan</div>
+            </div>
+            <div class="org-connector-v" style="height:6px;"></div>
+            <div class="org-node" style="border-color:#D4EDE8;">
+              <div class="org-avatar av-teal" id="kasi-ks-av">KS</div>
+              <div class="org-name" id="kasi-ks-name">–</div>
+              <div class="org-role">Kasi Kesejahteraan</div>
+            </div>
+            <div class="org-connector-v" style="height:6px;"></div>
+            <div class="org-node" style="border-color:#D4EDE8;">
+              <div class="org-avatar av-teal" id="kasi-pl-av">KL</div>
+              <div class="org-name" id="kasi-pl-name">–</div>
+              <div class="org-role">Kasi Pelayanan</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dari Kepala Desa ke Kadus (garis diagonal kiri) -->
+        <div style="position:relative; width:100%; display:flex; justify-content:center; margin-top:8px;">
+          <svg width="660" height="32" style="overflow:visible; display:block;">
+            <line x1="330" y1="0" x2="330" y2="32" stroke="var(--border)" stroke-width="2" stroke-dasharray="4 3"/>
+            <line x1="66"  y1="32" x2="594" y2="32" stroke="var(--border)" stroke-width="2"/>
+            <line x1="66"  y1="32" x2="66"  y2="52" stroke="var(--border)" stroke-width="2"/>
+            <line x1="198" y1="32" x2="198" y2="52" stroke="var(--border)" stroke-width="2"/>
+            <line x1="330" y1="32" x2="330" y2="52" stroke="var(--border)" stroke-width="2"/>
+            <line x1="462" y1="32" x2="462" y2="52" stroke="var(--border)" stroke-width="2"/>
+            <line x1="594" y1="32" x2="594" y2="52" stroke="var(--border)" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <!-- ── Level 4: Kepala Dusun ── -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; margin-top:-20px;">
+          <div class="org-group-label" style="margin-bottom:4px;">Kepala Dusun</div>
+          <div class="org-kadus-row" style="flex-wrap:wrap; justify-content:center; gap:8px;">
+            <div class="org-node" style="border-color:#D6EFE3;">
+              <div class="org-avatar av-green" id="kadus1-av">D1</div>
+              <div class="org-name" id="kadus1-name">–</div>
+              <div class="org-role">Kadus Randusari</div>
+            </div>
+            <div class="org-node" style="border-color:#D6EFE3;">
+              <div class="org-avatar av-green" id="kadus2-av">D2</div>
+              <div class="org-name" id="kadus2-name">–</div>
+              <div class="org-role">Kadus Kandeman</div>
+            </div>
+            <div class="org-node" style="border-color:#D6EFE3;">
+              <div class="org-avatar av-green" id="kadus3-av">D3</div>
+              <div class="org-name" id="kadus3-name">–</div>
+              <div class="org-role">Kadus Gandok</div>
+            </div>
+            <div class="org-node" style="border-color:#D6EFE3;">
+              <div class="org-avatar av-green" id="kadus4-av">D4</div>
+              <div class="org-name" id="kadus4-name">–</div>
+              <div class="org-role">Kadus Kaliongkek</div>
+            </div>
+            <div class="org-node" style="border-color:#D6EFE3;">
+              <div class="org-avatar av-green" id="kadus5-av">D5</div>
+              <div class="org-name" id="kadus5-name">–</div>
+              <div class="org-role">Kadus Johosari</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Tabel Perangkat -->
+    <div class="mt-48" id="perangkat-desa">
+      <p style="font-size:15px; font-weight:600; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">Daftar Perangkat Desa Kandeman</p>
+      <div class="tbl-wrap">
+        <table class="perangkat-table">
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th>Nama</th>
+              <th>Jabatan</th>
+              <th>Bidang</th>
+            </tr>
+          </thead>
+          <tbody id="perangkat-tbody">
+            <tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted);font-size:13px;">
+              <i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat data perangkat...
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#FFFFFF" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     LEMBAGA DESA
+═══════════════════ -->
+<section class="section section-white reveal" id="lembaga">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Kelembagaan</div>
+      <h2 class="section-title">Lembaga Desa Kandeman</h2>
+      <p class="section-sub">Lembaga kemasyarakatan yang berperan aktif dalam pembangunan dan pemberdayaan warga.</p>
+    </div>
+    <div class="lembaga-grid">
+      <div class="lembaga-card">
+        <div class="lembaga-icon" style="background:var(--sky-pale);color:var(--sky);"><i class="fa-solid fa-landmark"></i></div>
+        <h3>BPD</h3>
+        <p>Badan Permusyawaratan Desa — lembaga legislatif desa yang menampung aspirasi warga dan bersama Kepala Desa menetapkan peraturan desa.</p>
+      </div>
+      <div class="lembaga-card">
+        <div class="lembaga-icon" style="background:#FCE4F4;color:#C13584;"><i class="fa-solid fa-heart"></i></div>
+        <h3>PKK</h3>
+        <p>Pemberdayaan Kesejahteraan Keluarga — bergerak di bidang pendidikan, kesehatan, dan pemberdayaan ekonomi keluarga.</p>
+      </div>
+      <div class="lembaga-card">
+        <div class="lembaga-icon" style="background:var(--gold-pale);color:var(--gold);"><i class="fa-solid fa-star"></i></div>
+        <h3>Karang Taruna</h3>
+        <p>Organisasi kepemudaan desa yang aktif dalam kegiatan sosial, olahraga, seni budaya, dan pemberdayaan pemuda.</p>
+      </div>
+      <div class="lembaga-card">
+        <div class="lembaga-icon" style="background:#E8F5E9;color:#2E7D32;"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>LINMAS</h3>
+        <p>Satuan Perlindungan Masyarakat — bertugas menjaga keamanan, ketertiban, dan membantu penanganan bencana di lingkungan desa.</p>
+      </div>
+      <div class="lembaga-card">
+        <div class="lembaga-icon" style="background:var(--teal-pale);color:var(--teal);"><i class="fa-solid fa-people-arrows"></i></div>
+        <h3>LPMD</h3>
+        <p>Lembaga Pemberdayaan Masyarakat Desa — membantu Kepala Desa dalam merencanakan dan melaksanakan pembangunan desa.</p>
+      </div>
+      <div class="lembaga-card">
+        <div class="lembaga-icon" style="background:var(--plum-pale);color:var(--plum);"><i class="fa-solid fa-building-columns"></i></div>
+        <h3>BUMDES</h3>
+        <p>Badan Usaha Milik Desa — unit usaha milik desa yang bergerak di sektor produktif untuk meningkatkan pendapatan asli desa.</p>
+      </div>
+      <div class="lembaga-card">
+        <div class="lembaga-icon" style="background:#F5E5DC;color:var(--rust);"><i class="fa-solid fa-user-nurse"></i></div>
+        <h3>Posyandu</h3>
+        <p>Pos Pelayanan Terpadu — melayani kesehatan ibu, bayi, balita, dan lansia melalui pemantauan rutin setiap bulan.</p>
+      </div>
+      <div class="lembaga-card">
+        <div class="lembaga-icon" style="background:#E3F4EC;color:var(--emerald);"><i class="fa-solid fa-tractor"></i></div>
+        <h3>Gapoktan</h3>
+        <p>Gabungan Kelompok Tani — menaungi para petani dalam pengembangan pertanian, akses pupuk, dan pemasaran hasil tani.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     POTENSI DESA
+═══════════════════ -->
+<section class="section section-cream reveal" id="potensi">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Potensi Lokal</div>
+      <h2 class="section-title">Kekayaan Desa Kandeman</h2>
+      <p class="section-sub">Beragam potensi yang menjadi keunggulan dan daya tarik Desa Kandeman.</p>
+    </div>
+    <div class="potensi-grid" id="potensi-grid">
+      <div class="sb-loading" style="grid-column:1/-1;text-align:center;padding:32px;color:var(--text-muted);font-size:13px;">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size:20px;margin-bottom:8px;display:block;"></i>Memuat data potensi...
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#FFFFFF" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     TRANSPARANSI
+═══════════════════ -->
+<section class="section section-white reveal" id="transparansi">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Transparansi</div>
+      <h2 class="section-title">Transparansi Keuangan Desa</h2>
+      <p class="section-sub">Informasi APBDes dan realisasi anggaran Desa Kandeman Tahun Anggaran 2026.</p>
+    </div>
+
+    <div class="trans-grid">
+      <!-- Kiri -->
+      <div id="apbdes">
+        <div class="apbdes-total" id="apb-total-display">
+          <div class="val" id="apb-val">Rp —</div>
+          <div class="lbl" id="apb-tahun-lbl">Total APBDes —</div>
+          <div class="sub" id="apb-sub">Memuat data...</div>
+        </div>
+        <p style="font-size:12.5px; font-weight:600; color:var(--text); margin-bottom:14px;">Alokasi Anggaran per Bidang</p>
+        <div id="apb-alokasi">
+          <div class="sb-loading" style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;">
+            <i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat alokasi...
+          </div>
+        </div>
+      </div>
+
+      <!-- Kanan -->
+      <div id="realisasi">
+        <p style="font-size:12.5px; font-weight:600; color:var(--text); margin-bottom:12px;">Realisasi Anggaran</p>
+        <div class="real-grid" id="apb-realisasi-grid">
+          <div class="real-card"><div class="pct" id="apb-r1">—</div><div class="desc">Realisasi Pendapatan</div></div>
+          <div class="real-card"><div class="pct" id="apb-r2">—</div><div class="desc">Realisasi Belanja</div></div>
+          <div class="real-card"><div class="pct" id="apb-r3">—</div><div class="desc">Realisasi Pembangunan</div></div>
+          <div class="real-card"><div class="pct" id="apb-r4">—</div><div class="desc">Realisasi Pemberdayaan</div></div>
+        </div>
+        <div style="overflow:hidden; border:1px solid var(--border); border-radius:var(--r-md); margin-top:16px;">
+          <table class="pendapatan-table">
+            <thead><tr><th>Sumber Pendapatan</th><th>Nominal</th></tr></thead>
+            <tbody id="apb-pendapatan-tbody">
+              <tr><td colspan="2" style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;"><i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="trans-note">
+          <i class="fa-solid fa-circle-info"></i>
+          <span id="apb-note">Data APBDes diperbarui langsung oleh perangkat desa melalui Panel Admin SIKANDA.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     DIGITAL TRANSPARENCY HUB
+═══════════════════ -->
+<section class="section section-cream reveal" id="transparency-hub">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Transparency Hub</div>
+      <h2 class="section-title">Digital Transparency Hub</h2>
+      <p class="section-sub">Pusat literasi keuangan dan arsip dokumen anggaran desa yang dapat diunduh warga.</p>
+    </div>
+
+    <div class="transp-hub-grid">
+      <!-- Literasi Pajak -->
+      <div class="transp-info-card">
+        <h3><i class="fa-solid fa-lightbulb"></i> Literasi Pajak & Keuangan Desa</h3>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px; line-height:1.6;">Memahami dari mana anggaran desa berasal dan bagaimana pengelolaannya.</p>
+        <div class="literasi-item">
+          <div class="literasi-num">1</div>
+          <p><strong>Dana Desa (DD)</strong> — bersumber dari APBN, digunakan untuk pembangunan dan pemberdayaan masyarakat desa.</p>
+        </div>
+        <div class="literasi-item">
+          <div class="literasi-num">2</div>
+          <p><strong>Alokasi Dana Desa (ADD)</strong> — bagian dari dana perimbangan kabupaten, minimal 10% untuk desa.</p>
+        </div>
+        <div class="literasi-item">
+          <div class="literasi-num">3</div>
+          <p><strong>Bagi Hasil Pajak & Retribusi</strong> — bagian desa dari pajak daerah yang dipungut kabupaten.</p>
+        </div>
+        <div class="literasi-item">
+          <div class="literasi-num">4</div>
+          <p><strong>PADes</strong> — Pendapatan Asli Desa dari BUMDes, aset desa, dan sumber sah lainnya.</p>
+        </div>
+      </div>
+
+      <!-- Arsip dokumen -->
+      <div>
+        <h3 style="font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-folder-open" style="color:var(--emerald);"></i> Arsip Dokumen APBDes
+        </h3>
+        <div class="arsip-list" id="arsip-apbdes-list">
+          <p class="daftar-kosong"><i class="fa-solid fa-circle-info"></i> Belum ada dokumen APBDes yang diunggah.</p>
+        </div>
+
+        <!-- Akses Database Master -->
+        <div class="data-cta" style="margin-top:20px;">
+          <div class="data-cta-text">
+            <h3><i class="fa-solid fa-database" style="margin-right:8px;"></i>Unduh Data Statistik Desa</h3>
+            <p>Database kependudukan lengkap: jumlah penduduk per dusun, kelompok usia, mata pencaharian, dan pendidikan.</p>
+          </div>
+          <a href="#" class="dl-btn" id="btn-statistik" download onclick="return unduhStatistik(event)">
+            <i class="fa-solid fa-file-excel"></i> Unduh Spreadsheet
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#fff" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PUSAT LAYANAN KESEHATAN
+═══════════════════ -->
+<section class="section section-white reveal" id="kesehatan">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Kesehatan</div>
+      <h2 class="section-title">Pusat Layanan Kesehatan Desa</h2>
+      <p class="section-sub">Jadwal Posyandu, kontak darurat, dan lokasi fasilitas kesehatan Desa Kandeman.</p>
+    </div>
+
+    <!-- Ringkasan layanan -->
+    <div class="sehat-stats">
+      <div class="sehat-stat">
+        <div class="ss-ico"><i class="fa-solid fa-baby"></i></div>
+        <div class="ss-num">6</div>
+        <div class="ss-lbl">Posyandu &amp; Posbindu aktif tiap bulan</div>
+      </div>
+      <div class="sehat-stat">
+        <div class="ss-ico"><i class="fa-solid fa-house-medical"></i></div>
+        <div class="ss-num">1</div>
+        <div class="ss-lbl">Rumah sakit rujukan terdekat</div>
+      </div>
+      <div class="sehat-stat">
+        <div class="ss-ico"><i class="fa-solid fa-hospital"></i></div>
+        <div class="ss-num">1</div>
+        <div class="ss-lbl">Puskesmas induk di Kandeman</div>
+      </div>
+      <div class="sehat-stat">
+        <div class="ss-ico"><i class="fa-solid fa-user-nurse"></i></div>
+        <div class="ss-num">1</div>
+        <div class="ss-lbl">Bidan desa pelayanan KIA</div>
+      </div>
+    </div>
+
+    <div class="sehat-grid">
+      <!-- Jadwal -->
+      <div class="sehat-panel m-left m-d1">
+        <div class="sehat-panel-head">
+          <div class="ph-ico"><i class="fa-solid fa-calendar-check"></i></div>
+          <div class="ph-txt">
+            <h3>Jadwal Posyandu &amp; Posbindu</h3>
+            <p>Posyandu &amp; Posbindu rutin di setiap dusun</p>
+          </div>
+        </div>
+        <div class="sehat-panel-body">
+          <div style="overflow-x:auto;">
+            <table class="jadwal-table">
+              <thead>
+                <tr><th>Dusun</th><th>Lokasi</th><th>Tanggal</th><th>Jam Pelayanan</th></tr>
+              </thead>
+              <tbody id="jadwal-kesehatan-body">
+                <tr><td>Randusari</td><td>Balai Dusun Randusari</td><td>05/03/2026</td><td>09.00 - selesai</td></tr>
+                <tr><td>Kandeman</td><td>Balai Dusun Kandeman</td><td>08/03/2026</td><td>09.00 - selesai</td></tr>
+                <tr><td>Gandok</td><td>Balai Dusun Gandok</td><td>12/03/2026</td><td>09.00 - selesai</td></tr>
+                <tr><td>Kaliongkek</td><td>Balai Dusun Kaliongkek</td><td>15/03/2026</td><td>09.00 - selesai</td></tr>
+                <tr><td>Johosari</td><td>Balai Dusun Johosari</td><td>18/03/2026</td><td>09.00 - selesai</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="jadwal-note">
+            <i class="fa-solid fa-circle-info"></i>
+            Jadwal dapat berubah pada hari libur nasional. Konfirmasi ke kader posyandu setempat.
+          </p>
+        </div>
+      </div>
+
+      <!-- Kontak Darurat + Fasilitas -->
+      <div class="sehat-panel m-right m-d2">
+        <div class="sehat-panel-head alt">
+          <div class="ph-ico"><i class="fa-solid fa-phone-volume"></i></div>
+          <div class="ph-txt">
+            <h3>Kontak Darurat &amp; Kesehatan</h3>
+            <p>Hubungi cepat saat keadaan darurat</p>
+          </div>
+        </div>
+        <div class="sehat-panel-body">
+          <!-- Panggilan darurat utama -->
+          <div class="darurat-banner">
+            <div class="db-pulse"><i class="fa-solid fa-truck-medical"></i></div>
+            <div class="db-txt">
+              <strong>Panggilan Darurat 119</strong>
+              <span>Layanan medis darurat nasional &mdash; siaga 24 jam</span>
+            </div>
+            <a href="tel:119" class="db-call"><i class="fa-solid fa-phone"></i> 119</a>
+          </div>
+
+          <div class="kontak-darurat-list" id="kontak-kesehatan-list">
+            <div class="darurat-card">
+              <div class="darurat-icon bidan"><i class="fa-solid fa-user-nurse"></i></div>
+              <div class="darurat-info">
+                <h4>Bidan Desa</h4>
+                <span>Pelayanan KIA &amp; persalinan</span>
+              </div>
+              <!-- TODO: Isi nomor telepon resmi Bidan Desa. -->
+              <a href="tel:0" class="darurat-call" aria-label="Telepon Bidan Desa"><i class="fa-solid fa-phone"></i></a>
+            </div>
+            <div class="darurat-card">
+              <div class="darurat-icon pusk"><i class="fa-solid fa-hospital"></i></div>
+              <div class="darurat-info">
+                <h4>Puskesmas Kandeman</h4>
+                <span>Jl. Raya Kandeman</span>
+              </div>
+              <!-- TODO: Isi nomor telepon resmi Puskesmas Kandeman. -->
+              <a href="tel:0" class="darurat-call" aria-label="Telepon Puskesmas Kandeman"><i class="fa-solid fa-phone"></i></a>
+            </div>
+            <div class="darurat-card">
+              <div class="darurat-icon pusk"><i class="fa-solid fa-house-medical"></i></div>
+              <div class="darurat-info">
+                <h4>Rumah Sakit Rujukan</h4>
+                <span>Rujukan lanjutan dari Puskesmas</span>
+              </div>
+              <!-- TODO: Isi nomor telepon resmi rumah sakit rujukan. -->
+              <a href="tel:0" class="darurat-call" aria-label="Telepon Rumah Sakit Rujukan"><i class="fa-solid fa-phone"></i></a>
+            </div>
+            <div class="darurat-card">
+              <div class="darurat-icon emergency"><i class="fa-solid fa-kit-medical"></i></div>
+              <div class="darurat-info">
+                <h4>PSC 119 Kab. Batang</h4>
+                <span>Pusat panggilan darurat medis</span>
+              </div>
+              <a href="tel:119" class="darurat-call" aria-label="Telepon PSC 119 Kabupaten Batang"><i class="fa-solid fa-phone"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PROFIL DIGITAL UMKM
+═══════════════════ -->
+<section class="section section-cream reveal" id="umkm">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Ekonomi Lokal</div>
+      <h2 class="section-title">Profil Digital UMKM Desa</h2>
+      <p class="section-sub">Direktori usaha mikro, kecil, dan menengah warga Desa Kandeman. Dukung produk lokal!</p>
+    </div>
+
+    <div class="umkm-grid" id="umkm-grid">
+      <div class="umkm-card">
+        <div class="umkm-thumb"><span class="umkm-cat">Kuliner</span>🦐</div>
+        <div class="umkm-body">
+          <h3>Terasi Udang Kandeman</h3>
+          <p>Terasi udang khas pesisir, diolah tradisional tanpa pengawet. Tersedia kemasan 100g &amp; 250g.</p>
+          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
+          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20produk%20Terasi%20Udang" target="_blank" rel="noopener noreferrer" class="umkm-wa">
+            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
+          </a>
+        </div>
+      </div>
+      <div class="umkm-card">
+        <div class="umkm-thumb"><span class="umkm-cat">Kuliner</span>🍤</div>
+        <div class="umkm-body">
+          <h3>Kerupuk Ikan Bu Tarni</h3>
+          <p>Kerupuk ikan segar hasil tangkapan nelayan lokal. Renyah, gurih, dan tanpa bahan kimia berbahaya.</p>
+          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
+          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20Kerupuk%20Ikan" target="_blank" rel="noopener noreferrer" class="umkm-wa">
+            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
+          </a>
+        </div>
+      </div>
+      <div class="umkm-card">
+        <div class="umkm-thumb"><span class="umkm-cat">Kerajinan</span>🧺</div>
+        <div class="umkm-body">
+          <h3>Anyaman Bambu Pak Slamet</h3>
+          <p>Kerajinan anyaman bambu: besek, tampah, dan wadah serbaguna. Menerima pesanan partai besar.</p>
+          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
+          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20Anyaman%20Bambu" target="_blank" rel="noopener noreferrer" class="umkm-wa">
+            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
+          </a>
+        </div>
+      </div>
+      <div class="umkm-card">
+        <div class="umkm-thumb"><span class="umkm-cat">Pertanian</span>🌾</div>
+        <div class="umkm-body">
+          <h3>Beras Organik Tani Makmur</h3>
+          <p>Beras organik hasil panen kelompok tani Kandeman. Pulen, sehat, bebas pestisida kimia.</p>
+          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
+          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20Beras%20Organik" target="_blank" rel="noopener noreferrer" class="umkm-wa">
+            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; font-size:12.5px; color:var(--text-muted); margin-top:24px;">
+      <i class="fa-solid fa-store" style="color:var(--emerald);"></i>
+      Punya usaha dan ingin didaftarkan? Hubungi Balai Desa untuk mendaftarkan UMKM Anda.
+    </p>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#fff" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PUSAT HUKUM & EDUKASI
+═══════════════════ -->
+<section class="section section-white reveal" id="hukum-edukasi">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Hukum & Edukasi</div>
+      <h2 class="section-title">Pusat Hukum & Edukasi Warga</h2>
+      <p class="section-sub">Peraturan Desa dan edukasi perlindungan masyarakat dari kejahatan digital.</p>
+    </div>
+
+    <div class="edukasi-grid">
+      <!-- Peraturan Desa -->
+      <div>
+        <h3 style="font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-gavel" style="color:var(--emerald);"></i> Peraturan Desa (Perdes)
+        </h3>
+        <div class="perdes-list" id="perdes-list">
+          <p class="daftar-kosong"><i class="fa-solid fa-circle-info"></i> Belum ada peraturan desa yang diunggah.</p>
+        </div>
+      </div>
+
+      <!-- Poster Edukasi -->
+      <div>
+        <h3 style="font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-shield-halved" style="color:var(--emerald);"></i> Waspada Kejahatan Digital
+        </h3>
+        <div class="edukasi-poster-scroll" id="poster-edukasi-list">
+          <div class="poster-card">
+            <div class="poster-thumb warn">
+              <i class="fa-solid fa-hand-holding-dollar"></i>
+              <h4>Bahaya Pinjol Ilegal</h4>
+              <p>Kenali ciri pinjaman online ilegal dan lindungi data pribadimu</p>
+            </div>
+            <div class="poster-label">Pinjaman Online Ilegal</div>
+          </div>
+          <div class="poster-card">
+            <div class="poster-thumb judi">
+              <i class="fa-solid fa-dice"></i>
+              <h4>Stop Judi Online</h4>
+              <p>Judi online merusak ekonomi keluarga dan melanggar hukum</p>
+            </div>
+            <div class="poster-label">Judi Online</div>
+          </div>
+          <div class="poster-card">
+            <div class="poster-thumb tipu">
+              <i class="fa-solid fa-user-secret"></i>
+              <h4>Awas Penipuan Digital</h4>
+              <p>Jangan bagikan OTP, PIN, atau data pribadi ke siapapun</p>
+            </div>
+            <div class="poster-label">Penipuan Online</div>
+          </div>
+        </div>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:12px; line-height:1.5;">
+          <i class="fa-solid fa-circle-info" style="color:var(--emerald);"></i>
+          Geser untuk melihat poster lainnya. Laporkan penipuan ke perangkat desa atau hubungi 110.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     LAYANAN DESA
+═══════════════════ -->
+<section class="section section-cream reveal" id="layanan">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Layanan Publik</div>
+      <h2 class="section-title">Layanan Administrasi Desa Kandeman</h2>
+      <p class="section-sub">Panduan lengkap alur pemberkasan dan persyaratan dokumen di Balai Desa Kandeman.</p>
+    </div>
+
+    <!-- Tombol Cetak -->
+    <div style="display:flex; justify-content:flex-end; margin-bottom:24px;">
+      <button type="button" class="print-btn" onclick="cetakLayanan()" aria-label="Cetak panduan layanan">
+        <i class="fa-solid fa-print"></i> Cetak Panduan Layanan
+      </button>
+    </div>
+
+    <!-- Jadwal -->
+    <p style="font-size:15px; font-weight:600; margin-bottom:14px;">
+      <i class="fa-regular fa-clock" style="color:var(--emerald); margin-right:6px;"></i>
+      Jadwal Pelayanan Balai Desa
+    </p>
+    <div class="jadwal-grid">
+      <div class="jadwal-card">
+        <div class="jadwal-icon"><i class="fa-solid fa-calendar-week"></i></div>
+        <div>
+          <h4>Senin – Kamis</h4>
+          <p>07.30 – 14.00 WIB<br>Pelayanan administrasi umum</p>
+        </div>
+      </div>
+      <div class="jadwal-card">
+        <div class="jadwal-icon"><i class="fa-solid fa-calendar-day"></i></div>
+        <div>
+          <h4>Jumat</h4>
+          <p>07.30 – 11.30 WIB<br>Pelayanan terbatas (istirahat Jumat)</p>
+        </div>
+      </div>
+      <div class="jadwal-card">
+        <div class="jadwal-icon" style="background:#FCE4E4;color:#CC0000;"><i class="fa-solid fa-calendar-xmark"></i></div>
+        <div>
+          <h4>Sabtu & Minggu</h4>
+          <p>Tutup<br>Hari libur & tanggal merah</p>
+        </div>
+      </div>
+      <div class="jadwal-card">
+        <div class="jadwal-icon"><i class="fa-solid fa-phone"></i></div>
+        <div>
+          <h4>Hubungi Kami</h4>
+          <p>(0285) — —<br>Konfirmasi sebelum datang</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alur Umum -->
+    <div class="alur-block" id="alur-pelayanan">
+      <div class="alur-block-title">Alur Umum Pemberkasan</div>
+      <div class="alur-block-sub">Langkah dasar yang berlaku untuk semua jenis permohonan surat di Balai Desa Kandeman</div>
+      <div class="alur-steps">
+        <div class="alur-step">
+          <div class="alur-num">1</div>
+          <div class="alur-step-body">
+            <h4>Siapkan Berkas</h4>
+            <p>Lengkapi dokumen persyaratan sesuai jenis surat</p>
+          </div>
+        </div>
+        <div class="alur-step">
+          <div class="alur-num">2</div>
+          <div class="alur-step-body">
+            <h4>Datang ke Balai Desa</h4>
+            <p>Kunjungi pada jam pelayanan yang berlaku</p>
+          </div>
+        </div>
+        <div class="alur-step">
+          <div class="alur-num">3</div>
+          <div class="alur-step-body">
+            <h4>Verifikasi Berkas</h4>
+            <p>Petugas memeriksa kelengkapan dokumen</p>
+          </div>
+        </div>
+        <div class="alur-step">
+          <div class="alur-num">4</div>
+          <div class="alur-step-body">
+            <h4>Proses Surat</h4>
+            <p>Petugas memproses dan mencetak surat</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOP Download Banner -->
+      <div class="sop-banner">
+        <div class="sop-banner-icon"><i class="fa-solid fa-file-pdf"></i></div>
+        <div class="sop-banner-text">
+          <h4>Unduh Dokumen SOP Pelayanan</h4>
+          <p>Simpan panduan lengkap alur dan persyaratan administrasi desa untuk dibaca secara offline.</p>
+        </div>
+        <a href="#" class="dl-btn" id="btn-sop" download onclick="return unduhSOP(event)">
+          <i class="fa-solid fa-download"></i> Unduh SOP (PDF)
+        </a>
+      </div>
+    </div>
+
+    <!-- Per Surat -->
+    <div class="surat-section-title" id="persyaratan">Detail Persyaratan per Jenis Surat</div>
+    <div class="surat-list">
+
+      <div class="surat-item">
+        <div class="surat-header" onclick="toggleSurat(this)">
+          <div class="surat-icon"><i class="fa-solid fa-house-circle-check"></i></div>
+          <div class="surat-text">
+            <h4>Surat Keterangan Domisili</h4>
+            <p>Untuk keperluan administrasi, perbankan, atau instansi lain</p>
+          </div>
+          <i class="fa-solid fa-chevron-right surat-chevron"></i>
+        </div>
+        <div class="surat-body"><div class="surat-body-inner">
+          <div class="surat-divider"></div>
+          <div class="syarat-title">Persyaratan Dokumen</div>
+          <ul class="syarat-list">
+            <li>Fotokopi KTP yang masih berlaku</li>
+            <li>Fotokopi Kartu Keluarga (KK)</li>
+            <li>Surat pengantar dari RT setempat</li>
+            <li>Surat pengantar dari RW setempat</li>
+          </ul>
+          <div class="alur-mini">
+            <div class="syarat-title" style="margin-top:14px;">Alur Proses</div>
+            <div class="alur-mini-steps">
+              <div class="alur-mini-step"><div class="alur-mini-num">1</div> Siapkan berkas persyaratan di atas</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">2</div> Datang ke Balai Desa untuk mengajukan permohonan</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">3</div> Petugas kasi pelayanan memproses dan mencetak surat</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">4</div> Kepala Desa / pejabat yang berwenang menandatangani</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">5</div> Pemohon menerima surat yang telah distempel resmi</div></div>
+            </div>
+          </div>
+          <div class="estimasi"><i class="fa-regular fa-clock"></i> Estimasi: 1–2 hari kerja</div>
+        </div>
+      </div>
+
+      <div class="surat-item">
+        <div class="surat-header" onclick="toggleSurat(this)">
+          <div class="surat-icon"><i class="fa-solid fa-store"></i></div>
+          <div class="surat-text">
+            <h4>Surat Keterangan Usaha (SKU)</h4>
+            <p>Untuk pelaku UMKM, pedagang, dan wiraswasta lokal</p>
+          </div>
+          <i class="fa-solid fa-chevron-right surat-chevron"></i>
+        </div>
+        <div class="surat-body"><div class="surat-body-inner">
+          <div class="surat-divider"></div>
+          <div class="syarat-title">Persyaratan Dokumen</div>
+          <ul class="syarat-list">
+            <li>Fotokopi KTP pemilik usaha</li>
+            <li>Fotokopi Kartu Keluarga (KK)</li>
+            <li>Surat pengantar dari RT setempat</li>
+            <li>Foto lokasi usaha (jika diperlukan)</li>
+            <li>Keterangan jenis dan nama usaha</li>
+          </ul>
+          <div class="alur-mini">
+            <div class="syarat-title" style="margin-top:14px;">Alur Proses</div>
+            <div class="alur-mini-steps">
+              <div class="alur-mini-step"><div class="alur-mini-num">1</div> Siapkan berkas persyaratan di atas</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">2</div> Datang ke Balai Desa, isi formulir permohonan SKU</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">3</div> Petugas verifikasi dan proses penerbitan SKU</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">4</div> Penandatanganan oleh Kepala Desa</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">5</div> SKU diserahkan kepada pemohon dengan stempel resmi</div></div>
+            </div>
+          </div>
+          <div class="estimasi"><i class="fa-regular fa-clock"></i> Estimasi: 1–2 hari kerja</div>
+        </div>
+      </div>
+
+      <div class="surat-item">
+        <div class="surat-header" onclick="toggleSurat(this)">
+          <div class="surat-icon"><i class="fa-solid fa-id-card"></i></div>
+          <div class="surat-text">
+            <h4>Pengantar KTP / Kartu Keluarga</h4>
+            <p>Permohonan pengantar untuk pembuatan atau perubahan data kependudukan</p>
+          </div>
+          <i class="fa-solid fa-chevron-right surat-chevron"></i>
+        </div>
+        <div class="surat-body"><div class="surat-body-inner">
+          <div class="surat-divider"></div>
+          <div class="syarat-title">Persyaratan Membuat KTP Baru</div>
+          <ul class="syarat-list">
+            <li>Pengantar desa</li>
+            <li>Fotokopi Kartu Keluarga (KK)</li>
+            <li>Fotokopi akta kelahiran</li>
+            <li>Fotokopi ijazah terakhir</li>
+          </ul>
+          <div class="syarat-title" style="margin-top:14px;">Persyaratan Membuat KK Baru</div>
+          <ul class="syarat-list">
+            <li>KK asli orang tua</li>
+            <li>KTP asli</li>
+            <li>Fotokopi surat nikah</li>
+            <li>Pengantar dari desa</li>
+          </ul>
+          <div class="syarat-title" style="margin-top:14px;">Persyaratan Tambah Jiwa (Anggota Keluarga)</div>
+          <ul class="syarat-list">
+            <li>KK asli</li>
+            <li>Fotokopi KTP ayah dan ibu</li>
+            <li>Fotokopi surat nikah</li>
+            <li>Surat keterangan lahir dari desa</li>
+            <li>Pengantar desa</li>
+          </ul>
+          <div class="alur-mini">
+            <div class="syarat-title" style="margin-top:14px;">Alur Proses</div>
+            <div class="alur-mini-steps">
+              <div class="alur-mini-step"><div class="alur-mini-num">1</div> Siapkan berkas persyaratan sesuai keperluan di atas</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">2</div> Datang ke Balai Desa dengan berkas lengkap</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">3</div> Petugas menerbitkan surat pengantar desa untuk dibawa ke Dukcapil</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">4</div> Bawa surat pengantar desa ke Dinas Dukcapil Kab. Batang</div></div>
+            </div>
+          </div>
+          <div class="estimasi"><i class="fa-regular fa-clock"></i> Pengantar desa: 1 hari kerja · Proses di Dukcapil: menyesuaikan</div>
+        </div>
+      </div>
+
+      <div class="surat-item">
+        <div class="surat-header" onclick="toggleSurat(this)">
+          <div class="surat-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+          <div class="surat-text">
+            <h4>Surat Keterangan Tidak Mampu (SKTM)</h4>
+            <p>Untuk keperluan pendidikan, kesehatan, atau bantuan sosial</p>
+          </div>
+          <i class="fa-solid fa-chevron-right surat-chevron"></i>
+        </div>
+        <div class="surat-body"><div class="surat-body-inner">
+          <div class="surat-divider"></div>
+          <div class="syarat-title">Persyaratan Dokumen</div>
+          <ul class="syarat-list">
+            <li>Fotokopi KTP pemohon</li>
+            <li>Fotokopi Kartu Keluarga (KK)</li>
+            <li>Surat pengantar dari RT/RW</li>
+            <li>Fotokopi Kartu Keluarga Sejahtera (KKS) / SKTM lama jika ada</li>
+            <li>Surat keterangan penghasilan dari tempat kerja / RT (jika diperlukan)</li>
+            <li>Surat keterangan tujuan penggunaan SKTM (dari sekolah/RS jika ada)</li>
+          </ul>
+          <div class="alur-mini">
+            <div class="syarat-title" style="margin-top:14px;">Alur Proses</div>
+            <div class="alur-mini-steps">
+              <div class="alur-mini-step"><div class="alur-mini-num">1</div> Siapkan berkas persyaratan di atas</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">2</div> Datang ke Balai Desa dengan seluruh berkas</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">3</div> Petugas kasi kesejahteraan memverifikasi kondisi ekonomi pemohon</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">4</div> Penandatanganan SKTM oleh Kepala Desa</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">5</div> SKTM diserahkan kepada pemohon</div></div>
+            </div>
+          </div>
+          <div class="estimasi"><i class="fa-regular fa-clock"></i> Estimasi: 1 hari kerja</div>
+        </div>
+      </div>
+
+      <div class="surat-item">
+        <div class="surat-header" onclick="toggleSurat(this)">
+          <div class="surat-icon"><i class="fa-solid fa-ring"></i></div>
+          <div class="surat-text">
+            <h4>Surat Pengantar Nikah (N1, N2, N4)</h4>
+            <p>Pengantar untuk pendaftaran pernikahan ke KUA Kecamatan</p>
+          </div>
+          <i class="fa-solid fa-chevron-right surat-chevron"></i>
+        </div>
+        <div class="surat-body"><div class="surat-body-inner">
+          <div class="surat-divider"></div>
+          <div class="syarat-title">Persyaratan Dokumen</div>
+          <ul class="syarat-list">
+            <li>Fotokopi KTP calon mempelai (pria dan wanita)</li>
+            <li>Fotokopi Kartu Keluarga (KK) masing-masing</li>
+            <li>Fotokopi Akta Kelahiran kedua calon mempelai</li>
+            <li>Pas foto ukuran 2×3 dan 3×4 (masing-masing 4 lembar)</li>
+            <li>Surat pengantar dari RT/RW calon mempelai</li>
+            <li>Surat pernyataan belum pernah menikah (bagi yang lajang)</li>
+            <li>Fotokopi akta cerai / akta kematian suami (bagi janda/duda)</li>
+          </ul>
+          <div class="alur-mini">
+            <div class="syarat-title" style="margin-top:14px;">Alur Proses</div>
+            <div class="alur-mini-steps">
+              <div class="alur-mini-step"><div class="alur-mini-num">1</div> Siapkan berkas persyaratan kedua calon mempelai</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">2</div> Datang ke Balai Desa dengan berkas lengkap</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">3</div> Petugas membuat N1 (nikah), N2 (asal-usul), N4 (orang tua)</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">4</div> Penandatanganan surat oleh Kepala Desa</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">5</div> Bawa surat ke KUA Kecamatan Kandeman untuk pendaftaran nikah</div></div>
+            </div>
+          </div>
+          <div class="estimasi"><i class="fa-regular fa-clock"></i> Estimasi: 1 hari kerja</div>
+        </div>
+      </div>
+
+      <div class="surat-item">
+        <div class="surat-header" onclick="toggleSurat(this)">
+          <div class="surat-icon"><i class="fa-solid fa-file-medical"></i></div>
+          <div class="surat-text">
+            <h4>Surat Keterangan Kematian</h4>
+            <p>Untuk keperluan pengurusan administrasi setelah ada anggota keluarga yang meninggal</p>
+          </div>
+          <i class="fa-solid fa-chevron-right surat-chevron"></i>
+        </div>
+        <div class="surat-body"><div class="surat-body-inner">
+          <div class="surat-divider"></div>
+          <div class="syarat-title">Persyaratan Dokumen</div>
+          <ul class="syarat-list">
+            <li>KTP almarhumah/almarhum (jika ada)</li>
+            <li>Fotokopi Kartu Keluarga (KK)</li>
+            <li>Surat keterangan dari pihak medis / dokter / fasilitas kesehatan (jika ada)</li>
+            <li>Identitas pemohon (KTP anggota keluarga yang mengurus)</li>
+          </ul>
+          <div class="syarat-title" style="margin-top:14px;">Persyaratan Membuat Akta Kematian</div>
+          <ul class="syarat-list">
+            <li>Fotokopi Kartu Keluarga (KK)</li>
+            <li>Fotokopi KTP mendiang</li>
+            <li>Fotokopi surat kematian dari desa</li>
+          </ul>
+          <div class="alur-mini">
+            <div class="syarat-title" style="margin-top:14px;">Alur Proses</div>
+            <div class="alur-mini-steps">
+              <div class="alur-mini-step"><div class="alur-mini-num">1</div> Siapkan berkas persyaratan di atas</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">2</div> Datang ke Balai Desa untuk melaporkan dan mengurus surat</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">3</div> Petugas memproses surat keterangan kematian desa</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">4</div> Penandatanganan oleh Kepala Desa / pejabat berwenang</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">5</div> Dapat digunakan untuk pengurusan akta kematian di Dukcapil</div></div>
+            </div>
+          </div>
+          <div class="estimasi"><i class="fa-regular fa-clock"></i> Estimasi: 1 hari kerja</div>
+        </div>
+      </div>
+
+      <div class="surat-item">
+        <div class="surat-header" onclick="toggleSurat(this)">
+          <div class="surat-icon"><i class="fa-solid fa-baby"></i></div>
+          <div class="surat-text">
+            <h4>Surat Keterangan Lahir &amp; Akta Kelahiran</h4>
+            <p>Pengurusan keterangan lahir dari desa dan syarat akta kelahiran di Dukcapil</p>
+          </div>
+          <i class="fa-solid fa-chevron-right surat-chevron"></i>
+        </div>
+        <div class="surat-body"><div class="surat-body-inner">
+          <div class="surat-divider"></div>
+          <div class="syarat-title">Persyaratan Membuat Akta Kelahiran</div>
+          <ul class="syarat-list">
+            <li>Fotokopi Kartu Keluarga (KK)</li>
+            <li>Fotokopi KTP ayah dan ibu</li>
+            <li>Surat keterangan lahir dari desa (asli)</li>
+            <li>Fotokopi surat nikah yang dilegalisir dari KUA setempat</li>
+            <li>Fotokopi KTP saksi 2 orang</li>
+          </ul>
+          <div class="alur-mini">
+            <div class="syarat-title" style="margin-top:14px;">Alur Proses</div>
+            <div class="alur-mini-steps">
+              <div class="alur-mini-step"><div class="alur-mini-num">1</div> Siapkan berkas persyaratan di atas</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">2</div> Datang ke Balai Desa untuk mengurus surat keterangan lahir</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">3</div> Petugas menerbitkan surat keterangan lahir desa</div>
+              <div class="alur-mini-step"><div class="alur-mini-num">4</div> Bawa seluruh berkas ke Dinas Dukcapil Kab. Batang untuk penerbitan akta</div></div>
+            </div>
+          </div>
+          <div class="estimasi"><i class="fa-regular fa-clock"></i> Surat keterangan desa: 1 hari kerja · Proses akta di Dukcapil: menyesuaikan</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#FFFFFF" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     INFORMASI
+═══════════════════ -->
+<section class="section section-white reveal" id="informasi">
+  <div class="container">
+    <div class="section-header" id="berita">
+      <div class="eyebrow">Informasi Terkini</div>
+      <h2 class="section-title">Berita & Pengumuman Desa</h2>
+      <p class="section-sub">Update terbaru dari pemerintah dan kegiatan warga Desa Kandeman.</p>
+    </div>
+    <div class="news-grid" id="berita-grid">
+      <!-- Skeleton loading cards -->
+      <div class="news-skeleton"></div>
+      <div class="news-skeleton"></div>
+      <div class="news-skeleton"></div>
+      <div class="news-skeleton"></div>
+    </div>
+
+    <!-- Galeri -->
+    <div class="mt-48" id="galeri">
+      <div class="section-header" style="margin-bottom:24px;">
+        <div class="eyebrow">Dokumentasi</div>
+        <h2 class="section-title">Galeri Desa Kandeman</h2>
+        <p class="section-sub">Momen kegiatan dan keindahan Desa Kandeman.</p>
+      </div>
+      <div class="galeri-grid" id="galeri-grid">
+        <!-- Skeleton loading -->
+        <div class="galeri-skeleton"></div>
+        <div class="galeri-skeleton"></div>
+        <div class="galeri-skeleton"></div>
+        <div class="galeri-skeleton"></div>
+        <div class="galeri-skeleton"></div>
+        <div class="galeri-skeleton"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PRESTASI
+═══════════════════ -->
+<section class="section section-cream reveal" id="prestasi">
+  <div class="container">
+    <div class="section-header" id="penghargaan">
+      <div class="eyebrow">Capaian</div>
+      <h2 class="section-title">Prestasi Desa Kandeman</h2>
+      <p class="section-sub">Penghargaan dan capaian yang diraih Desa Kandeman dalam berbagai bidang.</p>
+    </div>
+    <div id="capaian" style="scroll-margin-top:90px;"></div>
+    <div class="prestasi-grid" id="prestasi-grid">
+      <div class="prestasi-card">
+        <div class="prestasi-medal medal-gold">🥇</div>
+        <div>
+          <h4>Desa Terbaik Tingkat Kecamatan</h4>
+          <p>Meraih penghargaan desa terbaik dalam evaluasi kinerja pemerintahan desa tingkat Kecamatan Kandeman.</p>
+          <div class="prestasi-year">2024 · Kecamatan Kandeman</div>
+        </div>
+      </div>
+      <div class="prestasi-card">
+        <div class="prestasi-medal medal-gold">🏆</div>
+        <div>
+          <h4>Juara Lomba Kebersihan Lingkungan</h4>
+          <p>Berhasil meraih juara dalam lomba kebersihan dan penghijauan lingkungan tingkat Kabupaten Batang.</p>
+          <div class="prestasi-year">2023 · Kabupaten Batang</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#FFFFFF" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     FAQ
+═══════════════════ -->
+<!-- ═══════════════════
+     KALENDER AGENDA DESA
+═══════════════════ -->
+<section class="section section-cream reveal" id="agenda">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Agenda</div>
+      <h2 class="section-title">Kalender Kegiatan Desa</h2>
+      <p class="section-sub">Jadwal rapat, musyawarah, dan kegiatan warga Desa Kandeman.</p>
+    </div>
+
+    <div class="agenda-wrap">
+      <div>
+        <p style="font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:7px;">
+          <i class="fa-solid fa-calendar-day" style="color:var(--emerald);"></i> Agenda Mendatang
+        </p>
+        <div class="agenda-list" id="agenda-mendatang">
+          <div class="agenda-card">
+            <div class="agenda-date"><div class="d">—</div><div class="m">—</div></div>
+            <div class="agenda-body">
+              <h4>Memuat agenda…</h4>
+              <p>Data sedang dimuat dari server.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p style="font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:7px;">
+          <i class="fa-solid fa-clock-rotate-left" style="color:var(--text-muted);"></i> Agenda Terlaksana
+        </p>
+        <div class="agenda-list" id="agenda-lalu"></div>
+        <div style="margin-top:16px;padding:16px 18px;background:rgba(28,107,62,.05);border:1px solid rgba(28,107,62,.14);border-radius:var(--r-md);">
+          <p style="font-size:12.5px;color:var(--text-sec);line-height:1.65;">
+            <i class="fa-solid fa-circle-info" style="color:var(--emerald);margin-right:5px;"></i>
+            Agenda dapat berubah sewaktu-waktu. Konfirmasi ke perangkat desa atau ketua RT setempat untuk kepastian jadwal.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#fff" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     STATISTIK KEPENDUDUKAN
+═══════════════════ -->
+<section class="section section-white reveal" id="statistik">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Data Kependudukan</div>
+      <h2 class="section-title">Statistik Warga Desa Kandeman</h2>
+      <p class="section-sub">Gambaran komposisi penduduk berdasarkan usia dan tingkat pendidikan.<span id="stat-periode-label"></span></p>
+    </div>
+
+    <div class="stat-grid">
+      <!-- Piramida umur -->
+      <div class="stat-panel">
+        <h3><i class="fa-solid fa-people-group"></i> Komposisi Usia &amp; Jenis Kelamin</h3>
+        <div class="sub">Sebaran penduduk per kelompok umur</div>
+        <div id="piramida-umur">
+          <div class="pyr-row"><div class="pyr-bar-wrap left"><div class="pyr-bar l" data-w="0">0</div></div><div class="pyr-age">0–9</div><div class="pyr-bar-wrap"><div class="pyr-bar p" data-w="0">0</div></div></div>
+          <div class="pyr-row"><div class="pyr-bar-wrap left"><div class="pyr-bar l" data-w="0">0</div></div><div class="pyr-age">10–19</div><div class="pyr-bar-wrap"><div class="pyr-bar p" data-w="0">0</div></div></div>
+          <div class="pyr-row"><div class="pyr-bar-wrap left"><div class="pyr-bar l" data-w="0">0</div></div><div class="pyr-age">20–29</div><div class="pyr-bar-wrap"><div class="pyr-bar p" data-w="0">0</div></div></div>
+          <div class="pyr-row"><div class="pyr-bar-wrap left"><div class="pyr-bar l" data-w="0">0</div></div><div class="pyr-age">30–44</div><div class="pyr-bar-wrap"><div class="pyr-bar p" data-w="0">0</div></div></div>
+          <div class="pyr-row"><div class="pyr-bar-wrap left"><div class="pyr-bar l" data-w="0">0</div></div><div class="pyr-age">45–59</div><div class="pyr-bar-wrap"><div class="pyr-bar p" data-w="0">0</div></div></div>
+          <div class="pyr-row"><div class="pyr-bar-wrap left"><div class="pyr-bar l" data-w="0">0</div></div><div class="pyr-age">60+</div><div class="pyr-bar-wrap"><div class="pyr-bar p" data-w="0">0</div></div></div>
+        </div>
+        <div class="pyr-legend">
+          <span><span class="pyr-dot" style="background:#1A5080;"></span> Laki-laki</span>
+          <span><span class="pyr-dot" style="background:#C13584;"></span> Perempuan</span>
+        </div>
+      </div>
+
+      <!-- Pendidikan -->
+      <div class="stat-panel">
+        <h3><i class="fa-solid fa-graduation-cap"></i> Tingkat Pendidikan</h3>
+        <div class="sub">Pendidikan terakhir penduduk usia 15 tahun ke atas</div>
+        <div class="donut-wrap">
+          <svg class="donut-svg" width="150" height="150" viewBox="0 0 42 42" role="img" aria-label="Diagram tingkat pendidikan">
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#EDEAE3" stroke-width="6"/>
+            <circle class="donut-seg" cx="21" cy="21" r="15.9" fill="none" stroke="#1C6B3E" stroke-width="6"
+                    stroke-dasharray="0 100" data-len="0" data-off="25" transform="rotate(-90 21 21)"/>
+            <circle class="donut-seg" cx="21" cy="21" r="15.9" fill="none" stroke="#B07D2A" stroke-width="6"
+                    stroke-dasharray="0 100" data-len="0" data-off="25" transform="rotate(-90 21 21)"/>
+            <circle class="donut-seg" cx="21" cy="21" r="15.9" fill="none" stroke="#1A5080" stroke-width="6"
+                    stroke-dasharray="0 100" data-len="0" data-off="25" transform="rotate(-90 21 21)"/>
+            <circle class="donut-seg" cx="21" cy="21" r="15.9" fill="none" stroke="#8EC9A6" stroke-width="6"
+                    stroke-dasharray="0 100" data-len="0" data-off="25" transform="rotate(-90 21 21)"/>
+          </svg>
+          <div class="donut-legend" id="stat-pendidikan-legend">
+            <div class="donut-item"><span class="dot" style="background:#1C6B3E;"></span><span class="nm">SD / sederajat</span><span class="vl">0%</span></div>
+            <div class="donut-item"><span class="dot" style="background:#B07D2A;"></span><span class="nm">SMP / sederajat</span><span class="vl">0%</span></div>
+            <div class="donut-item"><span class="dot" style="background:#1A5080;"></span><span class="nm">SMA / sederajat</span><span class="vl">0%</span></div>
+            <div class="donut-item"><span class="dot" style="background:#8EC9A6;"></span><span class="nm">Diploma / Sarjana</span><span class="vl">0%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ringkasan -->
+      <div class="stat-panel stat-wide">
+        <h3><i class="fa-solid fa-chart-simple"></i> Ringkasan Demografi</h3>
+        <div class="sub">Angka pokok kependudukan Desa Kandeman</div>
+        <div class="ringkasan-grid" id="stat-ringkasan">
+          <div style="padding:16px;background:linear-gradient(140deg,#E3F4EC,#F0F9F4);border-radius:12px;">
+            <div id="stat-total-penduduk" style="font-family:'DM Mono',monospace;font-size:24px;font-weight:700;color:var(--emerald);">—</div>
+            <div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">Total Penduduk</div>
+          </div>
+          <div style="padding:16px;background:linear-gradient(140deg,#F7EDD0,#FCF7EA);border-radius:12px;">
+            <div id="stat-total-kk" style="font-family:'DM Mono',monospace;font-size:24px;font-weight:700;color:var(--gold);">—</div>
+            <div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">Kepala Keluarga</div>
+          </div>
+          <div style="padding:16px;background:linear-gradient(140deg,#E3EEF7,#F2F7FC);border-radius:12px;">
+            <div id="stat-total-laki" style="font-family:'DM Mono',monospace;font-size:24px;font-weight:700;color:#1A5080;">—</div>
+            <div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">Laki-laki</div>
+          </div>
+          <div style="padding:16px;background:linear-gradient(140deg,#FBEAF3,#FDF5F9);border-radius:12px;">
+            <div id="stat-total-perempuan" style="font-family:'DM Mono',monospace;font-size:24px;font-weight:700;color:#C13584;">—</div>
+            <div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">Perempuan</div>
+          </div>
+        </div>
+        <p style="font-size:11.5px;color:var(--text-muted);margin-top:16px;line-height:1.55;">
+          <i class="fa-solid fa-circle-info" style="color:var(--emerald);"></i>
+          Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh pada Transparency Hub.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     ASPIRASI WARGA
+═══════════════════ -->
+<section class="section section-cream reveal" id="aspirasi">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Partisipasi Warga</div>
+      <h2 class="section-title">Sampaikan Aspirasi Anda</h2>
+      <p class="section-sub">Kirim saran, keluhan, atau usulan langsung kepada pemerintah desa. Setiap masukan akan kami tindak lanjuti.</p>
+    </div>
+
+    <div class="agenda-wrap">
+      <!-- Form -->
+      <div class="aspirasi-box" id="aspirasi-box">
+        <div id="asp-form-wrap">
+          <!-- Honeypot anti-spam; tidak mengubah tampilan formulir. -->
+          <div style="position:absolute;left:-9999px;" aria-hidden="true">
+            <label for="website-url">Website</label>
+            <input type="text" id="website-url" name="website_url" tabindex="-1" autocomplete="off" />
+          </div>
+          <!-- Opsional Turnstile: tambahkan widget di sini setelah site key tersedia. Secret key wajib diverifikasi di Edge Function, tidak di frontend. -->
+          <div class="asp-row">
+            <div class="asp-field">
+              <label for="asp-nama">Nama lengkap</label>
+              <input type="text" id="asp-nama" name="nama" maxlength="100" placeholder="cth: Budi Santoso" autocomplete="name" />
+            </div>
+            <div class="asp-field">
+              <label for="asp-kontak">Nomor HP / WhatsApp <span class="opt">(opsional)</span></label>
+              <input type="tel" id="asp-kontak" name="kontak" maxlength="30" inputmode="tel" placeholder="0812xxxxxxx" autocomplete="tel" />
+            </div>
+          </div>
+          <div class="asp-row">
+            <div class="asp-field">
+              <label for="asp-dusun">Dusun</label>
+              <select id="asp-dusun" name="dusun">
+                <option value="">— Pilih dusun —</option>
+                <option>Randusari</option>
+                <option>Kandeman</option>
+                <option>Gandok</option>
+                <option>Kaliongkek</option>
+                <option>Johosari</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+            <div class="asp-field">
+              <label for="asp-kategori">Jenis masukan</label>
+              <select id="asp-kategori" name="kategori">
+                <option>Saran &amp; Usulan</option>
+                <option>Keluhan Layanan</option>
+                <option>Infrastruktur</option>
+                <option>Kebersihan &amp; Lingkungan</option>
+                <option>Keamanan</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+          </div>
+          <div class="asp-field">
+            <label for="asp-isi">Isi aspirasi</label>
+            <textarea id="asp-isi" name="isi" minlength="12" maxlength="2000" placeholder="Tuliskan saran, keluhan, atau usulan Anda secara jelas…"></textarea>
+            <div class="asp-hint">
+              <i class="fa-solid fa-shield-halved" style="color:var(--emerald);"></i>
+              Data Anda hanya digunakan untuk tindak lanjut internal dan tidak dipublikasikan.
+            </div>
+          </div>
+          <button type="button" class="asp-submit" id="asp-submit-btn" onclick="kirimAspirasi()">
+            <i class="fa-solid fa-paper-plane"></i> Kirim Aspirasi
+          </button>
+        </div>
+
+        <div id="asp-success-wrap" style="display:none;">
+          <div class="asp-success">
+            <div class="asp-success-icon"><i class="fa-solid fa-check"></i></div>
+            <h3>Aspirasi Terkirim</h3>
+            <p>Terima kasih atas masukan Anda. Pemerintah Desa Kandeman akan meninjau dan menindaklanjutinya.</p>
+            <button type="button" class="dl-btn outline" onclick="resetAspirasiForm()">
+              <i class="fa-solid fa-rotate-left"></i> Kirim aspirasi lain
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info panel -->
+      <div>
+        <p style="font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:7px;">
+          <i class="fa-solid fa-circle-question" style="color:var(--emerald);"></i> Bagaimana Prosesnya?
+        </p>
+        <div class="asp-info-panel">
+          <div class="asp-info-item">
+            <div class="asp-info-icon"><i class="fa-solid fa-paper-plane"></i></div>
+            <div>
+              <h4>1 · Aspirasi Dikirim</h4>
+              <p>Masukan Anda langsung masuk ke sistem dan tercatat dengan waktu pengiriman.</p>
+            </div>
+          </div>
+          <div class="asp-info-item">
+            <div class="asp-info-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <div>
+              <h4>2 · Ditinjau Perangkat Desa</h4>
+              <p>Kasi terkait meninjau isi aspirasi dan mengelompokkannya sesuai bidang.</p>
+            </div>
+          </div>
+          <div class="asp-info-item">
+            <div class="asp-info-icon"><i class="fa-solid fa-list-check"></i></div>
+            <div>
+              <h4>3 · Ditindaklanjuti</h4>
+              <p>Aspirasi dibahas dalam rapat desa atau langsung ditangani bila bersifat mendesak.</p>
+            </div>
+          </div>
+          <div class="asp-info-item">
+            <div class="asp-info-icon"><i class="fa-solid fa-comments"></i></div>
+            <div>
+              <h4>4 · Umpan Balik</h4>
+              <p>Jika mencantumkan nomor HP, Anda dapat dihubungi untuk klarifikasi atau kabar tindak lanjut.</p>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:16px 18px;background:rgba(176,125,42,.07);border:1px solid rgba(176,125,42,.2);border-radius:var(--r-md);">
+          <p style="font-size:12.5px;color:var(--text-sec);line-height:1.65;">
+            <i class="fa-solid fa-triangle-exclamation" style="color:var(--gold);margin-right:5px;"></i>
+            Untuk keadaan darurat (kesehatan, kebakaran, keamanan), hubungi langsung nomor darurat pada bagian Pusat Layanan Kesehatan.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#fff" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<section class="section section-white reveal" id="faq">
+  <div class="container">
+    <div class="section-header center">
+      <div class="eyebrow">FAQ</div>
+      <h2 class="section-title">Pertanyaan yang Sering Diajukan</h2>
+      <p class="section-sub">Jawaban atas pertanyaan umum seputar layanan dan informasi Desa Kandeman.</p>
+    </div>
+    <div class="faq-wrap">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Apa saja jenis surat yang bisa diurus di Balai Desa Kandeman?
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">
+          Balai Desa Kandeman melayani berbagai jenis surat keterangan, antara lain: Surat Keterangan Domisili, Surat Keterangan Usaha (SKU), Surat Pengantar KTP/KK, Surat Keterangan Tidak Mampu (SKTM), Surat Pengantar Nikah (N1/N2/N4), Surat Keterangan Kematian, dan berbagai surat keterangan lainnya. Lihat bagian <a href="#layanan">Layanan Desa</a> untuk rincian lengkap.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Berapa lama proses pembuatan surat di Balai Desa?
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">
+          Sebagian besar surat dapat diproses dalam 1–2 hari kerja, asalkan seluruh berkas persyaratan sudah lengkap dan benar. Untuk surat yang memerlukan verifikasi lapangan atau koordinasi dengan instansi lain, waktu proses bisa lebih lama sesuai prosedur yang berlaku.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Dokumen apa yang wajib dibawa saat ke Balai Desa?
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">
+          Secara umum, warga diwajibkan membawa: KTP asli yang masih berlaku, fotokopi Kartu Keluarga (KK), dan surat pengantar dari RT/RW setempat. Untuk jenis surat tertentu, ada dokumen tambahan — lihat rincian di bagian <a href="#layanan">Layanan Desa</a>.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Apakah saya bisa diwakilkan saat mengurus surat?
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">
+          Untuk beberapa jenis surat, pengurusan dapat diwakilkan oleh anggota keluarga dengan membawa surat kuasa bermaterai, KTP pemohon asli, dan KTP perwakilan. Namun untuk surat tertentu, pemohon biasanya diharuskan hadir langsung. Hubungi Balai Desa terlebih dahulu untuk konfirmasi.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Jam berapa Balai Desa Kandeman buka?
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">
+          Balai Desa Kandeman buka setiap hari kerja: Senin–Kamis pukul 07.30–14.00 WIB, dan Jumat pukul 07.30–11.30 WIB. Balai Desa tutup pada Sabtu, Minggu, dan hari libur nasional.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Di mana saya bisa melihat informasi anggaran desa (APBDes)?
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">
+          Ringkasan informasi APBDes Desa Kandeman dapat dilihat di bagian <a href="#transparansi">Transparansi</a> pada portal SIKANDA ini. Dokumen APBDes lengkap dapat diminta langsung ke Balai Desa Kandeman pada jam pelayanan.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Bagaimana cara mendaftar sebagai penerima bantuan sosial?
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">
+          Pendaftaran bansos dilakukan melalui Kasi Kesejahteraan di Balai Desa. Warga yang merasa berhak dapat datang langsung dengan membawa KTP, KK, dan dokumen pendukung lainnya. Perangkat desa akan melakukan verifikasi lapangan sebelum data diteruskan ke Dinas Sosial Kabupaten Batang.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     KONTAK
+═══════════════════ -->
+<section class="section section-cream reveal" id="kontak">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Hubungi Kami</div>
+      <h2 class="section-title">Kontak & Lokasi Balai Desa</h2>
+      <p class="section-sub">Temukan kami di lokasi berikut atau hubungi melalui kontak yang tersedia.</p>
+    </div>
+
+    <div class="kontak-grid">
+      <div class="kontak-items">
+        <div class="kontak-card">
+          <div class="kontak-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <h4>Alamat</h4>
+            <p>Jl. Raya Kandeman, Desa Kandeman<br>Kec. Kandeman, Kab. Batang<br>Jawa Tengah 51261</p>
+          </div>
+        </div>
+        <div class="kontak-card">
+          <div class="kontak-icon"><i class="fa-solid fa-phone"></i></div>
+          <div>
+            <h4>Telepon</h4>
+            <!-- TODO: Isi nomor telepon resmi kantor desa. -->
+            <a href="tel:0285000000">(0285) — —</a>
+            <p style="margin-top:2px; font-size:11.5px; color:var(--text-muted);">Jam kerja: Senin–Jumat</p>
+          </div>
+        </div>
+        <div class="kontak-card">
+          <div class="kontak-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div>
+            <h4>Email</h4>
+            <a href="mailto:kandeman@batangkab.go.id">kandeman@batangkab.go.id</a>
+          </div>
+        </div>
+        <div class="kontak-card">
+          <div class="kontak-icon"><i class="fa-regular fa-clock"></i></div>
+          <div>
+            <h4>Jam Pelayanan</h4>
+            <p>Senin – Kamis: 07.30 – 14.00 WIB<br>Jumat: 07.30 – 11.30 WIB<br>Sabtu & Minggu: Tutup</p>
+          </div>
+        </div>
+        <div class="kontak-card" style="flex-direction:column; align-items:flex-start;">
+          <h4 style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); margin-bottom:8px;">Media Sosial</h4>
+          <div class="sosmed-row">
+            <!-- TODO: Isi URL akun media sosial resmi Desa Kandeman. -->
+            <a href="#" class="sosmed-btn s-fb" title="Facebook" aria-label="Facebook Desa Kandeman"><i class="fa-brands fa-facebook" aria-hidden="true"></i></a>
+            <a href="#" class="sosmed-btn s-ig" title="Instagram" aria-label="Instagram Desa Kandeman"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" class="sosmed-btn s-yt" title="YouTube" aria-label="YouTube Desa Kandeman"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="peta-embed" style="border-radius:var(--r-md); overflow:hidden;">
+        <!-- Koordinat mengikuti nilai yang sudah tercantum pada JSON-LD website. -->
+        <iframe
+          src="https://maps.google.com/maps?q=-6.9004%2C109.7497&amp;z=16&amp;output=embed"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Lokasi Balai Desa Kandeman"
+          style="width:100%; min-height:380px; border:none;">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     LIGHTBOX GALERI
+═══════════════════ -->
+<!-- ═══════════════════
+     MODAL DETAIL UMKM
+═══════════════════ -->
+<div class="umkm-modal" id="umkmModal" role="dialog" aria-modal="true" aria-labelledby="um-nama" aria-hidden="true">
+  <div class="umkm-modal-overlay" onclick="closeUmkmModal()"></div>
+  <div class="umkm-modal-box">
+    <div class="um-hero" id="um-hero">
+      <button type="button" class="um-close" onclick="closeUmkmModal()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+      <span class="um-cat-badge" id="um-kategori">Kuliner</span>
+      <span id="um-hero-visual">🛒</span>
+    </div>
+    <div class="um-content">
+      <h3 class="um-nama" id="um-nama">Nama Usaha</h3>
+      <div class="um-pemilik" id="um-pemilik-wrap" style="display:none;">
+        <i class="fa-solid fa-user"></i><span id="um-pemilik"></span>
+      </div>
+      <p class="um-desc" id="um-desc"></p>
+
+      <div id="um-produk-wrap" style="display:none;">
+        <div class="um-section-label"><i class="fa-solid fa-box-open"></i> Produk &amp; Layanan</div>
+        <div class="um-produk-list" id="um-produk-list"></div>
+      </div>
+
+      <div class="um-section-label"><i class="fa-solid fa-circle-info"></i> Informasi Usaha</div>
+      <div class="um-info-grid" id="um-info-grid"></div>
+
+      <div class="um-actions">
+        <a href="#" class="um-btn-wa" id="um-wa-btn" target="_blank" rel="noopener noreferrer">
+          <i class="fa-brands fa-whatsapp" style="font-size:17px;"></i> Hubungi via WhatsApp
+        </a>
+        <a href="#" class="um-btn-map" id="um-map-btn" target="_blank" rel="noopener noreferrer" style="display:none;">
+          <i class="fa-solid fa-location-dot"></i> Lihat Lokasi
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════
+     MODAL DETAIL BERITA
+═══════════════════ -->
+<div class="berita-modal" id="beritaModal" role="dialog" aria-modal="true" aria-labelledby="bm-judul" aria-hidden="true">
+  <div class="berita-modal-overlay" onclick="closeBeritaModal()"></div>
+  <div class="berita-modal-panel">
+    <div class="bm-header">
+      <button type="button" class="bm-close" onclick="closeBeritaModal()" aria-label="Tutup">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <span style="font-size:13px;color:var(--text-muted);font-weight:500;">Berita Desa</span>
+      <div class="bm-nav-group">
+        <button type="button" class="bm-nav-btn" id="bm-prev" onclick="navBerita(-1)" aria-label="Berita sebelumnya">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="bm-counter" id="bm-counter"></span>
+        <button type="button" class="bm-nav-btn" id="bm-next" onclick="navBerita(1)" aria-label="Berita berikutnya">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="bm-body" id="bm-body">
+      <div class="bm-img-wrap" id="bm-img-wrap">
+        <div class="bm-img-placeholder"><i class="fa-solid fa-newspaper"></i></div>
+      </div>
+      <div class="bm-content">
+        <div class="bm-meta">
+          <span class="bm-badge tag-green" id="bm-kategori">Pemerintahan</span>
+          <span class="bm-date"><i class="fa-regular fa-calendar"></i> <span id="bm-tanggal">—</span></span>
+        </div>
+        <h2 class="bm-title" id="bm-judul">Memuat…</h2>
+        <div class="bm-isi" id="bm-isi"></div>
+        <div class="bm-divider"></div>
+        <div class="bm-share">
+          <span class="bm-share-label">Bagikan:</span>
+          <button type="button" class="bm-share-btn" onclick="shareBeritaWA()" title="Bagikan ke WhatsApp">
+            <i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> WhatsApp
+          </button>
+          <button type="button" class="bm-share-btn" onclick="copyBeritaLink()" id="bm-copy-btn">
+            <i class="fa-solid fa-link"></i> Salin tautan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════
+     LIGHTBOX GALERI
+═══════════════════ -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Galeri foto" aria-hidden="true"
+     onclick="closeLightbox(event)">
+  <div class="lightbox-inner" onclick="event.stopPropagation()">
+    <span class="lightbox-counter" id="lb-counter"></span>
+    <button type="button" class="lightbox-close" onclick="closeLightbox()" aria-label="Tutup">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <button type="button" class="lightbox-nav lightbox-prev" onclick="lbNav(-1)" aria-label="Foto sebelumnya">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <img class="lightbox-img" id="lb-img" src="" alt="Foto galeri" />
+    <button type="button" class="lightbox-nav lightbox-next" onclick="lbNav(1)" aria-label="Foto berikutnya">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    <div class="lightbox-caption" id="lb-caption"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════
+     FOOTER
+═══════════════════ -->
+<footer class="footer">
+  <div class="footer-top-border"></div>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <div class="footer-logo" style="background:#fff;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:3px;overflow:hidden;">
+            <img class="logo-desa" src="assets/images/logo-desa.png" alt="Logo Desa Kandeman" style="width:100%;height:100%;object-fit:contain;" />
+          </div>
+          <div class="footer-brand-name">SIKANDA</div>
+        </div>
+        <p>Sistem Informasi Kandeman Digital — portal resmi informasi dan layanan terpadu Desa Kandeman, Kecamatan Kandeman, Kabupaten Batang, Jawa Tengah.</p>
+        <p style="margin-top:12px; font-size:12px;">
+          <i class="fa-solid fa-location-dot" style="color:var(--mint); margin-right:6px;"></i>
+          Jl. Raya Kandeman, Kec. Kandeman, Kab. Batang 51261
+        </p>
+      </div>
+      <div>
+        <h4>Navigasi</h4>
+        <ul>
+          <li><a href="#beranda">Beranda</a></li>
+          <li><a href="#profil">Profil Desa</a></li>
+          <li><a href="#pemerintahan">Pemerintahan Desa</a></li>
+          <li><a href="#lembaga">Lembaga Desa</a></li>
+          <li><a href="#potensi">Potensi Desa</a></li>
+          <li><a href="#transparansi">Transparansi</a></li>
+          <li><a href="#layanan">Layanan Desa</a></li>
+          <li><a href="#informasi">Informasi & Galeri</a></li>
+          <li><a href="#prestasi">Prestasi</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#kontak">Hubungi Kami</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontak</h4>
+        <ul>
+          <!-- TODO: Isi nomor telepon resmi kantor desa. -->
+          <li><a href="tel:0285000000"><i class="fa-solid fa-phone" style="width:14px; margin-right:6px;"></i>(0285) — —</a></li>
+          <li><a href="mailto:kandeman@batangkab.go.id"><i class="fa-solid fa-envelope" style="width:14px; margin-right:6px;"></i>kandeman@batangkab.go.id</a></li>
+          <li><a href="#"><i class="fa-solid fa-clock" style="width:14px; margin-right:6px;"></i>Senin–Jumat, 07.30–14.00</a></li>
+        </ul>
+        <div style="margin-top:16px;">
+          <p style="font-size:11.5px; margin-bottom:10px; color:rgba(255,255,255,.4);">Ikuti kami:</p>
+          <div style="display:flex; gap:12px;">
+            <!-- TODO: Isi URL akun media sosial resmi Desa Kandeman. -->
+            <a href="#" aria-label="Facebook Desa Kandeman" style="color:rgba(255,255,255,.6); font-size:18px; transition:color .15s;" onmouseover="this.style.color='#7dd3a8'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"><i class="fa-brands fa-facebook" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram Desa Kandeman" style="color:rgba(255,255,255,.6); font-size:18px; transition:color .15s;" onmouseover="this.style.color='#7dd3a8'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube Desa Kandeman" style="color:rgba(255,255,255,.6); font-size:18px; transition:color .15s;" onmouseover="this.style.color='#7dd3a8'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <span>SIKANDA</span> — Desa Kandeman, Kab. Batang. Dibuat oleh <span>KKN Undip 2026</span>.</p>
+      <p>Program Digitalisasi Desa · Universitas Diponegoro · <a href="admin.html" style="color:rgba(255,255,255,.2);font-size:10px;" title="Panel Admin">Admin</a></p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════
+     JAVASCRIPT
+═══════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="assets/js/supabase-client.js" defer></script>
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

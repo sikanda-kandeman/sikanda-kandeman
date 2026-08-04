@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIKANDA — Panel Admin</title>
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' https://*.supabase.co;
+             script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+             style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+             font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+             img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in;
+             connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+             frame-src 'self' https://www.google.com https://maps.google.com;" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2096%2096'%3E%3Crect%20width='96'%20height='96'%20rx='20'%20fill='%230D2B1A'/%3E%3Ctext%20x='48'%20y='68'%20text-anchor='middle'%20font-family='Georgia,serif'%20font-size='62'%20font-weight='700'%20fill='%238EC9A6'%3ES%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo" style="background:#fff;border:1px solid var(--border);width:64px;height:64px;border-radius:50%;">
+      <img class="logo-desa" src="assets/images/logo-desa.png" alt="Logo SIKANDA" style="width:52px;height:52px;object-fit:contain;" />
+    </div>
+    <h1>Panel Admin SIKANDA</h1>
+    <p>Masuk untuk mengelola konten website Desa Kandeman</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="admin@kandeman.desa.id" autocomplete="email" aria-label="admin@kandeman.desa.id" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')doLogin()" aria-label="••••••••" />
+    </div>
+    <button type="button" class="btn-login" onclick="doLogin()" id="login-btn">
+      <i class="fa-solid fa-arrow-right-to-bracket" style="margin-right:6px;"></i>
+      Masuk ke Panel Admin
+    </button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN SHELL ═══ -->
+<div id="admin-shell">
+  <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+  <div class="shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-brand" style="display:flex;align-items:center;gap:10px;">
+        <img class="logo-desa" src="assets/images/logo-desa.png" alt="Logo SIKANDA" style="width:40px;height:40px;object-fit:contain;flex-shrink:0;background:#fff;border-radius:50%;padding:2px;" />
+        <div>
+          <div class="sb-brand-name">SIKANDA</div>
+          <div class="sb-brand-sub">Panel Admin Desa Kandeman</div>
+        </div>
+      </div>
+      <div class="sb-section">Konten</div>
+      <div class="sb-item active" onclick="switchPanel('dashboard',this)">
+        <i class="fa-solid fa-gauge-high"></i> Beranda
+      </div>
+      <div class="sb-item" onclick="switchPanel('berita',this)" id="nav-berita">
+        <i class="fa-solid fa-newspaper"></i> Berita & Pengumuman
+      </div>
+      <div class="sb-item" onclick="switchPanel('galeri',this)" id="nav-galeri">
+        <i class="fa-solid fa-images"></i> Galeri Foto
+      </div>
+      <div class="sb-section">Desa</div>
+      <div class="sb-item" onclick="switchPanel('perangkat',this)" id="nav-perangkat">
+        <i class="fa-solid fa-user-tie"></i> Perangkat Desa
+      </div>
+      <div class="sb-item" onclick="switchPanel('apbdes',this)" id="nav-apbdes">
+        <i class="fa-solid fa-coins"></i> APBDes & Anggaran
+      </div>
+      <div class="sb-item" onclick="switchPanel('potensi',this)" id="nav-potensi">
+        <i class="fa-solid fa-seedling"></i> Potensi Desa
+      </div>
+      <div class="sb-item" onclick="switchPanel('umkm',this)" id="nav-umkm">
+        <i class="fa-solid fa-store"></i> UMKM Desa
+      </div>
+      <div class="sb-item" onclick="switchPanel('prestasi',this)" id="nav-prestasi">
+        <i class="fa-solid fa-trophy"></i> Prestasi Desa
+      </div>
+      <div class="sb-item" onclick="switchPanel('dokumen',this)" id="nav-dokumen">
+        <i class="fa-solid fa-folder-open"></i> Dokumen &amp; Arsip
+      </div>
+      <div class="sb-item" onclick="switchPanel('agenda',this)" id="nav-agenda">
+        <i class="fa-solid fa-calendar-days"></i> Agenda Desa
+      </div>
+      <div class="sb-item" onclick="switchPanel('statistik',this)" id="nav-statistik">
+        <i class="fa-solid fa-chart-pie"></i> Statistik Warga
+      </div>
+      <div class="sb-item" onclick="switchPanel('kesehatan',this)" id="nav-kesehatan">
+        <i class="fa-solid fa-heart-pulse"></i> Layanan Kesehatan
+      </div>
+      <div class="sb-item" onclick="switchPanel('aspirasi',this)" id="nav-aspirasi">
+        <i class="fa-solid fa-comment-dots"></i> Aspirasi Warga
+        <span id="asp-badge" style="margin-left:auto;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:none;">0</span>
+      </div>
+      <div class="sb-spacer"></div>
+      <div class="sb-user">
+        <div class="sb-avatar" id="sb-avatar">AD</div>
+        <span id="sb-email" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:11px;"></span>
+        <button type="button" class="sb-logout" onclick="ubahPassword()" title="Ganti kata sandi">
+          <i class="fa-solid fa-key"></i>
+        </button>
+        <button type="button" class="sb-logout" onclick="doLogout()" title="Keluar">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button type="button" class="hamburger" onclick="openSidebar()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h2 id="page-title">Beranda Admin</h2>
+        </div>
+        <div class="topbar-right">
+          <span class="last-saved" id="last-saved-indicator" style="display:none;">
+            <i class="fa-solid fa-circle-check"></i> <span id="last-saved-text"></span>
+          </span>
+          <a href="/" target="_blank" class="btn btn-sm" rel="noopener noreferrer">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat Website
+          </a>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- ── DASHBOARD ── -->
+        <div class="panel active" id="panel-dashboard">
+
+          <!-- Hero greeting -->
+          <div class="dash-hero">
+            <div class="dash-greeting" id="dash-greeting">Selamat datang kembali! 👋</div>
+            <div class="dash-date" id="dash-date"></div>
+            <div class="dash-hero-logo">
+              <img class="logo-desa" src="assets/images/logo-desa.png" alt="Logo SIKANDA" />
+            </div>
+          </div>
+
+          <!-- Stat cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon si-green"><i class="fa-solid fa-newspaper"></i></div>
+              <div>
+                <div class="stat-val" id="dash-berita">—</div>
+                <div class="stat-lbl">Berita aktif</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon si-sky"><i class="fa-solid fa-user-tie"></i></div>
+              <div>
+                <div class="stat-val" id="dash-perangkat">—</div>
+                <div class="stat-lbl">Perangkat desa</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon si-gold"><i class="fa-solid fa-images"></i></div>
+              <div>
+                <div class="stat-val" id="dash-galeri">—</div>
+                <div class="stat-lbl">Foto galeri</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon si-teal"><i class="fa-solid fa-seedling"></i></div>
+              <div>
+                <div class="stat-val" id="dash-potensi">—</div>
+                <div class="stat-lbl">Potensi desa</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- APBDes info -->
+          <div class="card" style="margin-bottom:0;background:var(--surface);border-style:dashed;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <i class="fa-solid fa-coins" style="color:var(--gold);font-size:13px;"></i>
+              <span style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Info APBDes Terakhir</span>
+            </div>
+            <div id="dash-apbdes-info" style="font-size:13px;color:var(--text-sec);">Memuat...</div>
+          </div>
+
+          <!-- 2 kolom: quick actions + aktivitas -->
+          <div class="dash-2col">
+            <div>
+              <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px;">Aksi cepat</div>
+              <div class="quick-grid">
+                <div class="quick-card" onclick="switchPanel('berita',document.getElementById('nav-berita'))">
+                  <div class="quick-icon" style="background:#E3F4EC;color:var(--emerald);"><i class="fa-solid fa-plus"></i></div>
+                  <div>
+                    <div class="quick-title">Tambah berita</div>
+                    <div class="quick-desc">Publikasikan pengumuman desa</div>
+                  </div>
+                  <i class="fa-solid fa-chevron-right quick-arrow"></i>
+                </div>
+                <div class="quick-card" onclick="switchPanel('apbdes',document.getElementById('nav-apbdes'))">
+                  <div class="quick-icon" style="background:#F7EDD0;color:var(--gold);"><i class="fa-solid fa-pen-to-square"></i></div>
+                  <div>
+                    <div class="quick-title">Update APBDes</div>
+                    <div class="quick-desc">Perbarui anggaran &amp; realisasi</div>
+                  </div>
+                  <i class="fa-solid fa-chevron-right quick-arrow"></i>
+                </div>
+                <div class="quick-card" onclick="switchPanel('perangkat',document.getElementById('nav-perangkat'))">
+                  <div class="quick-icon" style="background:#E3EEF7;color:#1A5080;"><i class="fa-solid fa-user-tie"></i></div>
+                  <div>
+                    <div class="quick-title">Edit perangkat</div>
+                    <div class="quick-desc">Ubah nama &amp; jabatan</div>
+                  </div>
+                  <i class="fa-solid fa-chevron-right quick-arrow"></i>
+                </div>
+                <div class="quick-card" onclick="switchPanel('galeri',document.getElementById('nav-galeri'))">
+                  <div class="quick-icon" style="background:#DDF0EB;color:#0F6455;"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                  <div>
+                    <div class="quick-title">Upload foto</div>
+                    <div class="quick-desc">Tambah dokumentasi kegiatan</div>
+                  </div>
+                  <i class="fa-solid fa-chevron-right quick-arrow"></i>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);">Berita terbaru</div>
+                <div id="dash-chart-wrap" style="display:flex;align-items:flex-end;gap:2px;height:32px;" title="Berita 6 bulan terakhir"></div>
+              </div>
+              <div class="card" style="margin-bottom:0;">
+                <div id="dash-recent"><div class="loading" style="padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── BERITA ── -->
+        <div class="panel" id="panel-berita">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-newspaper"></i></div>
+            <div>
+              <div class="panel-intro-title">Berita & Pengumuman</div>
+              <div class="panel-intro-sub">Kelola berita, pengumuman, dan kegiatan yang tampil di website</div>
+            </div>
+          </div>
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+              <div class="card-title" id="berita-form-title">Tambah berita / pengumuman</div>
+              <span class="autosave-ind" id="autosave-ind" style="display:none;">
+                <i class="fa-solid fa-circle-check"></i> <span id="autosave-text">Draft tersimpan</span>
+              </span>
+            </div>
+            <input type="hidden" id="berita-id" aria-label="berita id" />
+            <div class="form-group">
+              <label>Judul berita</label>
+              <input type="text" id="b-judul" placeholder="cth: Jadwal Posyandu Bulan Agustus 2026" oninput="scheduleDraftSave()" aria-label="cth: Jadwal Posyandu Bulan Agustus 2026" />
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Kategori</label>
+                <select id="b-kategori" onchange="scheduleDraftSave()" aria-label="b kategori">
+                  <option>Pemerintahan</option>
+                  <option>Pengumuman</option>
+                  <option>Kegiatan</option>
+                  <option>Kesehatan</option>
+                  <option>Pendidikan</option>
+                  <option>Lingkungan</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tanggal</label>
+                <input type="date" id="b-tanggal" aria-label="b tanggal" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>
+                Isi berita
+                <span class="char-count" id="b-isi-count">0 karakter</span>
+              </label>
+              <textarea id="b-isi" placeholder="Tulis isi berita atau pengumuman di sini..."
+                        style="min-height:120px;" oninput="updateCharCount(); scheduleDraftSave()" aria-label="Tulis isi berita atau pengumuman di sini..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>URL gambar (opsional)</label>
+              <input type="url" id="b-gambar-url" placeholder="https://contoh.com/gambar.jpg"
+                     oninput="previewGambarBerita(this.value)" aria-label="https://contoh.com/gambar.jpg" />
+              <div class="form-hint">Masukkan URL gambar untuk ditampilkan di atas berita. Kosongkan jika tidak ada.</div>
+              <div class="img-preview-wrap" id="b-gambar-preview-wrap">
+                <img id="b-gambar-preview" src="" alt="Preview gambar berita" onerror="this.parentElement.classList.remove('show')" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn" onclick="resetBeritaForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+              <button type="button" class="btn" onclick="previewBerita()" id="btn-preview-berita">
+                <i class="fa-solid fa-eye"></i> Preview
+              </button>
+              <button type="button" class="btn btn-primary" onclick="simpanBerita()" id="btn-simpan-berita">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan & Publikasikan
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div class="card-title" style="margin-bottom:0;">Berita tersimpan</div>
+            </div>
+            <div class="filter-row">
+              <input type="search" id="berita-search" placeholder="Cari judul berita..." oninput="filterBerita()" aria-label="Cari judul berita..." />
+              <button type="button" class="btn" style="font-size:12px;padding:7px 12px;" onclick="exportTabel('berita')" title="Unduh sebagai CSV/Excel">
+                <i class="fa-solid fa-file-export"></i> Export
+              </button>
+              <select id="berita-filter-kat" onchange="filterBerita()" aria-label="berita filter kat">
+                <option value="">Semua kategori</option>
+                <option>Pemerintahan</option>
+                <option>Pengumuman</option>
+                <option>Kegiatan</option>
+                <option>Kesehatan</option>
+                <option>Pendidikan</option>
+                <option>Lingkungan</option>
+              </select>
+              <span class="filter-count" id="berita-filter-count"></span>
+            </div>
+            <div id="berita-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- ── GALERI ── -->
+        <div class="panel" id="panel-galeri">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-images"></i></div>
+            <div>
+              <div class="panel-intro-title">Galeri Foto</div>
+              <div class="panel-intro-sub">Upload dan kelola dokumentasi kegiatan desa</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Upload foto baru</div>
+            <div class="form-group">
+              <label>Judul foto</label>
+              <input type="text" id="g-judul" placeholder="cth: Gotong Royong Desa Juli 2026" aria-label="cth: Gotong Royong Desa Juli 2026" />
+            </div>
+            <div class="form-group">
+              <label>Pilih foto (JPG/PNG/WEBP, maks 5 MB)</label>
+              <input type="file" id="g-file" accept="image/jpeg,image/png,image/webp" aria-label="g file" />
+            </div>
+            <div class="form-group">
+              <label>Keterangan singkat (opsional)</label>
+              <input type="text" id="g-ket" placeholder="cth: Kegiatan warga RT 03, 10 Juli 2026" aria-label="cth: Kegiatan warga RT 03, 10 Juli 2026" />
+            </div>
+            <div class="img-preview-wrap" id="upload-preview">
+              <img id="preview-img" alt="Pratinjau foto galeri" style="max-height:160px;border-radius:8px;object-fit:cover;" />
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary" onclick="uploadGaleri()" id="btn-upload-galeri">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Foto
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Foto tersimpan</div>
+            <div id="galeri-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- ── PERANGKAT ── -->
+        <div class="panel" id="panel-perangkat">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-user-tie"></i></div>
+            <div>
+              <div class="panel-intro-title">Perangkat Desa</div>
+              <div class="panel-intro-sub">Kelola struktur organisasi pemerintah desa</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="perangkat-form-title">Tambah perangkat desa</div>
+            <input type="hidden" id="p-id" aria-label="p id" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nama lengkap</label>
+                <input type="text" id="p-nama" placeholder="cth: Slamet Riyadi, S.Pd." aria-label="cth: Slamet Riyadi, S.Pd." />
+              </div>
+              <div class="form-group">
+                <label>Jabatan</label>
+                <select id="p-jabatan" aria-label="p jabatan">
+                  <option>Kepala Desa</option>
+                  <option>Sekretaris Desa</option>
+                  <option>Kaur TU &amp; Umum</option>
+                  <option>Kaur Keuangan</option>
+                  <option>Kaur Perencanaan</option>
+                  <option>Kasi Pemerintahan</option>
+                  <option>Kasi Kesejahteraan</option>
+                  <option>Kasi Pelayanan</option>
+                  <option>Kadus Randusari</option>
+                  <option>Kadus Kandeman</option>
+                  <option>Kadus Gandok</option>
+                  <option>Kadus Kaliongkek</option>
+                  <option>Kadus Johosari</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Urutan tampil</label>
+              <input type="number" id="p-urutan" value="99" min="1" max="99" style="max-width:120px;" aria-label="p urutan" />
+            </div>
+            <div class="form-group">
+              <label>Foto profil (JPG/PNG/WEBP, maks 3 MB — opsional)</label>
+              <input type="file" id="p-foto-file" accept="image/jpeg,image/png,image/webp" aria-label="p foto file" />
+            </div>
+            <div id="p-foto-preview-wrap" style="display:none;margin-bottom:8px;align-items:center;gap:10px;flex-wrap:wrap;">
+              <img id="p-foto-preview" alt="Pratinjau foto perangkat desa" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border);" />
+              <span id="p-foto-preview-name" style="font-size:12px;color:var(--text-muted);"></span>
+            </div>
+            <input type="hidden" id="p-foto-url" aria-label="p foto url" />
+            <div class="form-actions">
+              <button type="button" class="btn" onclick="resetPerangkatForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+              <button type="button" class="btn btn-primary" id="btn-simpan-perangkat" onclick="simpanPerangkat()">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Daftar perangkat desa</div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Nama</th><th>Jabatan</th><th>Foto</th><th style="width:80px;">Aksi</th></tr>
+                </thead>
+                <tbody id="perangkat-list">
+                  <tr><td colspan="5" class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── APBDES ── -->
+        <div class="panel" id="panel-apbdes">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-coins"></i></div>
+            <div>
+              <div class="panel-intro-title">APBDes & Anggaran</div>
+              <div class="panel-intro-sub">Transparansi anggaran pendapatan dan belanja desa</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Data APBDes</div>
+            <input type="hidden" id="apb-id" aria-label="apb id" />
+            <div class="form-grid" style="margin-bottom:16px;">
+              <div class="form-group">
+                <label>Tahun anggaran</label>
+                <input type="number" id="apb-tahun" value="2026" aria-label="apb tahun" />
+              </div>
+              <div class="form-group">
+                <label>Total APBDes (Rp)</label>
+                <input type="number" id="apb-total" placeholder="cth: 1450000000" aria-label="cth: 1450000000" />
+              </div>
+            </div>
+
+            <!-- Tab navigation -->
+            <div class="apb-tabs">
+              <button type="button" class="apb-tab active" onclick="switchApbTab('alokasi',this)">
+                <i class="fa-solid fa-chart-pie" style="margin-right:5px;font-size:12px;"></i>Alokasi & Pendapatan
+              </button>
+              <button type="button" class="apb-tab" onclick="switchApbTab('realisasi',this)">
+                <i class="fa-solid fa-money-bill-trend-up" style="margin-right:5px;font-size:12px;"></i>Realisasi (Rp)
+              </button>
+              <button type="button" class="apb-tab" onclick="switchApbTab('persen',this)">
+                <i class="fa-solid fa-percent" style="margin-right:5px;font-size:12px;"></i>% Realisasi
+              </button>
+            </div>
+
+            <!-- Tab 1: Alokasi & Pendapatan -->
+            <div class="apb-pane active" id="apb-pane-alokasi">
+              <div style="font-size:13px;font-weight:500;color:var(--text-sec);margin-bottom:10px;">Alokasi per bidang (%)</div>
+              <div class="form-grid-3">
+                <div class="form-group">
+                  <label>Pemerintahan</label>
+                  <input type="number" id="apb-pct1" value="30" min="0" max="100" oninput="checkPctSum()" aria-label="apb pct1" />
+                </div>
+                <div class="form-group">
+                  <label>Pembangunan</label>
+                  <input type="number" id="apb-pct2" value="45" min="0" max="100" oninput="checkPctSum()" aria-label="apb pct2" />
+                </div>
+                <div class="form-group">
+                  <label>Pembinaan</label>
+                  <input type="number" id="apb-pct3" value="15" min="0" max="100" oninput="checkPctSum()" aria-label="apb pct3" />
+                </div>
+                <div class="form-group">
+                  <label>Pemberdayaan</label>
+                  <input type="number" id="apb-pct4" value="10" min="0" max="100" oninput="checkPctSum()" aria-label="apb pct4" />
+                </div>
+              </div>
+              <div id="pct-sum-indicator" class="pct-sum-indicator pct-sum-ok">
+                <i class="fa-solid fa-circle-check"></i> Total: 100% — sudah benar
+              </div>
+              <div style="font-size:13px;font-weight:500;color:var(--text-sec);margin:16px 0 10px;">Sumber pendapatan (Rp)</div>
+              <div class="form-grid">
+                <div class="form-group"><label>Dana Desa (APBN)</label><input type="number" id="apb-dd" placeholder="850000000" aria-label="850000000" /></div>
+                <div class="form-group"><label>ADD (Alokasi Dana Desa)</label><input type="number" id="apb-add" placeholder="420000000" aria-label="420000000" /></div>
+                <div class="form-group"><label>Bagi Hasil Pajak/Retribusi</label><input type="number" id="apb-pajak" placeholder="110000000" aria-label="110000000" /></div>
+                <div class="form-group"><label>PADes & lain-lain</label><input type="number" id="apb-pades" placeholder="70000000" aria-label="70000000" /></div>
+              </div>
+            </div>
+
+            <!-- Tab 2: Realisasi Rp -->
+            <div class="apb-pane" id="apb-pane-realisasi">
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Masukkan nominal realisasi dalam rupiah. Persentase akan dihitung otomatis dari total APBDes jika kolom % tidak diisi.</div>
+              <div class="form-grid-3">
+                <div class="form-group"><label>Realisasi pendapatan</label><input type="number" id="apb-r1" value="0" aria-label="apb r1" /></div>
+                <div class="form-group"><label>Realisasi belanja</label><input type="number" id="apb-r2" value="0" aria-label="apb r2" /></div>
+                <div class="form-group"><label>Realisasi pembangunan</label><input type="number" id="apb-r3" value="0" aria-label="apb r3" /></div>
+                <div class="form-group"><label>Realisasi pemberdayaan</label><input type="number" id="apb-r4" value="0" aria-label="apb r4" /></div>
+              </div>
+            </div>
+
+            <!-- Tab 3: % Realisasi -->
+            <div class="apb-pane" id="apb-pane-persen">
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Opsional — jika diisi, website menampilkan angka ini langsung. Biarkan kosong jika ingin dihitung otomatis dari realisasi Rp.</div>
+              <div class="form-grid-3">
+                <div class="form-group"><label>% Realisasi pendapatan</label><input type="number" id="apb-rpct1" min="0" max="100" placeholder="cth: 97" aria-label="cth: 97" /></div>
+                <div class="form-group"><label>% Realisasi belanja</label><input type="number" id="apb-rpct2" min="0" max="100" placeholder="cth: 74" aria-label="cth: 74" /></div>
+                <div class="form-group"><label>% Realisasi pembangunan</label><input type="number" id="apb-rpct3" min="0" max="100" placeholder="cth: 81" aria-label="cth: 81" /></div>
+                <div class="form-group"><label>% Realisasi pemberdayaan</label><input type="number" id="apb-rpct4" min="0" max="100" placeholder="cth: 67" aria-label="cth: 67" /></div>
+              </div>
+            </div>
+
+            <div class="form-actions" style="margin-top:16px;">
+              <button type="button" class="btn btn-primary" onclick="simpanApbdes()" id="btn-simpan-apb">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Data APBDes
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── POTENSI ── -->
+        <div class="panel" id="panel-potensi">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-seedling"></i></div>
+            <div>
+              <div class="panel-intro-title">Potensi Desa</div>
+              <div class="panel-intro-sub">Tampilkan keunggulan dan potensi Desa Kandeman</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="potensi-form-title">Tambah / edit potensi desa</div>
+            <input type="hidden" id="pot-id" aria-label="pot id" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nama potensi</label>
+                <input type="text" id="pot-nama" placeholder="cth: Wisata Religi Ujungnegoro" aria-label="cth: Wisata Religi Ujungnegoro" />
+              </div>
+              <div class="form-group">
+                <label>Kategori</label>
+                <select id="pot-kategori" aria-label="pot kategori">
+                  <option>Pertanian</option>
+                  <option>Kelautan</option>
+                  <option>UMKM</option>
+                  <option>Wisata Religi</option>
+                  <option>Seni & Budaya</option>
+                  <option>Lainnya</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Emoji / ikon</label>
+              <input type="text" id="pot-emoji" value="🌾" maxlength="4" style="max-width:80px;" aria-label="pot emoji" />
+            </div>
+            <div class="form-group">
+              <label>Deskripsi</label>
+              <textarea id="pot-deskripsi" placeholder="Jelaskan potensi ini secara singkat..." aria-label="Jelaskan potensi ini secara singkat..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Foto potensi (opsional)</label>
+              <input type="file" id="pot-foto" accept="image/jpeg,image/png,image/webp" aria-label="pot foto" />
+              <div class="form-hint">Upload foto potensi. Kosongkan untuk memakai emoji.</div>
+              <div class="img-preview-wrap" id="pot-foto-preview-wrap">
+                <img id="pot-foto-preview" src="" alt="Preview foto potensi" onerror="this.parentElement.classList.remove('show')" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn" onclick="resetPotensiForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+              <button type="button" class="btn btn-primary" id="btn-simpan-potensi" onclick="simpanPotensi()">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div class="card-title" style="margin-bottom:0;">Daftar potensi desa</div>
+              <span style="font-size:11px;color:var(--text-muted);"><i class="fa-solid fa-grip-vertical"></i> Seret untuk urutkan</span>
+            </div>
+            <div id="potensi-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- PANEL UMKM -->
+        <div class="panel" id="panel-umkm">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-store"></i></div>
+            <div>
+              <div class="panel-intro-title">UMKM Desa</div>
+              <div class="panel-intro-sub">Kelola direktori usaha mikro warga Desa Kandeman</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="umkm-form-title">Tambah / edit UMKM</div>
+            <input type="hidden" id="umkm-id" aria-label="umkm id" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nama usaha</label>
+                <input type="text" id="umkm-nama" placeholder="cth: Terasi Udang Kandeman" aria-label="cth: Terasi Udang Kandeman" />
+              </div>
+              <div class="form-group">
+                <label>Kategori</label>
+                <select id="umkm-kategori" aria-label="umkm kategori">
+                  <option>Kuliner</option>
+                  <option>Kerajinan</option>
+                  <option>Pertanian</option>
+                  <option>Perikanan</option>
+                  <option>Jasa</option>
+                  <option>Lainnya</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Deskripsi singkat</label>
+              <textarea id="umkm-deskripsi" placeholder="Jelaskan produk/usaha secara singkat..." aria-label="Jelaskan produk/usaha secara singkat..."></textarea>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nama pemilik <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
+                <input type="text" id="umkm-pemilik" placeholder="cth: Ibu Tarni" aria-label="cth: Ibu Tarni" />
+              </div>
+              <div class="form-group">
+                <label>Nomor WhatsApp <span style="color:var(--text-muted);font-weight:400;">(cth: 6281234567890)</span></label>
+                <input type="text" id="umkm-wa" placeholder="628..." aria-label="628..." />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Daftar produk <span style="color:var(--text-muted);font-weight:400;">— pisahkan dengan koma</span></label>
+              <input type="text" id="umkm-produk" placeholder="cth: Terasi 100g, Terasi 250g, Terasi Premium" aria-label="cth: Terasi 100g, Terasi 250g, Terasi Premium" />
+              <div class="form-hint">Setiap produk akan tampil sebagai tag terpisah di popup detail.</div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Alamat usaha <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
+                <input type="text" id="umkm-alamat" placeholder="cth: Dusun Randusari RT 02/RW 01" aria-label="cth: Dusun Randusari RT 02/RW 01" />
+              </div>
+              <div class="form-group">
+                <label>Jam operasional <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
+                <input type="text" id="umkm-jam" placeholder="cth: Senin–Sabtu, 08.00–17.00" aria-label="cth: Senin–Sabtu, 08.00–17.00" />
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Kisaran harga <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
+                <input type="text" id="umkm-harga" placeholder="cth: Rp 15.000 – Rp 50.000" aria-label="cth: Rp 15.000 – Rp 50.000" />
+              </div>
+              <div class="form-group">
+                <label>Instagram <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
+                <input type="text" id="umkm-ig" placeholder="cth: @terasikandeman" aria-label="cth: @terasikandeman" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Emoji / ikon produk</label>
+              <input type="text" id="umkm-emoji" value="🛒" maxlength="4" style="max-width:80px;" aria-label="umkm emoji" />
+            </div>
+            <div class="form-group">
+              <label>Foto produk (opsional)</label>
+              <input type="file" id="umkm-foto" accept="image/jpeg,image/png,image/webp" aria-label="umkm foto" />
+              <div class="form-hint">Upload foto produk. Kosongkan untuk memakai emoji.</div>
+              <div class="img-preview-wrap" id="umkm-foto-preview-wrap">
+                <img id="umkm-foto-preview" src="" alt="Preview foto UMKM" onerror="this.parentElement.classList.remove('show')" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn" onclick="resetUmkmForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+              <button type="button" class="btn btn-primary" onclick="simpanUmkm()" id="btn-simpan-umkm">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Daftar UMKM terdaftar</div>
+            <div id="umkm-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- PANEL PRESTASI -->
+        <div class="panel" id="panel-prestasi">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-trophy"></i></div>
+            <div>
+              <div class="panel-intro-title">Prestasi Desa</div>
+              <div class="panel-intro-sub">Kelola penghargaan dan capaian Desa Kandeman</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="prestasi-form-title">Tambah / edit prestasi</div>
+            <input type="hidden" id="prest-id" aria-label="prest id" />
+            <div class="form-group">
+              <label>Judul prestasi</label>
+              <input type="text" id="prest-judul" placeholder="cth: Desa Terbaik Tingkat Kecamatan" aria-label="cth: Desa Terbaik Tingkat Kecamatan" />
+            </div>
+            <div class="form-group">
+              <label>Deskripsi</label>
+              <textarea id="prest-deskripsi" placeholder="Jelaskan prestasi ini secara singkat..." aria-label="Jelaskan prestasi ini secara singkat..."></textarea>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Tahun & instansi</label>
+                <input type="text" id="prest-tahun" placeholder="cth: 2024 · Kecamatan Kandeman" aria-label="cth: 2024 · Kecamatan Kandeman" />
+              </div>
+              <div class="form-group">
+                <label>Jenis medali</label>
+                <select id="prest-medali" aria-label="prest medali">
+                  <option value="emas">Emas</option>
+                  <option value="perak">Perak</option>
+                  <option value="perunggu">Perunggu</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Emoji (jika tanpa foto)</label>
+                <input type="text" id="prest-emoji" value="🏆" maxlength="4" style="max-width:80px;" aria-label="prest emoji" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Foto prestasi (opsional)</label>
+              <input type="file" id="prest-foto" accept="image/jpeg,image/png,image/webp" aria-label="prest foto" />
+              <div class="form-hint">Upload foto piagam/dokumentasi. Kosongkan untuk memakai emoji medali.</div>
+              <div class="img-preview-wrap" id="prest-foto-preview-wrap">
+                <img id="prest-foto-preview" src="" alt="Preview foto prestasi" onerror="this.parentElement.classList.remove('show')" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn" onclick="resetPrestasiForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+              <button type="button" class="btn btn-primary" onclick="simpanPrestasi()" id="btn-simpan-prestasi">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Daftar prestasi</div>
+            <div id="prestasi-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- PANEL DOKUMEN & ARSIP -->
+        <div class="panel" id="panel-dokumen">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-folder-open"></i></div>
+            <div>
+              <div class="panel-intro-title">Dokumen &amp; Arsip</div>
+              <div class="panel-intro-sub">Kelola file yang bisa diunduh warga: APBDes, Perdes, SOP, statistik</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="dokumen-form-title">Tambah / edit dokumen</div>
+            <input type="hidden" id="dok-id" aria-label="dok id" />
+            <div class="form-group">
+              <label>Judul dokumen</label>
+              <input type="text" id="dok-judul" placeholder="cth: APBDes Tahun 2026" aria-label="cth: APBDes Tahun 2026" />
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Kategori (menentukan lokasi tampil)</label>
+                <select id="dok-kategori" aria-label="dok kategori">
+                  <option value="apbdes">Arsip APBDes (Transparency Hub)</option>
+                  <option value="perdes">Peraturan Desa (Hukum &amp; Edukasi)</option>
+                  <option value="sop">SOP Pelayanan (tombol tunggal)</option>
+                  <option value="statistik">Data Statistik (tombol tunggal)</option>
+                  <option value="poster">Poster Edukasi (Waspada Kejahatan Digital)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tipe file</label>
+                <select id="dok-tipe" aria-label="dok tipe">
+                  <option value="pdf">PDF</option>
+                  <option value="excel">Excel</option>
+                  <option value="word">Word</option>
+                  <option value="gambar">Gambar (poster JPG/PNG)</option>
+                  <option value="lainnya">Lainnya</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Keterangan singkat</label>
+              <input type="text" id="dok-keterangan" placeholder="cth: Dokumen anggaran berjalan" aria-label="cth: Dokumen anggaran berjalan" />
+            </div>
+            <div class="form-group">
+              <label>File dokumen</label>
+              <input type="file" id="dok-file" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,image/jpeg,image/png,image/webp" aria-label="dok file" />
+              <div class="form-hint">Maks 10 MB. Untuk kategori <b>Poster Edukasi</b>, unggah gambar (JPG/PNG) &mdash; poster akan tampil di web dan bisa diklik untuk diperbesar. Saat mengedit, kosongkan jika tidak ingin mengganti file.</div>
+              <div id="dok-file-current" style="font-size:12px;color:var(--emerald);margin-top:6px;display:none;">
+                <i class="fa-solid fa-paperclip"></i> <span id="dok-file-name"></span>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn" onclick="resetDokumenForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+              <button type="button" class="btn btn-primary" onclick="simpanDokumen()" id="btn-simpan-dok">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Daftar dokumen tersimpan</div>
+            <div id="dokumen-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- PANEL AGENDA -->
+        <div class="panel" id="panel-agenda">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-calendar-days"></i></div>
+            <div>
+              <div class="panel-intro-title">Agenda Desa</div>
+              <div class="panel-intro-sub">Kelola jadwal rapat, musyawarah, dan kegiatan warga</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="agenda-form-title">Tambah / edit agenda</div>
+            <input type="hidden" id="ag-id" aria-label="ag id" />
+            <div class="form-group">
+              <label>Judul kegiatan</label>
+              <input type="text" id="ag-judul" placeholder="cth: Musyawarah Desa Perencanaan Pembangunan" aria-label="cth: Musyawarah Desa Perencanaan Pembangunan" />
+            </div>
+            <div class="form-group">
+              <label>Deskripsi <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
+              <textarea id="ag-deskripsi" placeholder="Jelaskan kegiatan secara singkat..." aria-label="Jelaskan kegiatan secara singkat..."></textarea>
+            </div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label>Tanggal</label>
+                <input type="date" id="ag-tanggal" aria-label="ag tanggal" />
+              </div>
+              <div class="form-group">
+                <label>Waktu</label>
+                <input type="text" id="ag-waktu" placeholder="cth: 09.00 – selesai" aria-label="cth: 09.00 – selesai" />
+              </div>
+              <div class="form-group">
+                <label>Jenis</label>
+                <select id="ag-jenis" aria-label="ag jenis">
+                  <option value="Rutin">Rutin</option>
+                  <option value="Penting">Penting</option>
+                  <option value="Umum">Umum</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Lokasi</label>
+              <input type="text" id="ag-lokasi" placeholder="cth: Balai Desa Kandeman" aria-label="cth: Balai Desa Kandeman" />
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn" onclick="resetAgendaForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+              <button type="button" class="btn btn-primary" onclick="simpanAgenda()" id="btn-simpan-ag">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Daftar agenda</div>
+            <div id="agenda-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- PANEL ASPIRASI -->
+        <div class="panel" id="panel-aspirasi">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-comment-dots"></i></div>
+            <div>
+              <div class="panel-intro-title">Aspirasi Warga</div>
+              <div class="panel-intro-sub">Masukan, saran, dan keluhan yang dikirim warga melalui website</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="filter-row">
+              <input type="search" id="asp-search" placeholder="Cari nama atau isi aspirasi..." oninput="filterAspirasi()" aria-label="Cari nama atau isi aspirasi..." />
+              <select id="asp-filter-status" onchange="filterAspirasi()" aria-label="asp filter status">
+                <option value="">Semua status</option>
+                <option value="baru">Baru</option>
+                <option value="diproses">Diproses</option>
+                <option value="selesai">Selesai</option>
+              </select>
+              <select id="asp-filter-kat" onchange="filterAspirasi()" aria-label="asp filter kat">
+                <option value="">Semua kategori</option>
+                <option>Saran &amp; Usulan</option>
+                <option>Keluhan Layanan</option>
+                <option>Infrastruktur</option>
+                <option>Kebersihan &amp; Lingkungan</option>
+                <option>Keamanan</option>
+                <option>Lainnya</option>
+              </select>
+              <button type="button" class="btn" style="font-size:12px;padding:7px 12px;" onclick="exportTabel('aspirasi')" title="Unduh sebagai CSV/Excel">
+                <i class="fa-solid fa-file-export"></i> Export
+              </button>
+              <span class="filter-count" id="asp-filter-count"></span>
+            </div>
+            <div id="aspirasi-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- PANEL STATISTIK WARGA -->
+        <div class="panel" id="panel-statistik">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-chart-pie"></i></div>
+            <div>
+              <div class="panel-intro-title">Statistik Warga</div>
+              <div class="panel-intro-sub">Diperbarui 6 bulan sekali — periode Januari dan Juli</div>
+            </div>
+          </div>
+
+          <div class="card" style="background:linear-gradient(135deg,rgba(28,107,62,.06),rgba(142,201,166,.08));border-color:rgba(28,107,62,.18);">
+            <div style="display:flex;align-items:flex-start;gap:12px;">
+              <i class="fa-solid fa-circle-info" style="color:var(--emerald);font-size:16px;margin-top:2px;"></i>
+              <div style="font-size:13px;line-height:1.7;color:var(--text-sec);">
+                <strong>Jadwal pembaruan:</strong> isi data ini dua kali setahun — awal <strong>Januari</strong> (periode semester 1)
+                dan awal <strong>Juli</strong> (periode semester 2). Website selalu menampilkan periode terbaru yang tersimpan.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" id="statistik-form-title">Data periode</div>
+            <input type="hidden" id="st-id" aria-label="st id" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Tahun</label>
+                <input type="number" id="st-tahun" placeholder="2026" aria-label="2026" />
+              </div>
+              <div class="form-group">
+                <label>Periode</label>
+                <select id="st-periode" aria-label="st periode">
+                  <option value="1">Januari (Semester 1)</option>
+                  <option value="7">Juli (Semester 2)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 10px;">Ringkasan demografi</div>
+            <div class="form-grid-3">
+              <div class="form-group"><label>Total penduduk</label><input type="number" id="st-total" placeholder="5200" aria-label="5200" /></div>
+              <div class="form-group"><label>Kepala keluarga</label><input type="number" id="st-kk" placeholder="1350" aria-label="1350" /></div>
+              <div class="form-group"><label>Laki-laki</label><input type="number" id="st-laki" placeholder="2080" aria-label="2080" /></div>
+              <div class="form-group"><label>Perempuan</label><input type="number" id="st-perempuan" placeholder="2120" aria-label="2120" /></div>
+            </div>
+
+            <div style="font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 10px;">
+              Kelompok umur <span style="font-weight:400;color:var(--text-muted);">— jumlah jiwa</span>
+            </div>
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead>
+                  <tr>
+                    <th style="text-align:left;padding:8px 10px;background:var(--surface);border-radius:6px 0 0 6px;">Kelompok</th>
+                    <th style="text-align:left;padding:8px 10px;background:var(--surface);">Laki-laki</th>
+                    <th style="text-align:left;padding:8px 10px;background:var(--surface);border-radius:0 6px 6px 0;">Perempuan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td style="padding:6px 10px;">0–9 tahun</td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u09l"  style="width:100%;" aria-label="st u09l" /></td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u09p"  style="width:100%;" aria-label="st u09p" /></td></tr>
+                  <tr><td style="padding:6px 10px;">10–19 tahun</td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u1019l" style="width:100%;" aria-label="st u1019l" /></td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u1019p" style="width:100%;" aria-label="st u1019p" /></td></tr>
+                  <tr><td style="padding:6px 10px;">20–29 tahun</td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u2029l" style="width:100%;" aria-label="st u2029l" /></td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u2029p" style="width:100%;" aria-label="st u2029p" /></td></tr>
+                  <tr><td style="padding:6px 10px;">30–44 tahun</td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u3044l" style="width:100%;" aria-label="st u3044l" /></td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u3044p" style="width:100%;" aria-label="st u3044p" /></td></tr>
+                  <tr><td style="padding:6px 10px;">45–59 tahun</td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u4559l" style="width:100%;" aria-label="st u4559l" /></td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u4559p" style="width:100%;" aria-label="st u4559p" /></td></tr>
+                  <tr><td style="padding:6px 10px;">60 tahun ke atas</td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u60l"  style="width:100%;" aria-label="st u60l" /></td>
+                      <td style="padding:6px 10px;"><input type="number" id="st-u60p"  style="width:100%;" aria-label="st u60p" /></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 10px;">
+              Tingkat pendidikan <span style="font-weight:400;color:var(--text-muted);">— dalam persen</span>
+            </div>
+            <div class="form-grid">
+              <div class="form-group"><label>SD / sederajat</label><input type="number" id="st-sd"     step="0.1" oninput="cekJumlahDidik()" aria-label="st sd" /></div>
+              <div class="form-group"><label>SMP / sederajat</label><input type="number" id="st-smp"    step="0.1" oninput="cekJumlahDidik()" aria-label="st smp" /></div>
+              <div class="form-group"><label>SMA / sederajat</label><input type="number" id="st-sma"    step="0.1" oninput="cekJumlahDidik()" aria-label="st sma" /></div>
+              <div class="form-group"><label>Diploma / Sarjana</label><input type="number" id="st-tinggi" step="0.1" oninput="cekJumlahDidik()" aria-label="st tinggi" /></div>
+            </div>
+            <div id="st-didik-sum" class="pct-sum-indicator pct-sum-ok">
+              <i class="fa-solid fa-circle-check"></i> Total: 100%
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn" onclick="resetStatistikForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+              <button type="button" class="btn btn-primary" onclick="simpanStatistik()" id="btn-simpan-st">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Statistik
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Riwayat periode tersimpan</div>
+            <div id="statistik-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- PANEL LAYANAN KESEHATAN -->
+        <div class="panel" id="panel-kesehatan">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+            <div>
+              <div class="panel-intro-title">Layanan Kesehatan</div>
+              <div class="panel-intro-sub">Jadwal Posyandu/Posbindu bulanan dan kontak darurat</div>
+            </div>
+          </div>
+
+          <div class="apb-tabs">
+            <button type="button" class="apb-tab active" onclick="switchKesTab('jadwal',this)">
+              <i class="fa-solid fa-calendar-check" style="margin-right:5px;font-size:12px;"></i>Jadwal Bulanan
+            </button>
+            <button type="button" class="apb-tab" onclick="switchKesTab('kontak',this)">
+              <i class="fa-solid fa-phone-volume" style="margin-right:5px;font-size:12px;"></i>Kontak Darurat
+            </button>
+          </div>
+
+          <!-- Tab jadwal -->
+          <div class="apb-pane active" id="kes-pane-jadwal">
+            <div class="card" style="background:linear-gradient(135deg,rgba(28,107,62,.06),rgba(142,201,166,.08));border-color:rgba(28,107,62,.18);">
+              <div style="display:flex;align-items:flex-start;gap:12px;">
+                <i class="fa-solid fa-circle-info" style="color:var(--emerald);font-size:16px;margin-top:2px;"></i>
+                <div style="font-size:13px;line-height:1.7;color:var(--text-sec);">
+                  <strong>Perbarui tiap awal bulan.</strong> Website menampilkan jadwal bulan berjalan.
+                  Bila bulan ini belum diisi, jadwal bulan terakhir yang tersimpan akan ditampilkan.
+                  Gunakan tombol <em>Salin dari bulan lalu</em> agar tidak perlu mengetik ulang.
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title" id="jadwal-form-title">Tambah / edit jadwal</div>
+              <input type="hidden" id="jk-id" aria-label="jk id" />
+              <div class="form-grid-3">
+                <div class="form-group">
+                  <label>Lokasi penyelenggaraan</label>
+                  <input type="text" id="jk-lokasi" placeholder="cth: Balai Dusun Randusari" aria-label="cth: Balai Dusun Randusari" />
+                </div>
+                <div class="form-group">
+                  <label>Dusun</label>
+                  <select id="jk-dusun" aria-label="jk dusun">
+                    <option>Randusari</option>
+                    <option>Kandeman</option>
+                    <option>Gandok</option>
+                    <option>Kaliongkek</option>
+                    <option>Johosari</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Tanggal pelaksanaan</label>
+                  <input type="date" id="jk-jadwal" aria-label="jk jadwal" />
+                </div>
+              </div>
+              <div class="form-grid-3">
+                <div class="form-group">
+                  <label>Jam pelayanan</label>
+                  <input type="text" id="jk-jam" placeholder="cth: 09.00 - selesai" value="09.00 - selesai" aria-label="cth: 09.00 - selesai" />
+                </div>
+                <div class="form-group">
+                  <label>Bulan</label>
+                  <select id="jk-bulan" aria-label="jk bulan">
+                    <option value="1">Januari</option><option value="2">Februari</option>
+                    <option value="3">Maret</option><option value="4">April</option>
+                    <option value="5">Mei</option><option value="6">Juni</option>
+                    <option value="7">Juli</option><option value="8">Agustus</option>
+                    <option value="9">September</option><option value="10">Oktober</option>
+                    <option value="11">November</option><option value="12">Desember</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Tahun</label>
+                  <input type="number" id="jk-tahun" aria-label="jk tahun" />
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn" onclick="salinJadwalBulanLalu()">
+                  <i class="fa-solid fa-copy"></i> Salin dari bulan lalu
+                </button>
+                <button type="button" class="btn" onclick="resetJadwalForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+                <button type="button" class="btn btn-primary" onclick="simpanJadwalKesehatan()" id="btn-simpan-jk">
+                  <i class="fa-solid fa-floppy-disk"></i> Simpan
+                </button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="filter-row">
+                <select id="jk-filter-bulan" onchange="loadJadwalKesehatan()" aria-label="jk filter bulan">
+                  <option value="">Semua bulan</option>
+                  <option value="1">Januari</option><option value="2">Februari</option>
+                  <option value="3">Maret</option><option value="4">April</option>
+                  <option value="5">Mei</option><option value="6">Juni</option>
+                  <option value="7">Juli</option><option value="8">Agustus</option>
+                  <option value="9">September</option><option value="10">Oktober</option>
+                  <option value="11">November</option><option value="12">Desember</option>
+                </select>
+                <span class="filter-count" id="jk-count"></span>
+              </div>
+              <div id="jadwal-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+            </div>
+          </div>
+
+          <!-- Tab kontak -->
+          <div class="apb-pane" id="kes-pane-kontak">
+            <div class="card">
+              <div class="card-title" id="kontak-form-title">Tambah / edit kontak layanan</div>
+              <input type="hidden" id="kk-id" aria-label="kk id" />
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Nama layanan</label>
+                  <input type="text" id="kk-nama" placeholder="cth: Ambulans Desa" aria-label="cth: Ambulans Desa" />
+                </div>
+                <div class="form-group">
+                  <label>Nama petugas <span style="color:var(--text-muted);font-weight:400;">(khusus bidan desa)</span></label>
+                  <input type="text" id="kk-petugas" placeholder="cth: Ibu Sri Wahyuni, A.Md.Keb" aria-label="cth: Ibu Sri Wahyuni, A.Md.Keb" />
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Nomor telepon</label>
+                  <input type="text" id="kk-telepon" placeholder="cth: 081234567890" aria-label="cth: 081234567890" />
+                </div>
+                <div class="form-group">
+                  <label>Jam pelayanan</label>
+                  <input type="text" id="kk-jam" placeholder="cth: Senin–Sabtu, 08.00–16.00" aria-label="cth: Senin–Sabtu, 08.00–16.00" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Lokasi</label>
+                <input type="text" id="kk-lokasi" placeholder="cth: Polindes Desa Kandeman, Dusun Randusari" aria-label="cth: Polindes Desa Kandeman, Dusun Randusari" />
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Jenis <span style="color:var(--text-muted);font-weight:400;">(menentukan warna ikon)</span></label>
+                  <select id="kk-jenis" aria-label="kk jenis">
+                    <option value="emergency">Darurat (merah)</option>
+                    <option value="bidan">Bidan (merah muda)</option>
+                    <option value="pusk">Puskesmas (biru)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Ikon</label>
+                  <select id="kk-ikon" aria-label="kk ikon">
+                    <option value="fa-truck-medical">Ambulans</option>
+                    <option value="fa-user-nurse">Bidan / perawat</option>
+                    <option value="fa-hospital">Puskesmas / rumah sakit</option>
+                    <option value="fa-kit-medical">Kotak P3K</option>
+                    <option value="fa-phone-volume">Telepon darurat</option>
+                    <option value="fa-house-medical">Klinik</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Urutan tampil</label>
+                <input type="number" id="kk-urutan" value="1" style="max-width:120px;" aria-label="kk urutan" />
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn" onclick="resetKontakForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+                <button type="button" class="btn btn-primary" onclick="simpanKontakKesehatan()" id="btn-simpan-kk">
+                  <i class="fa-solid fa-floppy-disk"></i> Simpan
+                </button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Daftar kontak layanan</div>
+              <div id="kontak-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /shell -->
+</div><!-- /admin-shell -->
+
+<!-- Preview Berita Modal -->
+<div class="preview-modal" id="preview-modal" onclick="closePreview(event)" role="dialog" aria-modal="true" aria-labelledby="preview-title" aria-hidden="true">
+  <div class="preview-box">
+    <div class="preview-header">
+      <span id="preview-title">Preview tampilan berita di website</span>
+      <button type="button" class="icon-btn" onclick="closePreview()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="preview-body" id="preview-body"></div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc" aria-hidden="true">
+  <div class="modal-box">
+    <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div class="modal-title" id="confirm-title">Hapus data?</div>
+    <div class="modal-desc" id="confirm-desc">Tindakan ini tidak dapat dibatalkan.</div>
+    <div class="modal-actions">
+      <button type="button" class="btn" onclick="closeConfirm()">Batal</button>
+      <button type="button" class="btn btn-danger" id="confirm-ok-btn" onclick="runConfirm()">
+        <i class="fa-solid fa-trash-can"></i> Hapus
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="assets/js/supabase-client.js" defer></script>
+<script src="assets/js/admin.js" defer></script>
+</body>
+</html>
