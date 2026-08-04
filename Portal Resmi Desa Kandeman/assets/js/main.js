@@ -21,12 +21,6 @@
       setTimeout(() => {
         intro.remove();
         document.body.classList.add('page-ready');
-
-        // Text scramble pada tagline hero
-        setTimeout(() => {
-          const tagEl = document.getElementById('hero-tagline-el');
-          if (tagEl) scrambleText(tagEl, '— Portal Desa Digital #SIKANDA', 1100);
-        }, 600);
       }, 700);
     }
 
