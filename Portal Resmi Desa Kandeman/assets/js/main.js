@@ -79,12 +79,18 @@
     });
   });
 
-  /* ── Navbar shadow saat scroll ── */
+  /* ── Navbar muncul setelah pengunjung mulai menggulir ── */
   const mainNav = document.getElementById('mainNav');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 10) mainNav.classList.add('scrolled');
-    else mainNav.classList.remove('scrolled');
-  }, { passive: true });
+  const NAV_REVEAL_OFFSET = 64;
+  function updateMainNav() {
+    if (!mainNav) return;
+    const hasScrolled = window.scrollY > NAV_REVEAL_OFFSET;
+    mainNav.classList.toggle('nav-visible', hasScrolled);
+    mainNav.classList.toggle('scrolled', window.scrollY > 10);
+  }
+  window.addEventListener('scroll', updateMainNav, { passive: true });
+  window.addEventListener('pageshow', updateMainNav);
+  requestAnimationFrame(updateMainNav);
 
   /* ── Spotlight border: track posisi mouse di kartu ── */
   document.addEventListener('mousemove', e => {
