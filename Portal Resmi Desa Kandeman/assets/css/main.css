@@ -66,7 +66,7 @@
        NAVBAR
     ══════════════════════════════════════ */
     .navbar {
-      position: sticky; top: 0; z-index: 300;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
       background: linear-gradient(to bottom,
         #FDFAF5 0%,
         #FAF6EE 100%);
@@ -78,7 +78,24 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       box-shadow: none;
-      transition: box-shadow .25s ease;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-100%);
+      transition:
+        transform .42s cubic-bezier(.22,1,.36,1),
+        opacity .24s ease,
+        visibility 0s linear .42s,
+        box-shadow .25s ease;
+    }
+    /* Navbar sengaja tersembunyi saat hero pertama kali dibuka.
+       Ditampilkan oleh main.js setelah pengunjung mulai menggulir. */
+    .navbar.nav-visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+      transition-delay: 0s;
     }
     .navbar.scrolled {
       box-shadow:
@@ -2707,14 +2724,12 @@
     @keyframes introBarFill { from { width:0; } to { width:100%; } }
 
     /* Animasi masuk elemen halaman setelah intro */
-    .navbar      { opacity:0; transform:translateY(-100%); }
     .hero-loc    { opacity:0; transform:translateY(14px); }
     .hero h1     { opacity:0; transform:translateY(18px); }
     .hero-desc   { opacity:0; transform:translateY(14px); }
     .hero-search { opacity:0; transform:translateY(14px); }
     .hero-tags   { opacity:0; transform:translateY(10px); }
 
-    .page-ready .navbar      { animation: slideDown .55s cubic-bezier(.22,1,.36,1) both; }
     .page-ready .hero-loc    { animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both; animation-delay:.12s; }
     .page-ready .hero h1     { animation: fadeUp .7s cubic-bezier(.22,1,.36,1) both; animation-delay:.22s; }
     .page-ready .hero-desc   { animation: fadeUp .6s cubic-bezier(.22,1,.36,1) both; animation-delay:.46s; }
@@ -2726,7 +2741,9 @@
 
     @media (prefers-reduced-motion: reduce) {
       #page-intro { display: none !important; }
-      .navbar,.hero-loc,.hero h1,.hero-desc,.hero-search,.hero-tags
+      .navbar { transition: none !important; animation: none !important; }
+      .navbar.nav-visible { opacity:1 !important; visibility:visible !important; transform:none !important; }
+      .hero-loc,.hero h1,.hero-desc,.hero-search,.hero-tags
         { opacity:1 !important; transform:none !important; animation:none !important; }
     }
 
