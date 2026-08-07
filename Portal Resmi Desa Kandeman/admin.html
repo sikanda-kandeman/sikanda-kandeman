@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   
 
-  <link rel="stylesheet" href="assets/css/admin.css" />
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260807-arsip-keuangan-v4" />
 </head>
 <body>
 
@@ -450,7 +450,7 @@
             <div class="panel-intro-icon"><i class="fa-solid fa-coins"></i></div>
             <div>
               <div class="panel-intro-title">APBDes & Anggaran</div>
-              <div class="panel-intro-sub">Transparansi anggaran pendapatan dan belanja desa</div>
+              <div class="panel-intro-sub">Kelola data APBDes, realisasi, dan arsip PDF keuangan desa</div>
             </div>
           </div>
           <div class="card">
@@ -506,6 +506,64 @@
                 <i class="fa-solid fa-floppy-disk"></i> Simpan Data APBDes
               </button>
             </div>
+          </div>
+
+          <div class="card finance-admin-card">
+            <div class="finance-admin-head">
+              <span class="finance-admin-head-icon"><i class="fa-solid fa-file-pdf"></i></span>
+              <div>
+                <div class="card-title">Arsip PDF keuangan desa</div>
+                <p>Publikasikan APBDes, Realisasi Anggaran, Laporan Keuangan, dan LPPD untuk tahun 2024–2026.</p>
+              </div>
+            </div>
+            <div class="finance-admin-form" id="finance-document-form">
+              <input type="hidden" id="fin-id" aria-label="ID arsip keuangan" />
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="fin-kategori">Jenis dokumen</label>
+                  <select id="fin-kategori">
+                    <option value="apbdes">APBDes</option>
+                    <option value="realisasi_anggaran">Realisasi Anggaran</option>
+                    <option value="laporan_keuangan">Laporan Keuangan</option>
+                    <option value="lppd">LPPD</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="fin-tahun">Tahun dokumen</label>
+                  <select id="fin-tahun">
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026" selected>2026</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="fin-keterangan">Keterangan singkat <span class="optional-label">opsional</span></label>
+                <input type="text" id="fin-keterangan" maxlength="240" placeholder="cth: Dokumen penetapan APBDes" />
+              </div>
+              <div class="form-group">
+                <label for="fin-file">Softfile PDF</label>
+                <input type="file" id="fin-file" accept="application/pdf,.pdf" />
+                <div class="form-hint">Hanya PDF, maksimum 10 MB. Saat mengedit, kosongkan jika tidak ingin mengganti file.</div>
+                <div class="finance-current-file" id="fin-file-current">
+                  <i class="fa-solid fa-paperclip"></i> <span id="fin-file-name"></span>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn" onclick="resetFinanceDocumentForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+                <button type="button" class="btn btn-primary" onclick="saveFinanceDocument()" id="btn-simpan-finance">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Publikasikan PDF
+                </button>
+              </div>
+            </div>
+            <div class="finance-admin-list-head">
+              <div>
+                <strong>Dokumen yang dipublikasikan</strong>
+                <span>Terlihat dan dapat diunduh warga pada Transparansi Keuangan Desa.</span>
+              </div>
+              <span class="finance-admin-count" id="finance-admin-count">0 dokumen</span>
+            </div>
+            <div id="finance-document-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat arsip...</div></div>
           </div>
         </div>
 
@@ -730,7 +788,7 @@
             <div class="panel-intro-icon"><i class="fa-solid fa-folder-open"></i></div>
             <div>
               <div class="panel-intro-title">Dokumen &amp; Arsip</div>
-              <div class="panel-intro-sub">Kelola file yang bisa diunduh warga: APBDes, Perdes, SOP, statistik</div>
+              <div class="panel-intro-sub">Kelola dokumen umum: Perdes, SOP, data statistik, dan poster edukasi</div>
             </div>
           </div>
           <div class="card">
@@ -738,13 +796,12 @@
             <input type="hidden" id="dok-id" aria-label="dok id" />
             <div class="form-group">
               <label>Judul dokumen</label>
-              <input type="text" id="dok-judul" placeholder="cth: APBDes Tahun 2026" aria-label="cth: APBDes Tahun 2026" />
+              <input type="text" id="dok-judul" placeholder="cth: Peraturan Desa Nomor 2 Tahun 2026" aria-label="Judul dokumen umum" />
             </div>
             <div class="form-grid">
               <div class="form-group">
                 <label>Kategori (menentukan lokasi tampil)</label>
                 <select id="dok-kategori" aria-label="dok kategori">
-                  <option value="apbdes">Arsip APBDes (Transparency Hub)</option>
                   <option value="perdes">Peraturan Desa (Hukum &amp; Edukasi)</option>
                   <option value="sop">SOP Pelayanan (tombol tunggal)</option>
                   <option value="statistik">Data Statistik (tombol tunggal)</option>
@@ -764,7 +821,7 @@
             </div>
             <div class="form-group">
               <label>Keterangan singkat</label>
-              <input type="text" id="dok-keterangan" placeholder="cth: Dokumen anggaran berjalan" aria-label="cth: Dokumen anggaran berjalan" />
+              <input type="text" id="dok-keterangan" placeholder="cth: Peraturan tentang tata kelola aset desa" aria-label="Keterangan singkat dokumen" />
             </div>
             <div class="form-group">
               <label>File dokumen</label>
@@ -1194,6 +1251,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js" defer></script>
+<script src="assets/js/admin.js?v=20260807-arsip-keuangan-v4" defer></script>
 </body>
 </html>

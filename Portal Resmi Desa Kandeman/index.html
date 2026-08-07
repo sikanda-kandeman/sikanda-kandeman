@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260807-realisasi-kategori-v3" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260807-arsip-keuangan-v4" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -904,7 +904,7 @@
     <div class="section-header">
       <div class="eyebrow">Transparansi</div>
       <h2 class="section-title">Transparansi Keuangan Desa</h2>
-      <p class="section-sub" id="apb-section-sub">Informasi APBDes dan realisasi anggaran Desa Kandeman.</p>
+      <p class="section-sub" id="apb-section-sub">Informasi APBDes, realisasi anggaran, dan arsip keuangan resmi Desa Kandeman.</p>
     </div>
 
     <div class="trans-grid">
@@ -1001,6 +1001,32 @@
         </div>
       </div>
     </div>
+
+    <section class="financial-archive" aria-labelledby="financial-archive-title">
+      <div class="financial-archive-head">
+        <div class="financial-archive-heading">
+          <span class="financial-archive-icon" aria-hidden="true"><i class="fa-solid fa-box-archive"></i></span>
+          <div>
+            <p class="financial-archive-kicker">Dokumen publik</p>
+            <h3 id="financial-archive-title">Arsip Keuangan Desa</h3>
+            <p>Pilih tahun untuk melihat atau mengunduh berkas PDF yang telah dipublikasikan.</p>
+          </div>
+        </div>
+        <div class="financial-year-tabs" role="tablist" aria-label="Pilih tahun arsip keuangan">
+          <button type="button" class="financial-year-tab" role="tab" aria-selected="false" tabindex="-1" data-financial-year="2024">2024</button>
+          <button type="button" class="financial-year-tab" role="tab" aria-selected="false" tabindex="-1" data-financial-year="2025">2025</button>
+          <button type="button" class="financial-year-tab active" role="tab" aria-selected="true" tabindex="0" data-financial-year="2026">2026</button>
+        </div>
+      </div>
+
+      <div class="financial-archive-summary" aria-live="polite">
+        <span id="financial-archive-year"><i class="fa-regular fa-calendar"></i> Tahun 2026</span>
+        <span id="financial-archive-count">Memuat dokumen...</span>
+      </div>
+      <div class="financial-docs-grid" id="financial-docs-grid" role="tabpanel" aria-label="Arsip keuangan tahun 2026">
+        <div class="financial-doc-loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuat arsip keuangan...</div>
+      </div>
+    </section>
   </div>
 
   <div class="wave-divider" aria-hidden="true">
@@ -1019,7 +1045,7 @@
     <div class="section-header">
       <div class="eyebrow">Transparency Hub</div>
       <h2 class="section-title">Digital Transparency Hub</h2>
-      <p class="section-sub">Pusat literasi keuangan dan arsip dokumen anggaran desa yang dapat diunduh warga.</p>
+      <p class="section-sub">Pusat literasi keuangan dan data statistik Desa Kandeman.</p>
     </div>
 
     <div class="transp-hub-grid">
@@ -1045,17 +1071,9 @@
         </div>
       </div>
 
-      <!-- Arsip dokumen -->
+      <!-- Akses data publik -->
       <div>
-        <h3 style="font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-folder-open" style="color:var(--emerald);"></i> Arsip Dokumen APBDes
-        </h3>
-        <div class="arsip-list" id="arsip-apbdes-list">
-          <p class="daftar-kosong"><i class="fa-solid fa-circle-info"></i> Belum ada dokumen APBDes yang diunggah.</p>
-        </div>
-
-        <!-- Akses Database Master -->
-        <div class="data-cta" style="margin-top:20px;">
+        <div class="data-cta">
           <div class="data-cta-text">
             <h3><i class="fa-solid fa-database" style="margin-right:8px;"></i>Unduh Data Statistik Desa</h3>
             <p>Database kependudukan lengkap: jumlah penduduk per dusun, kelompok usia, mata pencaharian, dan pendidikan.</p>
@@ -2405,6 +2423,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/main.js?v=20260807-realisasi-kategori-v3" defer></script>
+<script src="assets/js/main.js?v=20260807-arsip-keuangan-v4" defer></script>
 </body>
 </html>
