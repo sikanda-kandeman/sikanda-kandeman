@@ -815,7 +815,7 @@
     }
     .apbdes-total > * { position: relative; z-index: 1; }
     .apbdes-total .val {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Mono', monospace;
       font-size: 32px; font-weight: 700;
       text-shadow: 0 2px 16px rgba(0,0,0,.2);
     }
@@ -851,7 +851,7 @@
       border: 1px solid rgba(13,43,26,.1);
       border-radius: 22px;
       box-shadow: 0 20px 44px -34px rgba(13,43,26,.36);
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
     }
     #realisasi .realisasi-heading {
       display: flex; align-items: flex-start; justify-content: space-between;
@@ -859,6 +859,7 @@
     }
     #realisasi .realisasi-kicker {
       margin: 0; color: var(--forest); font-size: 20px; font-weight: 700;
+      font-family: 'Cormorant Garamond', serif;
       line-height: 1.25; letter-spacing: -.015em;
     }
     #realisasi .realisasi-caption {
@@ -882,7 +883,7 @@
       min-width: 0; min-height: 38px; display: inline-flex; align-items: center;
       justify-content: center; gap: 7px; padding: 9px 10px;
       color: var(--text-sec); background: transparent; border: 0; border-radius: 9px;
-      font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 700;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700;
       line-height: 1; cursor: pointer;
       transition: color .25s cubic-bezier(.16,1,.3,1), background-color .25s cubic-bezier(.16,1,.3,1), transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s cubic-bezier(.16,1,.3,1);
     }
@@ -932,7 +933,7 @@
       background: #163822; box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
     }
     #realisasi .realisasi-progress-inner strong {
-      color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 24px;
+      color: #fff; font-family: 'DM Mono', monospace; font-size: 24px;
       font-weight: 700; line-height: 1; letter-spacing: -.04em;
       font-variant-numeric: tabular-nums;
     }
@@ -947,7 +948,7 @@
     }
     #realisasi .realisasi-overview-copy > strong {
       display: block; margin-top: 7px; color: #fff;
-      font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 3.6vw, 38px);
+      font-family: 'DM Mono', monospace; font-size: clamp(28px, 3.6vw, 38px);
       font-weight: 700; line-height: 1.1; letter-spacing: -.04em;
       overflow-wrap: anywhere; font-variant-numeric: tabular-nums;
     }
@@ -979,6 +980,7 @@
     }
     #realisasi .realisasi-stat-copy > strong {
       display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--text);
+      font-family: 'DM Mono', monospace;
       font-size: 16px; font-weight: 700; line-height: 1.2;
       letter-spacing: -.02em; font-variant-numeric: tabular-nums;
     }
@@ -995,6 +997,7 @@
     }
     #realisasi .realisasi-breakdown-title h3 {
       margin: 0; color: var(--forest); font-size: 17px; font-weight: 700;
+      font-family: 'Cormorant Garamond', serif;
       line-height: 1.3; letter-spacing: -.015em;
     }
     #realisasi .realisasi-breakdown-title p {
@@ -1028,6 +1031,7 @@
     #realisasi .realisasi-row-percent {
       flex: 0 0 auto; padding: 5px 7px; color: var(--emerald); background: #EDF5EF;
       border-radius: 7px; font-size: 12px; font-weight: 700; line-height: 1;
+      font-family: 'DM Mono', monospace;
       white-space: nowrap; font-variant-numeric: tabular-nums;
     }
     #realisasi .realisasi-row-percent small { font-size: 8px; font-weight: 600; }
@@ -1058,6 +1062,7 @@
     }
     #realisasi .realisasi-row-meta-item strong {
       display: block; margin-top: 3px; color: var(--text-sec); font-size: 12.5px;
+      font-family: 'DM Mono', monospace;
       font-weight: 650; line-height: 1.35; overflow-wrap: anywhere;
       font-variant-numeric: tabular-nums;
     }
@@ -1084,7 +1089,7 @@
       margin-top: 30px; padding: 22px;
       background: #F8F8F3; border: 1px solid rgba(13,43,26,.11);
       border-radius: 20px; box-shadow: 0 22px 50px -42px rgba(13,43,26,.42);
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
     }
     .financial-archive-head {
       display: flex; align-items: stretch; flex-direction: column;
@@ -1102,6 +1107,7 @@
     }
     .financial-archive-heading h3 {
       margin: 0; color: var(--forest); font-size: 22px; font-weight: 700;
+      font-family: 'Cormorant Garamond', serif;
       line-height: 1.2; letter-spacing: -.025em;
     }
     .financial-archive-heading p:last-child {
@@ -1115,7 +1121,7 @@
     .financial-year-tab {
       min-width: 58px; min-height: 36px; padding: 8px 11px;
       color: var(--text-sec); background: transparent; border: 0; border-radius: 8px;
-      font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 700;
+      font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700;
       font-variant-numeric: tabular-nums; cursor: pointer;
       transition: color .2s, background-color .2s, box-shadow .2s, transform .15s;
     }
