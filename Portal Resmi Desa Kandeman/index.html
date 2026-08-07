@@ -904,7 +904,7 @@
     <div class="section-header">
       <div class="eyebrow">Transparansi</div>
       <h2 class="section-title">Transparansi Keuangan Desa</h2>
-      <p class="section-sub">Informasi APBDes dan realisasi anggaran Desa Kandeman Tahun Anggaran 2026.</p>
+      <p class="section-sub" id="apb-section-sub">Informasi APBDes dan realisasi anggaran Desa Kandeman.</p>
     </div>
 
     <div class="trans-grid">
@@ -912,10 +912,10 @@
       <div id="apbdes">
         <div class="apbdes-total" id="apb-total-display">
           <div class="val" id="apb-val">Rp —</div>
-          <div class="lbl" id="apb-tahun-lbl">Total APBDes —</div>
+          <div class="lbl" id="apb-tahun-lbl">Anggaran Pendapatan APBDes —</div>
           <div class="sub" id="apb-sub">Memuat data...</div>
         </div>
-        <p style="font-size:12.5px; font-weight:600; color:var(--text); margin-bottom:14px;">Alokasi Anggaran per Bidang</p>
+        <p style="font-size:12.5px; font-weight:600; color:var(--text); margin-bottom:14px;">Anggaran Belanja per Bidang</p>
         <div id="apb-alokasi">
           <div class="sb-loading" style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;">
             <i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat alokasi...
@@ -927,19 +927,20 @@
       <div id="realisasi">
         <p style="font-size:12.5px; font-weight:600; color:var(--text); margin-bottom:12px;">Realisasi Anggaran</p>
         <div class="real-grid" id="apb-realisasi-grid">
-          <div class="real-card"><div class="pct" id="apb-r1">—</div><div class="desc">Realisasi Pendapatan</div></div>
-          <div class="real-card"><div class="pct" id="apb-r2">—</div><div class="desc">Realisasi Belanja</div></div>
-          <div class="real-card"><div class="pct" id="apb-r3">—</div><div class="desc">Realisasi Pembangunan</div></div>
-          <div class="real-card"><div class="pct" id="apb-r4">—</div><div class="desc">Realisasi Pemberdayaan</div></div>
+          <div class="real-card"><div class="pct" id="apb-r1">—</div><div class="desc">Realisasi Pendapatan</div><div class="real-nominal" id="apb-r1-nominal">Rp —</div></div>
+          <div class="real-card"><div class="pct" id="apb-r2">—</div><div class="desc">Realisasi Belanja</div><div class="real-nominal" id="apb-r2-nominal">Rp —</div></div>
+          <div class="real-card"><div class="pct compact" id="apb-r3">Rp —</div><div class="desc">Surplus / (Defisit)</div><div class="real-nominal">Realisasi tahun berjalan</div></div>
+          <div class="real-card"><div class="pct compact" id="apb-r4">Rp —</div><div class="desc">SiLPA Tahun Berjalan</div><div class="real-nominal">Setelah pembiayaan netto</div></div>
         </div>
         <div style="overflow:hidden; border:1px solid var(--border); border-radius:var(--r-md); margin-top:16px;">
           <table class="pendapatan-table">
-            <thead><tr><th>Sumber Pendapatan</th><th>Nominal</th></tr></thead>
+            <thead><tr><th>Rincian Pendapatan</th><th>Anggaran</th><th>Realisasi</th><th>Lebih / (Kurang)</th></tr></thead>
             <tbody id="apb-pendapatan-tbody">
-              <tr><td colspan="2" style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;"><i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat...</td></tr>
+              <tr><td colspan="4" style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;"><i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat...</td></tr>
             </tbody>
           </table>
         </div>
+        <div class="apb-summary" id="apb-summary" aria-live="polite"></div>
         <div class="trans-note">
           <i class="fa-solid fa-circle-info"></i>
           <span id="apb-note">Data APBDes diperbarui langsung oleh perangkat desa melalui Panel Admin SIKANDA.</span>

@@ -462,77 +462,43 @@
                 <input type="number" id="apb-tahun" value="2026" aria-label="apb tahun" />
               </div>
               <div class="form-group">
-                <label>Total APBDes (Rp)</label>
-                <input type="number" id="apb-total" placeholder="cth: 1450000000" aria-label="cth: 1450000000" />
+                <label>Total anggaran pendapatan (terhitung otomatis)</label>
+                <input type="number" id="apb-total" readonly aria-label="Total anggaran pendapatan" />
               </div>
             </div>
 
             <!-- Tab navigation -->
             <div class="apb-tabs">
-              <button type="button" class="apb-tab active" onclick="switchApbTab('alokasi',this)">
-                <i class="fa-solid fa-chart-pie" style="margin-right:5px;font-size:12px;"></i>Alokasi & Pendapatan
+              <button type="button" class="apb-tab active" onclick="switchApbTab('pendapatan',this)">
+                <i class="fa-solid fa-hand-holding-dollar" style="margin-right:5px;font-size:12px;"></i>Pendapatan
               </button>
-              <button type="button" class="apb-tab" onclick="switchApbTab('realisasi',this)">
-                <i class="fa-solid fa-money-bill-trend-up" style="margin-right:5px;font-size:12px;"></i>Realisasi (Rp)
+              <button type="button" class="apb-tab" onclick="switchApbTab('belanja',this)">
+                <i class="fa-solid fa-chart-pie" style="margin-right:5px;font-size:12px;"></i>Belanja
               </button>
-              <button type="button" class="apb-tab" onclick="switchApbTab('persen',this)">
-                <i class="fa-solid fa-percent" style="margin-right:5px;font-size:12px;"></i>% Realisasi
+              <button type="button" class="apb-tab" onclick="switchApbTab('pembiayaan',this)">
+                <i class="fa-solid fa-scale-balanced" style="margin-right:5px;font-size:12px;"></i>Pembiayaan
               </button>
             </div>
 
-            <!-- Tab 1: Alokasi & Pendapatan -->
-            <div class="apb-pane active" id="apb-pane-alokasi">
-              <div style="font-size:13px;font-weight:500;color:var(--text-sec);margin-bottom:10px;">Alokasi per bidang (%)</div>
-              <div class="form-grid-3">
-                <div class="form-group">
-                  <label>Pemerintahan</label>
-                  <input type="number" id="apb-pct1" value="30" min="0" max="100" oninput="checkPctSum()" aria-label="apb pct1" />
-                </div>
-                <div class="form-group">
-                  <label>Pembangunan</label>
-                  <input type="number" id="apb-pct2" value="45" min="0" max="100" oninput="checkPctSum()" aria-label="apb pct2" />
-                </div>
-                <div class="form-group">
-                  <label>Pembinaan</label>
-                  <input type="number" id="apb-pct3" value="15" min="0" max="100" oninput="checkPctSum()" aria-label="apb pct3" />
-                </div>
-                <div class="form-group">
-                  <label>Pemberdayaan</label>
-                  <input type="number" id="apb-pct4" value="10" min="0" max="100" oninput="checkPctSum()" aria-label="apb pct4" />
-                </div>
-              </div>
-              <div id="pct-sum-indicator" class="pct-sum-indicator pct-sum-ok">
-                <i class="fa-solid fa-circle-check"></i> Total: 100% — sudah benar
-              </div>
-              <div style="font-size:13px;font-weight:500;color:var(--text-sec);margin:16px 0 10px;">Sumber pendapatan (Rp)</div>
-              <div class="form-grid">
-                <div class="form-group"><label>Dana Desa (APBN)</label><input type="number" id="apb-dd" placeholder="850000000" aria-label="850000000" /></div>
-                <div class="form-group"><label>ADD (Alokasi Dana Desa)</label><input type="number" id="apb-add" placeholder="420000000" aria-label="420000000" /></div>
-                <div class="form-group"><label>Bagi Hasil Pajak/Retribusi</label><input type="number" id="apb-pajak" placeholder="110000000" aria-label="110000000" /></div>
-                <div class="form-group"><label>PADes & lain-lain</label><input type="number" id="apb-pades" placeholder="70000000" aria-label="70000000" /></div>
-              </div>
+            <p class="apb-input-note"><i class="fa-solid fa-circle-info"></i> Isi nilai anggaran dan realisasi sesuai Laporan Realisasi APB Desa. Total dan ringkasan dihitung otomatis.</p>
+
+            <!-- Tab 1: Pendapatan -->
+            <div class="apb-pane active" id="apb-pane-pendapatan">
+              <div class="apb-input-head"><span>Uraian Pendapatan</span><span>Anggaran (Rp)</span><span>Realisasi (Rp)</span></div>
+              <div id="apb-pendapatan-inputs"></div>
             </div>
 
-            <!-- Tab 2: Realisasi Rp -->
-            <div class="apb-pane" id="apb-pane-realisasi">
-              <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Masukkan nominal realisasi dalam rupiah. Persentase akan dihitung otomatis dari total APBDes jika kolom % tidak diisi.</div>
-              <div class="form-grid-3">
-                <div class="form-group"><label>Realisasi pendapatan</label><input type="number" id="apb-r1" value="0" aria-label="apb r1" /></div>
-                <div class="form-group"><label>Realisasi belanja</label><input type="number" id="apb-r2" value="0" aria-label="apb r2" /></div>
-                <div class="form-group"><label>Realisasi pembangunan</label><input type="number" id="apb-r3" value="0" aria-label="apb r3" /></div>
-                <div class="form-group"><label>Realisasi pemberdayaan</label><input type="number" id="apb-r4" value="0" aria-label="apb r4" /></div>
-              </div>
+            <!-- Tab 2: Belanja -->
+            <div class="apb-pane" id="apb-pane-belanja">
+              <div class="apb-input-head"><span>Bidang Belanja</span><span>Anggaran (Rp)</span><span>Realisasi (Rp)</span></div>
+              <div id="apb-belanja-inputs"></div>
             </div>
 
-            <!-- Tab 3: % Realisasi -->
-            <div class="apb-pane" id="apb-pane-persen">
-              <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Opsional — jika diisi, website menampilkan angka ini langsung. Biarkan kosong jika ingin dihitung otomatis dari realisasi Rp.</div>
-              <div class="form-grid-3">
-                <div class="form-group"><label>% Realisasi pendapatan</label><input type="number" id="apb-rpct1" min="0" max="100" placeholder="cth: 97" aria-label="cth: 97" /></div>
-                <div class="form-group"><label>% Realisasi belanja</label><input type="number" id="apb-rpct2" min="0" max="100" placeholder="cth: 74" aria-label="cth: 74" /></div>
-                <div class="form-group"><label>% Realisasi pembangunan</label><input type="number" id="apb-rpct3" min="0" max="100" placeholder="cth: 81" aria-label="cth: 81" /></div>
-                <div class="form-group"><label>% Realisasi pemberdayaan</label><input type="number" id="apb-rpct4" min="0" max="100" placeholder="cth: 67" aria-label="cth: 67" /></div>
-              </div>
+            <!-- Tab 3: Pembiayaan -->
+            <div class="apb-pane" id="apb-pane-pembiayaan">
+              <div class="apb-input-head"><span>Rincian Pembiayaan</span><span>Anggaran (Rp)</span><span>Realisasi (Rp)</span></div>
+              <div id="apb-pembiayaan-inputs"></div>
+              <div class="apb-calculation" id="apb-calculation"></div>
             </div>
 
             <div class="form-actions" style="margin-top:16px;">
