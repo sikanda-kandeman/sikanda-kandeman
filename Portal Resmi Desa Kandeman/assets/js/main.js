@@ -227,10 +227,10 @@
     { keys: ['perdes','peraturan desa','produk hukum','hukum','edukasi','poster','literasi'], anchor: '#hukum-edukasi' },
 
     // ── Transparency Hub ──
-    { keys: ['unduh data','dataset','dokumen anggaran','transparansi','arsip dokumen'], anchor: '#transparency-hub' },
+    { keys: ['unduh data','dataset','data statistik','literasi keuangan'], anchor: '#transparency-hub' },
 
     // ── Transparansi APBDes ──
-    { keys: ['apbdes','apb des','anggaran desa','total anggaran','alokasi','dana desa','apbn','add','pendapatan desa'], anchor: '#apbdes' },
+    { keys: ['apbdes','apb des','anggaran desa','total anggaran','alokasi','dana desa','apbn','add','pendapatan desa','dokumen anggaran','arsip dokumen','laporan keuangan','lppd'], anchor: '#transparansi' },
     { keys: ['realisasi','realisasi anggaran','belanja desa','pembangunan','capaian anggaran','persen realisasi'], anchor: '#realisasi' },
 
     // ── Layanan / Surat ──
@@ -595,7 +595,7 @@ function resetOrgChart() {
 function prepareDynamicLoadingStates() {
   [
     'berita-grid','galeri-grid','potensi-grid','umkm-grid','agenda-mendatang',
-    'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
+    'agenda-lalu','prestasi-grid','kontak-kesehatan-list','financial-docs-grid',
     'perdes-list','poster-edukasi-list',
   ].forEach(id => renderDataState(id, 'loading'));
   renderDataState('perangkat-tbody', 'loading', null, { colspan: 4 });
@@ -2342,12 +2342,13 @@ async function runDataLoader(name, loader) {
 }
 
 function _initDataLoad() {
+  bindFinancialArchiveTabs();
   prepareDynamicLoadingStates();
   if (!sb) {
     console.error('Supabase client belum tersedia.');
     [
       'berita-grid','galeri-grid','potensi-grid','umkm-grid','agenda-mendatang',
-      'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
+      'agenda-lalu','prestasi-grid','kontak-kesehatan-list','financial-docs-grid',
       'perdes-list','poster-edukasi-list',
     ].forEach(id => renderDataState(id, 'error'));
     renderDataState('perangkat-tbody', 'error', null, { colspan: 4 });
@@ -2393,6 +2394,96 @@ function switchPetaLayer(layer, btn) {
   // TODO: Ganti src iframe berdasarkan layer setelah URL My Maps resmi dikonfirmasi.
 }
 
+const FINANCIAL_DOC_TYPES = Object.freeze([
+  { key:'apbdes', label:'APBDes', icon:'fa-file-invoice-dollar' },
+  { key:'realisasi_anggaran', label:'Realisasi Anggaran', icon:'fa-chart-column' },
+  { key:'laporan_keuangan', label:'Laporan Keuangan', icon:'fa-book-open' },
+  { key:'lppd', label:'LPPD', icon:'fa-landmark' },
+]);
+const FINANCIAL_ARCHIVE_YEARS = Object.freeze([2024, 2025, 2026]);
+let _financialArchiveYear = 2026;
+let _financialDocuments = [];
+
+function resolveFinancialDocumentYear(documentRecord) {
+  const storedYear = Number(documentRecord?.tahun);
+  if (FINANCIAL_ARCHIVE_YEARS.includes(storedYear)) return storedYear;
+  const titleYear = String(documentRecord?.judul || '').match(/\b(2024|2025|2026)\b/);
+  return titleYear ? Number(titleYear[1]) : 2026;
+}
+
+function renderFinancialArchive() {
+  const grid = document.getElementById('financial-docs-grid');
+  if (!grid) return;
+  const yearDocuments = _financialDocuments.filter(documentRecord =>
+    resolveFinancialDocumentYear(documentRecord) === _financialArchiveYear
+  );
+  const availableCount = FINANCIAL_DOC_TYPES.filter(type => {
+    const record = yearDocuments.find(item => item.kategori === type.key);
+    return Boolean(record && safeUrl(record.file_url));
+  }).length;
+
+  const yearLabel = document.getElementById('financial-archive-year');
+  const countLabel = document.getElementById('financial-archive-count');
+  if (yearLabel) yearLabel.innerHTML = `<i class="fa-regular fa-calendar"></i> Tahun ${_financialArchiveYear}`;
+  if (countLabel) countLabel.textContent = `${availableCount} dari ${FINANCIAL_DOC_TYPES.length} dokumen tersedia`;
+  grid.setAttribute('aria-label', `Arsip keuangan tahun ${_financialArchiveYear}`);
+
+  grid.innerHTML = FINANCIAL_DOC_TYPES.map(type => {
+    const record = yearDocuments.find(item => item.kategori === type.key);
+    const href = safeUrl(record?.file_url);
+    const available = Boolean(href);
+    const description = record?.keterangan
+      ? escHtml(record.keterangan)
+      : `Dokumen ${escHtml(type.label)} tahun ${_financialArchiveYear}`;
+    return `<article class="financial-doc-card${available ? ' is-available' : ''}">
+      <div class="financial-doc-symbol" aria-hidden="true"><i class="fa-solid ${type.icon}"></i></div>
+      <div class="financial-doc-copy">
+        <h4>${escHtml(type.label)}</h4>
+        <div class="financial-doc-meta">
+          <span class="financial-doc-status">${available ? 'PDF tersedia' : 'Belum tersedia'}</span>
+          ${available ? `<span aria-hidden="true">·</span><span title="${description}">Tahun ${_financialArchiveYear}</span>` : ''}
+        </div>
+      </div>
+      <div class="financial-doc-actions">
+        ${available ? `<a class="financial-doc-action" href="${href}" target="_blank" rel="noopener noreferrer" aria-label="Lihat ${escHtml(type.label)} tahun ${_financialArchiveYear}"><i class="fa-regular fa-eye"></i><span>Lihat</span></a>
+        <a class="financial-doc-action download" href="${href}" target="_blank" rel="noopener noreferrer" download aria-label="Unduh ${escHtml(type.label)} tahun ${_financialArchiveYear}"><i class="fa-solid fa-download"></i><span>Unduh</span></a>`
+        : '<span class="financial-doc-unavailable">Menunggu publikasi</span>'}
+      </div>
+    </article>`;
+  }).join('');
+}
+
+function selectFinancialArchiveYear(year, selectedButton) {
+  const parsedYear = Number(year);
+  if (!FINANCIAL_ARCHIVE_YEARS.includes(parsedYear)) return;
+  _financialArchiveYear = parsedYear;
+  document.querySelectorAll('.financial-year-tab').forEach(button => {
+    const isActive = button === selectedButton || Number(button.dataset.financialYear) === parsedYear;
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-selected', String(isActive));
+    button.tabIndex = isActive ? 0 : -1;
+  });
+  renderFinancialArchive();
+}
+
+function bindFinancialArchiveTabs() {
+  const tabs = [...document.querySelectorAll('.financial-year-tab')];
+  tabs.forEach((button, index) => {
+    if (button.dataset.bound === 'true') return;
+    button.dataset.bound = 'true';
+    button.addEventListener('click', () => selectFinancialArchiveYear(button.dataset.financialYear, button));
+    button.addEventListener('keydown', event => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const nextIndex = event.key === 'Home' ? 0
+        : event.key === 'End' ? tabs.length - 1
+        : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+      tabs[nextIndex].focus();
+      selectFinancialArchiveYear(tabs[nextIndex].dataset.financialYear, tabs[nextIndex]);
+    });
+  });
+}
+
 // Load semua dokumen download dari tabel Supabase
 async function loadDokumen() {
   let { data, error } = await sb.from('dokumen')
@@ -2401,38 +2492,17 @@ async function loadDokumen() {
     .order('urutan');
   if (error) {
     console.error('Gagal memuat dokumen:', error);
-    renderDataState('arsip-apbdes-list', 'error', 'Dokumen APBDes belum dapat dimuat.');
+    renderDataState('financial-docs-grid', 'error', 'Arsip keuangan belum dapat dimuat.');
     renderDataState('perdes-list', 'error', 'Peraturan desa belum dapat dimuat.');
     renderDataState('poster-edukasi-list', 'error', 'Poster edukasi belum dapat dimuat.');
     return;
   }
   data = data || [];
 
-  const ICON = {
-    pdf:   { i:'fa-file-pdf',   c:'#C0392B' },
-    excel: { i:'fa-file-excel', c:'#1D6F42' },
-    word:  { i:'fa-file-word',  c:'#2B579A' },
-    lainnya:{ i:'fa-file',      c:'#555' },
-  };
-
-  // ── Arsip APBDes ──
-  const arsipEl = document.getElementById('arsip-apbdes-list');
-  const arsip = data.filter(d => d.kategori === 'apbdes');
-  if (arsipEl) {
-    arsipEl.innerHTML = !arsip.length
-      ? '<p class="daftar-kosong"><i class="fa-solid fa-circle-info"></i> Belum ada dokumen APBDes yang diunggah.</p>'
-      : arsip.map(d => {
-      const ic = ICON[d.tipe] || ICON.pdf;
-      return `<a href="${safeUrl(d.file_url)}" class="arsip-item" target="_blank" rel="noopener noreferrer" download>
-        <div class="arsip-icon"><i class="fa-solid ${ic.i}" style="color:${ic.c};"></i></div>
-        <div class="arsip-info">
-          <h4>${escHtml(d.judul)}</h4>
-          <span>${escHtml((d.tipe||'PDF').toUpperCase())}${d.keterangan ? ' · ' + escHtml(d.keterangan) : ''}</span>
-        </div>
-        <i class="fa-solid fa-download" style="color:var(--emerald);"></i>
-      </a>`;
-    }).join('');
-  }
+  // ── Arsip Keuangan Desa ──
+  const financialKeys = FINANCIAL_DOC_TYPES.map(type => type.key);
+  _financialDocuments = data.filter(documentRecord => financialKeys.includes(documentRecord.kategori));
+  renderFinancialArchive();
 
   // ── Perdes ──
   const perdesEl = document.getElementById('perdes-list');
@@ -2498,7 +2568,6 @@ function _fileBelumAda(namaFile) {
   alert(`File "${namaFile}" belum diunggah.\n\nAdmin dapat mengunggah dokumen melalui Panel Admin SIKANDA → menu Dokumen & Arsip.`);
 }
 function unduhSOP(e)        { e.preventDefault(); _fileBelumAda('SOP Pelayanan Desa'); return false; }
-function unduhArsip(e,nama) { e.preventDefault(); _fileBelumAda(nama); return false; }
 function unduhStatistik(e)  { e.preventDefault(); _fileBelumAda('Data Statistik Kependudukan'); return false; }
 function unduhPerdes(e,nama){ e.preventDefault(); _fileBelumAda(nama); return false; }
 

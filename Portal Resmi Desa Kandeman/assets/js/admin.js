@@ -80,7 +80,9 @@ function validateUploadFile(file, kind = 'image', maxBytes = 3 * 1024 * 1024) {
   const extension = getFileExtension(file.name);
   const whitelist = kind === 'image'
     ? ALLOWED_IMAGE_TYPES
-    : { ...ALLOWED_DOCUMENT_TYPES, ...ALLOWED_IMAGE_TYPES };
+    : kind === 'pdf'
+      ? { 'application/pdf': ['pdf'] }
+      : { ...ALLOWED_DOCUMENT_TYPES, ...ALLOWED_IMAGE_TYPES };
   const extensions = whitelist[file.type];
   if (!extensions || !extensions.includes(extension)) {
     return { ok:false, message:'Format file tidak diizinkan. Periksa jenis dan ekstensi file.' };
@@ -256,7 +258,7 @@ function switchPanel(id, el) {
   if (id==='berita')    { loadBerita(); setTimeout(loadDraft, 300); }
   if (id==='galeri')    loadGaleri();
   if (id==='perangkat') loadPerangkat();
-  if (id==='apbdes')    loadApbdes();
+  if (id==='apbdes')    { loadApbdes(); loadFinanceDocuments(); }
   if (id==='potensi')   loadPotensi();
   if (id==='umkm')      loadUmkm();
   if (id==='prestasi')  loadPrestasi();
@@ -1152,6 +1154,14 @@ function resetPerangkatForm() {
 // ════════════════════════════════════════════
 // APBDES — format Laporan Realisasi APB Desa (LRA)
 // ════════════════════════════════════════════
+const FINANCE_DOCUMENT_TYPES = Object.freeze({
+  apbdes: { label:'APBDes', icon:'fa-file-invoice-dollar' },
+  realisasi_anggaran: { label:'Realisasi Anggaran', icon:'fa-chart-column' },
+  laporan_keuangan: { label:'Laporan Keuangan', icon:'fa-book-open' },
+  lppd: { label:'LPPD', icon:'fa-landmark' },
+});
+const FINANCE_DOCUMENT_YEARS = Object.freeze([2024, 2025, 2026]);
+
 const LRA_SECTIONS = {
   pendapatan: [
     ['pad', 'Pendapatan Asli Desa'], ['dana_desa', 'Dana Desa'],
@@ -1319,6 +1329,175 @@ async function simpanApbdes() {
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-check"></i> Simpan Data APBDes';
   }
+}
+
+// ════════════════════════════════════════════
+// ARSIP PDF KEUANGAN DESA
+// ════════════════════════════════════════════
+const _financeDocumentMap = {};
+
+function financeRecordYear(record) {
+  const storedYear = Number(record?.tahun);
+  if (FINANCE_DOCUMENT_YEARS.includes(storedYear)) return storedYear;
+  const titleYear = String(record?.judul || '').match(/\b(2024|2025|2026)\b/);
+  return titleYear ? Number(titleYear[1]) : 2026;
+}
+
+async function loadFinanceDocuments() {
+  const list = document.getElementById('finance-document-list');
+  if (!list) return;
+  const { data, error } = await sb.from('dokumen').select('*').order('urutan');
+  if (error) {
+    list.innerHTML = `<div class="empty" style="flex-direction:column;gap:7px;">
+      <i class="fa-solid fa-triangle-exclamation" style="color:var(--gold);"></i>
+      <div>Arsip keuangan belum dapat dimuat.</div>
+      <div style="font-size:10.5px;color:var(--text-muted);">Jalankan migrasi SQL terbaru, lalu muat ulang halaman.</div>
+    </div>`;
+    return;
+  }
+
+  Object.keys(_financeDocumentMap).forEach(id => delete _financeDocumentMap[id]);
+  const records = (data || [])
+    .filter(record => Object.hasOwn(FINANCE_DOCUMENT_TYPES, record.kategori))
+    .sort((a, b) => financeRecordYear(b) - financeRecordYear(a)
+      || Object.keys(FINANCE_DOCUMENT_TYPES).indexOf(a.kategori) - Object.keys(FINANCE_DOCUMENT_TYPES).indexOf(b.kategori));
+  records.forEach(record => { _financeDocumentMap[record.id] = record; });
+
+  const count = document.getElementById('finance-admin-count');
+  if (count) count.textContent = `${records.length} dokumen`;
+  if (!records.length) {
+    list.innerHTML = '<div class="empty"><i class="fa-solid fa-file-circle-plus"></i>Belum ada PDF keuangan yang dipublikasikan.</div>';
+    return;
+  }
+
+  list.innerHTML = `<div class="finance-admin-table-wrap"><table class="finance-admin-table">
+    <thead><tr><th>Tahun</th><th>Dokumen</th><th>Softfile</th><th style="text-align:right;">Aksi</th></tr></thead>
+    <tbody>${records.map(record => {
+      const type = FINANCE_DOCUMENT_TYPES[record.kategori];
+      const fileUrl = safeAdminUrl(record.file_url);
+      return `<tr>
+        <td><span class="finance-admin-year">${financeRecordYear(record)}</span></td>
+        <td><div class="finance-admin-document"><i class="fa-solid ${type.icon}"></i><div><strong>${escHtml(type.label)}</strong><span>${escHtml(record.keterangan || record.judul || '')}</span></div></div></td>
+        <td>${fileUrl ? `<a class="finance-admin-file-link" href="${fileUrl}" target="_blank" rel="noopener noreferrer"><i class="fa-regular fa-eye"></i> Lihat PDF</a>` : '<span style="color:var(--danger);font-size:10px;">File tidak tersedia</span>'}</td>
+        <td><div class="finance-admin-actions">
+          <button type="button" class="icon-btn" onclick="editFinanceDocument('${escHtml(record.id)}')" title="Edit arsip"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button type="button" class="icon-btn danger" onclick="confirmDeleteFinanceDocument('${escHtml(record.id)}')" title="Hapus arsip"><i class="fa-solid fa-trash-can"></i></button>
+        </div></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
+}
+
+async function saveFinanceDocument() {
+  const id = document.getElementById('fin-id').value;
+  const category = document.getElementById('fin-kategori').value;
+  const year = Number(document.getElementById('fin-tahun').value);
+  const description = document.getElementById('fin-keterangan').value.trim();
+  const file = document.getElementById('fin-file').files[0];
+  const type = FINANCE_DOCUMENT_TYPES[category];
+  if (!type) { showToast('Jenis dokumen tidak valid.', true); return; }
+  if (!FINANCE_DOCUMENT_YEARS.includes(year)) { showToast('Tahun dokumen harus 2024, 2025, atau 2026.', true); return; }
+  if (description.length > 240) { showToast('Keterangan maksimal 240 karakter.', true); return; }
+
+  const duplicate = Object.values(_financeDocumentMap).find(record =>
+    record.id !== id && record.kategori === category && financeRecordYear(record) === year
+  );
+  if (duplicate) {
+    showToast(`${type.label} tahun ${year} sudah tersedia. Edit dokumen tersebut untuk mengganti file.`, true);
+    return;
+  }
+
+  let fileUrl = _financeDocumentMap[id]?.file_url || '';
+  if (!file && !fileUrl) { showToast('Pilih softfile PDF terlebih dahulu.', true); return; }
+
+  const button = document.getElementById('btn-simpan-finance');
+  button.disabled = true;
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah...';
+  let uploadedPath = '';
+  try {
+    if (file) {
+      const uploaded = await uploadValidatedFile(file, {
+        kind: 'pdf', folder: 'dokumen/keuangan', maxBytes: 10 * 1024 * 1024,
+      });
+      uploadedPath = uploaded.storagePath;
+      fileUrl = uploaded.publicUrl;
+    }
+
+    const typeOrder = Object.keys(FINANCE_DOCUMENT_TYPES).indexOf(category) + 1;
+    const payload = {
+      judul: `${type.label} Tahun ${year}`,
+      kategori: category,
+      tahun: year,
+      tipe: 'pdf',
+      keterangan: description,
+      file_url: fileUrl,
+      aktif: true,
+      urutan: (2026 - year) * 10 + typeOrder,
+      updated_at: new Date().toISOString(),
+    };
+    const { error } = id
+      ? await sb.from('dokumen').update(payload).eq('id', id)
+      : await sb.from('dokumen').insert(payload);
+    if (error) throw error;
+
+    const oldPath = storagePathFromPublicUrl(_financeDocumentMap[id]?.file_url || '');
+    if (uploadedPath && oldPath && oldPath !== uploadedPath) await rollbackUploadedFile(oldPath);
+    showToast(`${type.label} ${year} berhasil dipublikasikan`);
+    resetFinanceDocumentForm();
+    await loadFinanceDocuments();
+  } catch (error) {
+    if (uploadedPath) await rollbackUploadedFile(uploadedPath);
+    console.error('Gagal menyimpan arsip keuangan:', error);
+    showToast(error instanceof UploadValidationError
+      ? error.message
+      : 'Arsip gagal disimpan. Pastikan migrasi SQL terbaru sudah dijalankan.', true);
+  } finally {
+    button.disabled = false;
+    button.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publikasikan PDF';
+  }
+}
+
+function editFinanceDocument(id) {
+  const record = _financeDocumentMap[id];
+  if (!record) return;
+  document.getElementById('fin-id').value = record.id;
+  document.getElementById('fin-kategori').value = record.kategori;
+  document.getElementById('fin-tahun').value = String(financeRecordYear(record));
+  document.getElementById('fin-keterangan').value = record.keterangan || '';
+  document.getElementById('fin-file').value = '';
+  const current = document.getElementById('fin-file-current');
+  document.getElementById('fin-file-name').textContent = record.judul || 'PDF tersimpan';
+  current.classList.toggle('show', Boolean(record.file_url));
+  document.getElementById('btn-simpan-finance').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan perubahan';
+  document.getElementById('finance-document-form').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+function confirmDeleteFinanceDocument(id) {
+  const record = _financeDocumentMap[id];
+  const label = FINANCE_DOCUMENT_TYPES[record?.kategori]?.label || 'Dokumen';
+  openConfirm('Hapus arsip keuangan?', `${label} tahun ${financeRecordYear(record)} akan dihapus permanen.`,
+    'Hapus', () => deleteFinanceDocument(id));
+}
+
+async function deleteFinanceDocument(id) {
+  const storagePath = storagePathFromPublicUrl(_financeDocumentMap[id]?.file_url || '');
+  const result = await hapusBaris('dokumen', id);
+  if (!result.ok) { showToast(result.pesan, true); return; }
+  if (storagePath) await rollbackUploadedFile(storagePath);
+  showToast('Arsip keuangan dihapus');
+  resetFinanceDocumentForm();
+  await loadFinanceDocuments();
+}
+
+function resetFinanceDocumentForm() {
+  ['fin-id', 'fin-keterangan', 'fin-file'].forEach(id => {
+    const element = document.getElementById(id);
+    if (element) element.value = '';
+  });
+  document.getElementById('fin-kategori').value = 'apbdes';
+  document.getElementById('fin-tahun').value = '2026';
+  document.getElementById('fin-file-current').classList.remove('show');
+  document.getElementById('btn-simpan-finance').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publikasikan PDF';
 }
 
 // ════════════════════════════════════════════
@@ -1812,9 +1991,10 @@ function resetPrestasiForm() {
 // DOKUMEN & ARSIP
 // ═══════════════════════════════════════════════
 const _dokumenMap = {};
+const GENERAL_DOCUMENT_CATEGORIES = Object.freeze(['perdes', 'sop', 'statistik', 'poster']);
 
 async function loadDokumen() {
-  const { data, error } = await sb.from('dokumen').select('*').order('kategori').order('urutan');
+  let { data, error } = await sb.from('dokumen').select('*').order('kategori').order('urutan');
   const el = document.getElementById('dokumen-list');
   if (error) {
     el.innerHTML = `<div class="empty" style="flex-direction:column;gap:8px;">
@@ -1824,11 +2004,13 @@ async function loadDokumen() {
     </div>`;
     return;
   }
+  data = (data || []).filter(documentRecord => GENERAL_DOCUMENT_CATEGORIES.includes(documentRecord.kategori));
+  Object.keys(_dokumenMap).forEach(id => delete _dokumenMap[id]);
   if (!data?.length) {
     el.innerHTML = '<div class="empty"><i class="fa-solid fa-folder-open"></i>Belum ada dokumen.</div>'; return;
   }
   data.forEach(d => { _dokumenMap[d.id] = d; });
-  const KAT = { apbdes:'Arsip APBDes', perdes:'Peraturan Desa', sop:'SOP', statistik:'Statistik' };
+  const KAT = { perdes:'Peraturan Desa', sop:'SOP', statistik:'Statistik', poster:'Poster Edukasi' };
   const TIPE_ICON = { pdf:'fa-file-pdf', excel:'fa-file-excel', word:'fa-file-word', lainnya:'fa-file' };
   el.innerHTML = `<table><thead><tr>
     <th>File</th><th>Judul</th><th>Kategori</th><th>Aksi</th>
@@ -1854,6 +2036,7 @@ async function simpanDokumen() {
   const tipe  = document.getElementById('dok-tipe').value;
   const ket   = document.getElementById('dok-keterangan').value.trim();
   if (!judul) { showToast('Judul wajib diisi', true); return; }
+  if (!GENERAL_DOCUMENT_CATEGORIES.includes(kat)) { showToast('Kategori dokumen umum tidak valid.', true); return; }
   if (judul.length > 180) { showToast('Judul dokumen maksimal 180 karakter', true); return; }
   if (ket.length > 1000) { showToast('Keterangan dokumen maksimal 1.000 karakter', true); return; }
 
@@ -1932,7 +2115,7 @@ function resetDokumenForm() {
   ['dok-id','dok-judul','dok-keterangan','dok-file'].forEach(i => {
     const el = document.getElementById(i); if (el) el.value = '';
   });
-  document.getElementById('dok-kategori').value = 'apbdes';
+  document.getElementById('dok-kategori').value = 'perdes';
   document.getElementById('dok-tipe').value = 'pdf';
   document.getElementById('dok-file-current').style.display = 'none';
   document.getElementById('dokumen-form-title').textContent = 'Tambah / edit dokumen';
