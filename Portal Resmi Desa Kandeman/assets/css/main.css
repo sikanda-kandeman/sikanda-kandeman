@@ -829,18 +829,46 @@
     .bf-teal   { background: var(--teal); }
     .bf-plum   { background: #8876B5; }
 
-    .real-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-    .real-card {
-      background: var(--cream); border: 1px solid var(--border);
-      border-radius: var(--r-md); padding: 18px;
-    }
-    .real-card .pct {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 30px; font-weight: 700; color: var(--emerald);
-    }
-    .real-card .pct.compact { font-size: 21px; line-height: 1.35; padding-top: 5px; }
-    .real-card .desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-    .real-card .real-nominal { font-size: 11px; color: var(--text-sec); margin-top: 7px; font-variant-numeric: tabular-nums; }
+    .realisasi-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:12px; }
+    .realisasi-kicker { font-size:12.5px; font-weight:650; color:var(--text); margin:0; }
+    .realisasi-caption { font-size:12px; color:var(--text-muted); line-height:1.5; margin:3px 0 0; }
+    .realisasi-status { display:inline-flex; align-items:center; gap:6px; flex-shrink:0; padding:6px 9px; border-radius:999px; background:var(--emerald-pale); color:var(--emerald); font-size:10.5px; font-weight:650; }
+    .realisasi-status i { font-size:10px; }
+    .realisasi-overview { display:flex; align-items:center; gap:18px; padding:17px; background:var(--cream); border:1px solid var(--border); border-radius:var(--r-md); }
+    .realisasi-progress { --progress:0; width:88px; height:88px; flex:0 0 88px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--emerald) calc(var(--progress) * 1%), #E7E7DD 0); }
+    .realisasi-progress-inner { width:72px; height:72px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#fff; }
+    .realisasi-progress-inner strong { font-family:'Cormorant Garamond', serif; font-size:25px; line-height:1; color:var(--emerald); font-variant-numeric:tabular-nums; }
+    .realisasi-progress-inner span { margin-top:3px; font-size:9px; color:var(--text-muted); }
+    .realisasi-overview-copy { min-width:0; }
+    .realisasi-label { display:block; font-size:11px; font-weight:600; color:var(--text-muted); }
+    .realisasi-overview-copy strong { display:block; margin-top:4px; font-family:'Cormorant Garamond', serif; font-size:27px; line-height:1.1; color:var(--text); font-variant-numeric:tabular-nums; }
+    .realisasi-overview-copy p { margin:5px 0 0; font-size:11px; line-height:1.45; color:var(--text-sec); font-variant-numeric:tabular-nums; }
+    .realisasi-stats { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:10px; }
+    .realisasi-stat { min-width:0; padding:12px 11px; border-left:2px solid var(--border); background:#fff; }
+    .realisasi-stat:first-child { border-color:var(--emerald); }
+    .realisasi-stat:nth-child(2) { border-color:var(--gold); }
+    .realisasi-stat:nth-child(3) { border-color:var(--teal); }
+    .realisasi-stat span { display:block; min-height:27px; font-size:10px; line-height:1.35; color:var(--text-muted); }
+    .realisasi-stat strong { display:block; overflow:hidden; margin-top:3px; color:var(--text); font-size:15px; line-height:1.2; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums; }
+    .realisasi-stat:first-child strong { color:var(--emerald); }
+    .realisasi-stat small { display:block; overflow:hidden; margin-top:4px; color:var(--text-sec); font-size:10px; text-overflow:ellipsis; white-space:nowrap; font-variant-numeric:tabular-nums; }
+    .realisasi-breakdown { margin-top:19px; }
+    .realisasi-breakdown-title { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:11px; }
+    .realisasi-breakdown-title h3 { margin:0; color:var(--text); font-size:13px; font-weight:650; }
+    .realisasi-breakdown-title p { margin:3px 0 0; color:var(--text-muted); font-size:11px; line-height:1.45; }
+    .realisasi-legend { display:inline-flex; align-items:center; gap:5px; flex-shrink:0; color:var(--text-muted); font-size:10px; }
+    .realisasi-legend i { width:8px; height:8px; border-radius:50%; background:var(--emerald); }
+    .realisasi-row { padding:11px 0; border-top:1px solid var(--border); }
+    .realisasi-row:first-child { border-top:0; }
+    .realisasi-row-top { display:flex; align-items:baseline; justify-content:space-between; gap:14px; }
+    .realisasi-row-label { min-width:0; overflow:hidden; color:var(--text); font-size:11px; font-weight:600; text-overflow:ellipsis; white-space:nowrap; }
+    .realisasi-row-percent { flex-shrink:0; color:var(--emerald); font-size:12px; font-weight:700; font-variant-numeric:tabular-nums; }
+    .realisasi-row-bar { height:5px; margin-top:7px; overflow:hidden; border-radius:99px; background:#E7E7DD; }
+    .realisasi-row-bar span { display:block; width:calc(var(--progress) * 1%); height:100%; border-radius:inherit; background:var(--emerald); transition:width .8s cubic-bezier(.2,.7,.2,1); }
+    .realisasi-row-meta { display:flex; justify-content:space-between; gap:10px; margin-top:6px; color:var(--text-muted); font-size:10px; font-variant-numeric:tabular-nums; }
+    .realisasi-row-meta strong { color:var(--text-sec); font-weight:600; }
+    .realisasi-loading { padding:18px 0; color:var(--text-muted); font-size:12px; text-align:center; }
+    .realisasi-loading i { margin-right:5px; }
 
     .trans-note {
       margin-top: 20px; padding: 14px 18px;
@@ -850,32 +878,18 @@
     }
     .trans-note i { flex-shrink: 0; margin-top: 2px; }
 
-    /* Pendapatan table */
-    .pendapatan-table { width: 100%; border-collapse: collapse; font-size: 13.5px; border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; }
-    .pendapatan-table th {
-      text-align: left; font-size: 10.5px; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: .06em;
-      padding: 11px 16px; border-bottom: 1px solid var(--border); background: var(--cream);
+    @media (max-width: 560px) {
+      .realisasi-stats { grid-template-columns:1fr; gap:5px; }
+      .realisasi-stat span { min-height:0; }
+      .realisasi-stat { padding:10px 11px; }
     }
-    .pendapatan-table th:not(:first-child) { text-align: right; }
-    .pendapatan-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); color: var(--text-sec); }
-    .pendapatan-table tr:last-child td { border-bottom: none; }
-    .pendapatan-table td:last-child { text-align: right; font-weight: 500; color: var(--text); }
-    .pendapatan-table td:nth-child(2), .pendapatan-table td:nth-child(3), .pendapatan-table td:nth-child(4) { text-align: right; }
-    .pendapatan-table .apb-transfer-row td { background: #F8F6F0; font-weight: 600; color: var(--text); }
-    .pendapatan-table .apb-sub-row td:first-child { padding-left: 28px; }
-    .pendapatan-table .apb-total-row td { background: var(--cream); color: var(--text); }
-    .apb-summary { margin-top: 16px; display: grid; grid-template-columns: repeat(2, 1fr); border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; }
-    .apb-summary-item { padding: 13px 15px; background: #fff; border-bottom: 1px solid var(--border); }
-    .apb-summary-item:nth-child(odd) { border-right: 1px solid var(--border); }
-    .apb-summary-item:nth-last-child(-n+2) { border-bottom: none; }
-    .apb-summary-label { display:block; font-size:10px; color:var(--text-muted); letter-spacing:.04em; text-transform:uppercase; margin-bottom:4px; }
-    .apb-summary-value { display:block; font-size:13px; font-weight:600; color:var(--text); font-variant-numeric: tabular-nums; }
-    .apb-summary-value.negative { color:#A63A32; }
-    @media (max-width: 460px) {
-      .apb-summary { grid-template-columns: 1fr; }
-      .apb-summary-item:nth-child(odd) { border-right: none; }
-      .apb-summary-item:nth-last-child(2) { border-bottom: 1px solid var(--border); }
+    @media (max-width: 390px) {
+      .realisasi-overview { align-items:flex-start; gap:13px; padding:14px; }
+      .realisasi-progress { width:74px; height:74px; flex-basis:74px; }
+      .realisasi-progress-inner { width:60px; height:60px; }
+      .realisasi-progress-inner strong { font-size:20px; }
+      .realisasi-overview-copy strong { font-size:23px; }
+      .realisasi-status { display:none; }
     }
 
     /* ══════════════════════════════════════
@@ -2653,7 +2667,6 @@
     }
     @media (max-width: 480px) {
       .org-kadus-row { grid-template-columns: 1fr 1fr; }
-      .real-grid { grid-template-columns: 1fr; }
     }
 
     /* ══════════════════════════════════════
