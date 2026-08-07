@@ -199,7 +199,7 @@
     { keys: ['perangkat','kaur','kasi','kadus','kepala dusun','perangkat desa','daftar perangkat','tata usaha','keuangan','perencanaan'], anchor: '#perangkat-desa' },
 
     // ── Lembaga ──
-    { keys: ['lembaga','bpd','pkk','karang taruna','linmas','lpmd','bumdes','gapoktan','kelembagaan'], anchor: '#lembaga' },
+    { keys: ['lembaga','bpd','pkk','karang taruna','linmas','lpmd','bumdes','posyandu','fkd','babinsa','bhabinkamtibmas','gapoktan','kelembagaan'], anchor: '#lembaga' },
 
     // ── Potensi ──
     { keys: ['potensi','pertanian','sawah','padi','peternakan','ayam','sapi'], anchor: '#potensi' },
