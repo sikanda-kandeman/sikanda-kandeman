@@ -1053,6 +1053,141 @@
     }
     .trans-note i { flex-shrink: 0; margin-top: 2px; }
 
+    /* Arsip PDF keuangan ditempatkan bersama data APBDes agar alurnya mudah dipahami. */
+    .financial-archive {
+      margin-top: 44px; padding: 28px;
+      background: #F8F8F3; border: 1px solid rgba(13,43,26,.11);
+      border-radius: 22px; box-shadow: 0 22px 50px -42px rgba(13,43,26,.42);
+    }
+    .financial-archive-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(13,43,26,.1);
+    }
+    .financial-archive-heading { display: flex; align-items: flex-start; gap: 14px; min-width: 0; }
+    .financial-archive-icon {
+      width: 46px; height: 46px; flex: 0 0 46px; display: grid; place-items: center;
+      color: var(--mint); background: var(--forest); border-radius: 13px;
+      box-shadow: 0 12px 24px -16px rgba(13,43,26,.75); font-size: 17px;
+    }
+    .financial-archive-kicker {
+      margin: 0 0 4px; color: var(--emerald); font-size: 9.5px; font-weight: 700;
+      line-height: 1.2; letter-spacing: .1em; text-transform: uppercase;
+    }
+    .financial-archive-heading h3 {
+      margin: 0; color: var(--forest); font-size: 20px; font-weight: 700;
+      line-height: 1.2; letter-spacing: -.025em;
+    }
+    .financial-archive-heading p:last-child {
+      max-width: 58ch; margin: 6px 0 0; color: var(--text-sec); font-size: 12px; line-height: 1.6;
+    }
+    .financial-year-tabs {
+      display: inline-grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+      flex: 0 0 auto; padding: 4px; background: #E7EAE5;
+      border: 1px solid rgba(13,43,26,.08); border-radius: 12px;
+    }
+    .financial-year-tab {
+      min-width: 58px; min-height: 36px; padding: 8px 11px;
+      color: var(--text-sec); background: transparent; border: 0; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 650;
+      font-variant-numeric: tabular-nums; cursor: pointer;
+      transition: color .2s, background-color .2s, box-shadow .2s, transform .15s;
+    }
+    .financial-year-tab:hover { color: var(--forest); background: rgba(255,255,255,.65); }
+    .financial-year-tab.active {
+      color: #fff; background: var(--forest);
+      box-shadow: 0 8px 16px -12px rgba(13,43,26,.8);
+    }
+    .financial-year-tab:active { transform: translateY(1px); }
+    .financial-year-tab:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .financial-archive-summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      margin: 18px 0 11px; color: var(--text-muted); font-size: 10.5px;
+    }
+    .financial-archive-summary span:first-child {
+      display: inline-flex; align-items: center; gap: 7px; color: var(--forest); font-weight: 650;
+    }
+    .financial-archive-summary span:last-child { font-variant-numeric: tabular-nums; }
+    .financial-docs-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .financial-doc-card {
+      min-width: 0; display: grid; grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: center; gap: 13px; padding: 15px;
+      background: #fff; border: 1px solid rgba(13,43,26,.1); border-radius: 14px;
+      transition: border-color .22s, box-shadow .22s, transform .22s;
+    }
+    .financial-doc-card.is-available:hover {
+      transform: translateY(-2px); border-color: rgba(28,107,62,.28);
+      box-shadow: 0 13px 28px -24px rgba(13,43,26,.65);
+    }
+    .financial-doc-symbol {
+      width: 42px; height: 42px; display: grid; place-items: center;
+      color: #A6382B; background: #F9ECE9; border-radius: 11px; font-size: 16px;
+    }
+    .financial-doc-card:not(.is-available) .financial-doc-symbol {
+      color: var(--text-muted); background: #EFF0ED;
+    }
+    .financial-doc-copy { min-width: 0; }
+    .financial-doc-copy h4 {
+      margin: 0; color: var(--text); font-size: 12.5px; font-weight: 650;
+      line-height: 1.35; text-wrap: balance;
+    }
+    .financial-doc-meta {
+      display: flex; align-items: center; gap: 7px; margin-top: 5px;
+      color: var(--text-muted); font-size: 9.5px; line-height: 1.3;
+    }
+    .financial-doc-status {
+      display: inline-flex; align-items: center; gap: 4px; color: var(--emerald); font-weight: 650;
+    }
+    .financial-doc-status::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor;
+    }
+    .financial-doc-card:not(.is-available) .financial-doc-status { color: var(--text-muted); }
+    .financial-doc-actions { display: flex; align-items: center; gap: 5px; }
+    .financial-doc-action {
+      min-width: 34px; min-height: 34px; display: inline-flex; align-items: center;
+      justify-content: center; gap: 6px; padding: 8px 10px;
+      color: var(--emerald); background: #EDF5EF; border: 1px solid rgba(28,107,62,.12);
+      border-radius: 9px; font-size: 10px; font-weight: 650; text-decoration: none;
+      transition: color .2s, background-color .2s, border-color .2s, transform .15s;
+    }
+    .financial-doc-action:hover { color: #fff; background: var(--emerald); border-color: var(--emerald); }
+    .financial-doc-action:active { transform: translateY(1px); }
+    .financial-doc-action:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .financial-doc-action.download { color: #fff; background: var(--forest); border-color: var(--forest); }
+    .financial-doc-action.download:hover { background: var(--emerald); border-color: var(--emerald); }
+    .financial-doc-unavailable {
+      display: inline-flex; align-items: center; min-height: 34px; padding: 7px 9px;
+      color: var(--text-muted); background: #F1F2EF; border-radius: 8px;
+      font-size: 9px; line-height: 1.25; text-align: center;
+    }
+    .financial-doc-loading {
+      grid-column: 1 / -1; padding: 34px 20px; color: var(--text-muted);
+      font-size: 12px; text-align: center;
+    }
+    .financial-doc-loading i { margin-right: 7px; }
+
+    @media (max-width: 760px) {
+      .financial-archive { margin-top: 34px; padding: 21px; border-radius: 18px; }
+      .financial-archive-head { align-items: stretch; flex-direction: column; gap: 18px; }
+      .financial-year-tabs { width: 100%; }
+      .financial-year-tab { min-width: 0; }
+      .financial-docs-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 430px) {
+      .financial-archive { padding: 17px; }
+      .financial-archive-heading { gap: 11px; }
+      .financial-archive-icon { width: 40px; height: 40px; flex-basis: 40px; border-radius: 11px; }
+      .financial-archive-heading h3 { font-size: 18px; }
+      .financial-archive-summary { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .financial-doc-card { grid-template-columns: 38px minmax(0, 1fr); gap: 11px; padding: 13px; }
+      .financial-doc-symbol { width: 38px; height: 38px; }
+      .financial-doc-actions { grid-column: 1 / -1; }
+      .financial-doc-action { flex: 1; }
+      .financial-doc-unavailable { width: 100%; justify-content: center; }
+    }
+
     @media (max-width: 560px) {
       #realisasi { width: 100%; padding: 18px; border-radius: 18px; }
       #realisasi .realisasi-heading { gap: 12px; margin-bottom: 15px; }
