@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260807-realisasi-v2" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260807-realisasi-kategori-v3" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -928,45 +928,57 @@
         <div class="realisasi-heading">
           <div>
             <p class="realisasi-kicker">Ringkasan Realisasi</p>
-            <p class="realisasi-caption">Penggunaan anggaran desa pada tahun berjalan.</p>
+            <p class="realisasi-caption">Pilih kategori untuk melihat capaian dan rincian anggaran desa.</p>
           </div>
           <span class="realisasi-status"><i class="fa-solid fa-circle-check"></i> Data terbaru</span>
         </div>
 
+        <div class="realisasi-tabs" role="tablist" aria-label="Kategori realisasi anggaran">
+          <button type="button" class="realisasi-tab" role="tab" aria-selected="false" tabindex="-1" data-realisasi-category="pendapatan">
+            <i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i><span>Pendapatan</span>
+          </button>
+          <button type="button" class="realisasi-tab active" role="tab" aria-selected="true" tabindex="0" data-realisasi-category="belanja">
+            <i class="fa-solid fa-wallet" aria-hidden="true"></i><span>Belanja</span>
+          </button>
+          <button type="button" class="realisasi-tab" role="tab" aria-selected="false" tabindex="-1" data-realisasi-category="pembiayaan">
+            <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i><span>Pembiayaan</span>
+          </button>
+        </div>
+
         <div class="realisasi-overview" aria-live="polite">
           <div class="realisasi-progress" id="apb-realisasi-progress" style="--progress:0" role="img" aria-label="Realisasi belanja 0 persen">
-            <div class="realisasi-progress-inner"><strong id="apb-r2">—</strong><span>terserap</span></div>
+            <div class="realisasi-progress-inner"><strong id="apb-overview-percent">—</strong><span id="apb-overview-progress-label">terserap</span></div>
           </div>
           <div class="realisasi-overview-copy">
-            <span class="realisasi-label">Belanja terealisasi</span>
-            <strong id="apb-r2-nominal">Rp —</strong>
-            <p id="apb-belanja-comparison">dari anggaran belanja Rp —</p>
+            <span class="realisasi-label" id="apb-overview-label">Belanja terealisasi</span>
+            <strong id="apb-overview-nominal">Rp —</strong>
+            <p id="apb-overview-comparison">dari anggaran belanja Rp —</p>
           </div>
         </div>
 
         <div class="realisasi-stats" aria-live="polite">
           <div class="realisasi-stat">
-            <div class="realisasi-stat-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <div class="realisasi-stat-icon"><i class="fa-solid fa-arrow-trend-up" id="apb-stat-1-icon"></i></div>
             <div class="realisasi-stat-copy">
-              <span>Realisasi pendapatan</span>
-              <strong id="apb-r1">—</strong>
-              <small id="apb-r1-nominal">Rp —</small>
+              <span id="apb-stat-1-label">Realisasi pendapatan</span>
+              <strong id="apb-stat-1-value">—</strong>
+              <small id="apb-stat-1-note">Rp —</small>
             </div>
           </div>
           <div class="realisasi-stat">
-            <div class="realisasi-stat-icon"><i class="fa-solid fa-wallet"></i></div>
+            <div class="realisasi-stat-icon"><i class="fa-solid fa-wallet" id="apb-stat-2-icon"></i></div>
             <div class="realisasi-stat-copy">
-              <span>Sisa anggaran belanja</span>
-              <strong id="apb-sisa-belanja">Rp —</strong>
-              <small>Belum digunakan</small>
+              <span id="apb-stat-2-label">Sisa anggaran belanja</span>
+              <strong id="apb-stat-2-value">Rp —</strong>
+              <small id="apb-stat-2-note">Belum digunakan</small>
             </div>
           </div>
           <div class="realisasi-stat">
-            <div class="realisasi-stat-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+            <div class="realisasi-stat-icon"><i class="fa-solid fa-scale-balanced" id="apb-stat-3-icon"></i></div>
             <div class="realisasi-stat-copy">
-              <span>SiLPA tahun berjalan</span>
-              <strong id="apb-r4">Rp —</strong>
-              <small>Setelah pembiayaan netto</small>
+              <span id="apb-stat-3-label">SiLPA tahun berjalan</span>
+              <strong id="apb-stat-3-value">Rp —</strong>
+              <small id="apb-stat-3-note">Setelah pembiayaan netto</small>
             </div>
           </div>
         </div>
@@ -974,10 +986,10 @@
         <div class="realisasi-breakdown">
           <div class="realisasi-breakdown-title">
             <div>
-              <h3>Realisasi per bidang belanja</h3>
-              <p>Lihat penyerapan dana pada setiap bidang.</p>
+              <h3 id="apb-breakdown-title">Realisasi per bidang belanja</h3>
+              <p id="apb-breakdown-caption">Lihat penyerapan dana pada setiap bidang.</p>
             </div>
-            <span class="realisasi-legend"><i></i> Dana terpakai</span>
+            <span class="realisasi-legend"><i></i><span id="apb-breakdown-legend">Dana terpakai</span></span>
           </div>
           <div id="apb-realisasi-list">
             <div class="realisasi-loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuat realisasi...</div>
@@ -2393,6 +2405,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/main.js?v=20260807-realisasi-v2" defer></script>
+<script src="assets/js/main.js?v=20260807-realisasi-kategori-v3" defer></script>
 </body>
 </html>
