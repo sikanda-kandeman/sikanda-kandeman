@@ -827,6 +827,7 @@
     .bf-sky    { background: var(--sky); }
     .bf-gold   { background: var(--gold); }
     .bf-teal   { background: var(--teal); }
+    .bf-plum   { background: #8876B5; }
 
     .real-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
     .real-card {
@@ -837,7 +838,9 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 30px; font-weight: 700; color: var(--emerald);
     }
+    .real-card .pct.compact { font-size: 21px; line-height: 1.35; padding-top: 5px; }
     .real-card .desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .real-card .real-nominal { font-size: 11px; color: var(--text-sec); margin-top: 7px; font-variant-numeric: tabular-nums; }
 
     .trans-note {
       margin-top: 20px; padding: 14px 18px;
@@ -854,10 +857,26 @@
       text-transform: uppercase; letter-spacing: .06em;
       padding: 11px 16px; border-bottom: 1px solid var(--border); background: var(--cream);
     }
-    .pendapatan-table th:last-child { text-align: right; }
+    .pendapatan-table th:not(:first-child) { text-align: right; }
     .pendapatan-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); color: var(--text-sec); }
     .pendapatan-table tr:last-child td { border-bottom: none; }
     .pendapatan-table td:last-child { text-align: right; font-weight: 500; color: var(--text); }
+    .pendapatan-table td:nth-child(2), .pendapatan-table td:nth-child(3), .pendapatan-table td:nth-child(4) { text-align: right; }
+    .pendapatan-table .apb-transfer-row td { background: #F8F6F0; font-weight: 600; color: var(--text); }
+    .pendapatan-table .apb-sub-row td:first-child { padding-left: 28px; }
+    .pendapatan-table .apb-total-row td { background: var(--cream); color: var(--text); }
+    .apb-summary { margin-top: 16px; display: grid; grid-template-columns: repeat(2, 1fr); border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; }
+    .apb-summary-item { padding: 13px 15px; background: #fff; border-bottom: 1px solid var(--border); }
+    .apb-summary-item:nth-child(odd) { border-right: 1px solid var(--border); }
+    .apb-summary-item:nth-last-child(-n+2) { border-bottom: none; }
+    .apb-summary-label { display:block; font-size:10px; color:var(--text-muted); letter-spacing:.04em; text-transform:uppercase; margin-bottom:4px; }
+    .apb-summary-value { display:block; font-size:13px; font-weight:600; color:var(--text); font-variant-numeric: tabular-nums; }
+    .apb-summary-value.negative { color:#A63A32; }
+    @media (max-width: 460px) {
+      .apb-summary { grid-template-columns: 1fr; }
+      .apb-summary-item:nth-child(odd) { border-right: none; }
+      .apb-summary-item:nth-last-child(2) { border-bottom: 1px solid var(--border); }
+    }
 
     /* ══════════════════════════════════════
        LAYANAN DESA

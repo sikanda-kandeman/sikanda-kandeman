@@ -451,6 +451,24 @@
     .apb-tab.active { color: var(--emerald); border-bottom-color: var(--emerald); }
     .apb-pane { display: none; }
     .apb-pane.active { display: block; }
+    .apb-input-note { margin: 0 0 16px; padding: 11px 13px; border: 1px solid #D4B56A; border-radius: var(--r); background: #FFF9E8; color: #73520D; font-size: 12px; line-height: 1.55; }
+    .apb-input-note i { margin-right: 6px; }
+    .apb-input-head, .apb-input-row { display: grid; grid-template-columns: minmax(180px, 1.55fr) minmax(130px, 1fr) minmax(130px, 1fr); gap: 10px; align-items: center; }
+    .apb-input-head { padding: 0 0 8px; color: var(--text-muted); font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .apb-input-head span:not(:first-child) { text-align: right; }
+    .apb-input-row { padding: 10px 0; border-top: 1px solid var(--border); }
+    .apb-input-row label { font-size: 12.5px; color: var(--text-sec); line-height: 1.35; }
+    .apb-input-row input { width: 100%; min-width: 0; text-align: right; font-variant-numeric: tabular-nums; }
+    .apb-calculation { margin-top: 16px; padding: 13px 14px; border-radius: var(--r); background: var(--cream); border: 1px solid var(--border); font-size: 12px; color: var(--text-sec); line-height: 1.8; }
+    .apb-calculation strong { color: var(--text); }
+    @media (max-width: 650px) {
+      .apb-tabs { overflow-x: auto; }
+      .apb-tab { white-space: nowrap; padding: 9px 13px; }
+      .apb-input-head { display: none; }
+      .apb-input-row { grid-template-columns: 1fr 1fr; gap: 8px; padding: 13px 0; }
+      .apb-input-row label { grid-column: 1 / -1; }
+      .apb-input-row input::before { content: ''; }
+    }
 
     /* ── Filter berita ── */
     .filter-row {
