@@ -825,6 +825,18 @@ async function toggleAktifBerita(id, aktifSekarang) {
   loadBerita();
 }
 
+function beritaSaveErrorMessage(error) {
+  const message = String(error?.message || 'kesalahan tidak diketahui.');
+  const code = String(error?.code || '');
+  const missingImageColumn = /gambar_url/i.test(message)
+    && (code === 'PGRST204' || /schema cache|column/i.test(message));
+
+  if (missingImageColumn) {
+    return 'Database belum siap untuk gambar berita. Jalankan file supabase-berita-gambar.sql di Supabase SQL Editor, lalu muat ulang halaman admin.';
+  }
+  return message;
+}
+
 async function simpanBerita() {
   const id    = document.getElementById('berita-id').value;
   const judul = document.getElementById('b-judul').value.trim();
@@ -881,7 +893,7 @@ async function simpanBerita() {
     console.error('Gagal menyimpan berita:', error);
     showToast(error instanceof UploadValidationError
       ? error.message
-      : 'Berita gagal disimpan: ' + (error?.message || 'kesalahan tidak diketahui.'), true);
+      : 'Berita gagal disimpan: ' + beritaSaveErrorMessage(error), true);
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-check"></i> Simpan & Publikasikan';
