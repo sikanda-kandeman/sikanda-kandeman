@@ -828,7 +828,7 @@
     .budget-section-title {
       margin: 0 0 15px;
       color: var(--forest);
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 18px;
       font-weight: 700;
       line-height: 1.25;
@@ -862,7 +862,7 @@
     }
     #realisasi .realisasi-kicker {
       margin: 0; color: var(--forest); font-size: 20px; font-weight: 700;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       line-height: 1.25; letter-spacing: -.015em;
     }
     #realisasi .realisasi-caption {
@@ -980,12 +980,12 @@
     #realisasi .realisasi-stat-copy { min-width: 0; }
     #realisasi .realisasi-stat-copy > span {
       display: block; min-height: 28px; color: var(--text-muted);
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 11.5px; font-weight: 600; line-height: 1.35;
     }
     #realisasi .realisasi-stat-copy > strong {
       display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--text);
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       font-size: 16px; font-weight: 700; line-height: 1.2;
       letter-spacing: -.02em; font-variant-numeric: tabular-nums;
     }
@@ -1002,7 +1002,7 @@
     }
     #realisasi .realisasi-breakdown-title h3 {
       margin: 0; color: var(--forest); font-size: 17px; font-weight: 700;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       line-height: 1.3; letter-spacing: -.015em;
     }
     #realisasi .realisasi-breakdown-title p {
@@ -1036,7 +1036,7 @@
     #realisasi .realisasi-row-percent {
       flex: 0 0 auto; padding: 5px 7px; color: var(--emerald); background: #EDF5EF;
       border-radius: 7px; font-size: 12px; font-weight: 700; line-height: 1;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       white-space: nowrap; font-variant-numeric: tabular-nums;
     }
     #realisasi .realisasi-row-percent small { font-size: 8px; font-weight: 600; }
@@ -1067,7 +1067,7 @@
     }
     #realisasi .realisasi-row-meta-item strong {
       display: block; margin-top: 3px; color: var(--text-sec); font-size: 12.5px;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       font-weight: 650; line-height: 1.35; overflow-wrap: anywhere;
       font-variant-numeric: tabular-nums;
     }
@@ -1112,7 +1112,7 @@
     }
     .financial-archive-heading h3 {
       margin: 0; color: var(--forest); font-size: 22px; font-weight: 700;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       line-height: 1.2; letter-spacing: -.025em;
     }
     .financial-archive-heading p:last-child {
@@ -1126,7 +1126,7 @@
     .financial-year-tab {
       min-width: 58px; min-height: 36px; padding: 8px 11px;
       color: var(--text-sec); background: transparent; border: 0; border-radius: 8px;
-      font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 700;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700;
       font-variant-numeric: tabular-nums; cursor: pointer;
       transition: color .2s, background-color .2s, box-shadow .2s, transform .15s;
     }
@@ -1143,7 +1143,7 @@
     }
     .financial-archive-summary span:first-child {
       display: inline-flex; align-items: center; gap: 7px; color: var(--forest); font-weight: 650;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
     }
     .financial-archive-summary span:last-child { font-variant-numeric: tabular-nums; }
     .financial-docs-grid {
@@ -1170,7 +1170,7 @@
     .financial-doc-copy { min-width: 0; }
     .financial-doc-copy h4 {
       margin: 0; color: var(--text); font-size: 15px; font-weight: 650;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
       line-height: 1.35; text-wrap: balance;
     }
     .financial-doc-meta {
@@ -1181,7 +1181,7 @@
       display: inline-flex; align-items: center; gap: 4px; color: var(--emerald); font-weight: 650;
     }
     .financial-doc-meta > span:last-child:not(.financial-doc-status) {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', sans-serif;
     }
     .financial-doc-status::before {
       content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor;
