@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260807-arsip-keuangan-v4" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260807-transparansi-serif-v5" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -915,12 +915,38 @@
           <div class="lbl" id="apb-tahun-lbl">Anggaran Pendapatan APBDes —</div>
           <div class="sub" id="apb-sub">Memuat data...</div>
         </div>
-        <p style="font-size:12.5px; font-weight:600; color:var(--text); margin-bottom:14px;">Anggaran Belanja per Bidang</p>
+        <p class="budget-section-title">Anggaran Belanja per Bidang</p>
         <div id="apb-alokasi">
           <div class="sb-loading" style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;">
             <i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat alokasi...
           </div>
         </div>
+
+        <section class="financial-archive" aria-labelledby="financial-archive-title">
+          <div class="financial-archive-head">
+            <div class="financial-archive-heading">
+              <span class="financial-archive-icon" aria-hidden="true"><i class="fa-solid fa-box-archive"></i></span>
+              <div>
+                <p class="financial-archive-kicker">Dokumen publik</p>
+                <h3 id="financial-archive-title">Arsip Keuangan Desa</h3>
+                <p>Pilih tahun untuk melihat atau mengunduh berkas PDF yang telah dipublikasikan.</p>
+              </div>
+            </div>
+            <div class="financial-year-tabs" role="tablist" aria-label="Pilih tahun arsip keuangan">
+              <button type="button" class="financial-year-tab" role="tab" aria-selected="false" tabindex="-1" data-financial-year="2024">2024</button>
+              <button type="button" class="financial-year-tab" role="tab" aria-selected="false" tabindex="-1" data-financial-year="2025">2025</button>
+              <button type="button" class="financial-year-tab active" role="tab" aria-selected="true" tabindex="0" data-financial-year="2026">2026</button>
+            </div>
+          </div>
+
+          <div class="financial-archive-summary" aria-live="polite">
+            <span id="financial-archive-year"><i class="fa-regular fa-calendar"></i> Tahun 2026</span>
+            <span id="financial-archive-count">Memuat dokumen...</span>
+          </div>
+          <div class="financial-docs-grid" id="financial-docs-grid" role="tabpanel" aria-label="Arsip keuangan tahun 2026">
+            <div class="financial-doc-loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuat arsip keuangan...</div>
+          </div>
+        </section>
       </div>
 
       <!-- Kanan -->
@@ -1002,31 +1028,6 @@
       </div>
     </div>
 
-    <section class="financial-archive" aria-labelledby="financial-archive-title">
-      <div class="financial-archive-head">
-        <div class="financial-archive-heading">
-          <span class="financial-archive-icon" aria-hidden="true"><i class="fa-solid fa-box-archive"></i></span>
-          <div>
-            <p class="financial-archive-kicker">Dokumen publik</p>
-            <h3 id="financial-archive-title">Arsip Keuangan Desa</h3>
-            <p>Pilih tahun untuk melihat atau mengunduh berkas PDF yang telah dipublikasikan.</p>
-          </div>
-        </div>
-        <div class="financial-year-tabs" role="tablist" aria-label="Pilih tahun arsip keuangan">
-          <button type="button" class="financial-year-tab" role="tab" aria-selected="false" tabindex="-1" data-financial-year="2024">2024</button>
-          <button type="button" class="financial-year-tab" role="tab" aria-selected="false" tabindex="-1" data-financial-year="2025">2025</button>
-          <button type="button" class="financial-year-tab active" role="tab" aria-selected="true" tabindex="0" data-financial-year="2026">2026</button>
-        </div>
-      </div>
-
-      <div class="financial-archive-summary" aria-live="polite">
-        <span id="financial-archive-year"><i class="fa-regular fa-calendar"></i> Tahun 2026</span>
-        <span id="financial-archive-count">Memuat dokumen...</span>
-      </div>
-      <div class="financial-docs-grid" id="financial-docs-grid" role="tabpanel" aria-label="Arsip keuangan tahun 2026">
-        <div class="financial-doc-loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuat arsip keuangan...</div>
-      </div>
-    </section>
   </div>
 
   <div class="wave-divider" aria-hidden="true">
