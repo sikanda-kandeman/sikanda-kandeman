@@ -436,20 +436,6 @@ function updateCharCount() {
   el.className = 'char-count' + (len > 3000 ? ' over' : '');
 }
 
-// ── PCT sum validator ──
-function checkPctSum() {
-  const sum = ['apb-pct1','apb-pct2','apb-pct3','apb-pct4']
-    .reduce((a,id) => a + (parseInt(document.getElementById(id).value)||0), 0);
-  const el  = document.getElementById('pct-sum-indicator');
-  if (sum === 100) {
-    el.className = 'pct-sum-indicator pct-sum-ok';
-    el.innerHTML = '<i class="fa-solid fa-circle-check"></i> Total: 100% — sudah benar';
-  } else {
-    el.className = 'pct-sum-indicator pct-sum-err';
-    el.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Total: ${sum}% — harus tepat 100%`;
-  }
-}
-
 // ── Preview gambar berita dari URL ──
 function previewGambarBerita(url) {
   const wrap = document.getElementById('b-gambar-preview-wrap');
@@ -603,7 +589,7 @@ async function showAdminShell() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-shell').style.display  = 'flex';
   document.getElementById('b-tanggal').value = new Date().toISOString().slice(0,10);
-  checkPctSum();
+  renderLraInputs();
   loadDashboard();
 
   resetInactivityTimer();
@@ -1164,120 +1150,171 @@ function resetPerangkatForm() {
 }
 
 // ════════════════════════════════════════════
-// APBDES
+// APBDES — format Laporan Realisasi APB Desa (LRA)
 // ════════════════════════════════════════════
+const LRA_SECTIONS = {
+  pendapatan: [
+    ['pad', 'Pendapatan Asli Desa'], ['dana_desa', 'Dana Desa'],
+    ['bagi_hasil', 'Bagi Hasil Pajak dan Retribusi'], ['add', 'Alokasi Dana Desa'],
+    ['bantuan_provinsi', 'Bantuan Keuangan Provinsi'], ['bantuan_kabupaten', 'Bantuan Keuangan Kabupaten/Kota'],
+    ['lain_lain', 'Pendapatan Lain-lain'],
+  ],
+  belanja: [
+    ['penyelenggaraan', 'Bidang Penyelenggaraan Pemerintahan Desa'], ['pelaksanaan', 'Bidang Pelaksanaan Pembangunan Desa'],
+    ['pembinaan', 'Bidang Pembinaan Kemasyarakatan'], ['pemberdayaan', 'Bidang Pemberdayaan Masyarakat'],
+    ['penanggulangan_bencana', 'Bidang Penanggulangan Bencana, Darurat dan Mendesak Desa'],
+  ],
+  pembiayaan: [
+    ['penerimaan', 'Penerimaan Pembiayaan'], ['pengeluaran', 'Pengeluaran Pembiayaan'],
+  ],
+};
+
+const lraNumber = value => Number.isFinite(Number(value)) ? Number(value) : 0;
+const lraTotal = (data, section, column) => LRA_SECTIONS[section]
+  .reduce((sum, [key]) => sum + lraNumber(data[section]?.[key]?.[column]), 0);
+
+function defaultLraData(record = {}) {
+  const lra = record.lra_data && typeof record.lra_data === 'object' ? record.lra_data : {};
+  const legacyIncome = {
+    pad: record.pendapatan_pades, dana_desa: record.pendapatan_dd, bagi_hasil: record.pendapatan_pajak,
+    add: record.pendapatan_add, bantuan_provinsi: 0, bantuan_kabupaten: 0, lain_lain: 0,
+  };
+  const legacyExpense = {
+    penyelenggaraan: record.nominal_pemerintahan, pelaksanaan: record.nominal_pembangunan,
+    pembinaan: record.nominal_pembinaan, pemberdayaan: record.nominal_pemberdayaan, penanggulangan_bencana: 0,
+  };
+  const legacyRealization = {
+    pendapatan: record.realisasi_pendapatan, belanja: record.realisasi_belanja,
+    pelaksanaan: record.realisasi_pembangunan, pemberdayaan: record.realisasi_pemberdayaan,
+  };
+  legacyRealization.penyelenggaraan = Math.max(0, lraNumber(legacyRealization.belanja) - lraNumber(legacyRealization.pelaksanaan) - lraNumber(legacyRealization.pemberdayaan));
+  return Object.fromEntries(Object.entries(LRA_SECTIONS).map(([section, rows]) => [section,
+    Object.fromEntries(rows.map(([key]) => [key, {
+      anggaran: lraNumber(lra[section]?.[key]?.anggaran ?? (section === 'pendapatan' ? legacyIncome[key] : legacyExpense[key])),
+      realisasi: lraNumber(lra[section]?.[key]?.realisasi ?? (section === 'pendapatan' && key === 'pad' ? legacyRealization.pendapatan : section === 'belanja' ? legacyRealization[key] : 0)),
+    }]))
+  ]));
+}
+
+function renderLraInputs(data = defaultLraData()) {
+  Object.entries(LRA_SECTIONS).forEach(([section, rows]) => {
+    const el = document.getElementById(`apb-${section}-inputs`);
+    if (!el) return;
+    el.innerHTML = rows.map(([key, label]) => `<div class="apb-input-row">
+      <label for="apb-${section}-${key}-anggaran">${escHtml(label)}</label>
+      <input type="number" min="0" step="1" id="apb-${section}-${key}-anggaran" value="${data[section][key].anggaran}" oninput="updateLraCalculations()" aria-label="Anggaran ${escHtml(label)}" />
+      <input type="number" min="0" step="1" id="apb-${section}-${key}-realisasi" value="${data[section][key].realisasi}" oninput="updateLraCalculations()" aria-label="Realisasi ${escHtml(label)}" />
+    </div>`).join('');
+  });
+  updateLraCalculations();
+}
+
+function readLraInputs() {
+  return Object.fromEntries(Object.entries(LRA_SECTIONS).map(([section, rows]) => [section,
+    Object.fromEntries(rows.map(([key, label]) => {
+      const anggaran = Number(document.getElementById(`apb-${section}-${key}-anggaran`).value);
+      const realisasi = Number(document.getElementById(`apb-${section}-${key}-realisasi`).value);
+      if (!Number.isFinite(anggaran) || !Number.isFinite(realisasi) || anggaran < 0 || realisasi < 0) {
+        throw new Error(`Nilai ${label} harus berupa angka nol atau lebih.`);
+      }
+      return [key, { anggaran, realisasi }];
+    }))
+  ]));
+}
+
+function updateLraCalculations() {
+  try {
+    const data = readLraInputs();
+    const incomeBudget = lraTotal(data, 'pendapatan', 'anggaran');
+    const incomeActual = lraTotal(data, 'pendapatan', 'realisasi');
+    const transferBudget = ['dana_desa', 'bagi_hasil', 'add', 'bantuan_provinsi', 'bantuan_kabupaten']
+      .reduce((sum, key) => sum + data.pendapatan[key].anggaran, 0);
+    const transferActual = ['dana_desa', 'bagi_hasil', 'add', 'bantuan_provinsi', 'bantuan_kabupaten']
+      .reduce((sum, key) => sum + data.pendapatan[key].realisasi, 0);
+    const expenseBudget = lraTotal(data, 'belanja', 'anggaran');
+    const expenseActual = lraTotal(data, 'belanja', 'realisasi');
+    const financingBudget = data.pembiayaan.penerimaan.anggaran - data.pembiayaan.pengeluaran.anggaran;
+    const financingActual = data.pembiayaan.penerimaan.realisasi - data.pembiayaan.pengeluaran.realisasi;
+    document.getElementById('apb-total').value = incomeBudget;
+    document.getElementById('apb-calculation').innerHTML =
+      `<strong>Ringkasan otomatis</strong><br>Pendapatan Transfer: anggaran ${fmtRpShort(transferBudget)} | realisasi ${fmtRpShort(transferActual)}.<br>Anggaran: Pendapatan ${fmtRpShort(incomeBudget)} - Belanja ${fmtRpShort(expenseBudget)} = ${fmtRpShort(incomeBudget - expenseBudget)} (Surplus/(Defisit)).<br>Realisasi: Pendapatan ${fmtRpShort(incomeActual)} - Belanja ${fmtRpShort(expenseActual)} + Pembiayaan Netto ${fmtRpShort(financingActual)} = <strong>${fmtRpShort(incomeActual - expenseActual + financingActual)}</strong> (SiLPA).`;
+  } catch (_) {
+    document.getElementById('apb-total').value = '';
+    document.getElementById('apb-calculation').textContent = 'Lengkapi seluruh nominal dengan angka nol atau lebih untuk melihat ringkasan otomatis.';
+  }
+}
+
 async function loadApbdes() {
   try {
     const { data, error } = await sb.from('apbdes').select('*').order('tahun',{ascending:false}).limit(1);
     if (error) throw error;
-    if (!data?.length) return;
-    const d = data[0];
-    document.getElementById('apb-id').value     = d.id;
-    document.getElementById('apb-tahun').value  = d.tahun;
-    document.getElementById('apb-total').value  = d.total_anggaran;
-    document.getElementById('apb-pct1').value   = d.pct_pemerintahan;
-    document.getElementById('apb-pct2').value   = d.pct_pembangunan;
-    document.getElementById('apb-pct3').value   = d.pct_pembinaan;
-    document.getElementById('apb-pct4').value   = d.pct_pemberdayaan;
-    document.getElementById('apb-dd').value     = d.pendapatan_dd   || '';
-    document.getElementById('apb-add').value    = d.pendapatan_add  || '';
-    document.getElementById('apb-pajak').value  = d.pendapatan_pajak || '';
-    document.getElementById('apb-pades').value  = d.pendapatan_pades || '';
-    document.getElementById('apb-r1').value     = d.realisasi_pendapatan   || 0;
-    document.getElementById('apb-r2').value     = d.realisasi_belanja       || 0;
-    document.getElementById('apb-r3').value     = d.realisasi_pembangunan   || 0;
-    document.getElementById('apb-r4').value     = d.realisasi_pemberdayaan  || 0;
-    document.getElementById('apb-rpct1').value  = d.realisasi_pct_pendapatan   ?? '';
-    document.getElementById('apb-rpct2').value  = d.realisasi_pct_belanja       ?? '';
-    document.getElementById('apb-rpct3').value  = d.realisasi_pct_pembangunan   ?? '';
-    document.getElementById('apb-rpct4').value  = d.realisasi_pct_pemberdayaan  ?? '';
-    checkPctSum();
+    const record = data?.[0] || {};
+    document.getElementById('apb-id').value = record.id || '';
+    document.getElementById('apb-tahun').value = record.tahun || new Date().getFullYear();
+    renderLraInputs(defaultLraData(record));
   } catch (error) {
     console.error('Gagal memuat APBDes:', error);
     showToast('Data APBDes belum dapat dimuat.', true);
+    renderLraInputs();
   }
 }
 
 async function simpanApbdes() {
-  const id    = document.getElementById('apb-id').value;
+  const id = document.getElementById('apb-id').value;
   const tahun = readFiniteNumber('apb-tahun');
-  const total = readFiniteNumber('apb-total');
-  const p1 = readFiniteNumber('apb-pct1');
-  const p2 = readFiniteNumber('apb-pct2');
-  const p3 = readFiniteNumber('apb-pct3');
-  const p4 = readFiniteNumber('apb-pct4');
-
   if (!Number.isInteger(tahun) || tahun < 2000 || tahun > 2100) {
     showToast('Tahun APBDes harus berupa empat digit tahun yang valid.', true); return;
   }
-  const nominalIds = ['apb-total','apb-dd','apb-add','apb-pajak','apb-pades','apb-r1','apb-r2','apb-r3','apb-r4'];
-  const nominal = Object.fromEntries(nominalIds.map(fieldId => [fieldId, readFiniteNumber(fieldId)]));
-  if (nominalIds.some(fieldId => !Number.isFinite(nominal[fieldId]) || nominal[fieldId] < 0)) {
-    showToast('Seluruh nilai anggaran harus berupa angka dan tidak boleh negatif.', true); return;
-  }
-  if (total <= 0) { showToast('Total anggaran harus lebih besar dari nol.', true); return; }
-  if ([p1,p2,p3,p4].some(value => !Number.isFinite(value) || value < 0 || value > 100)) {
-    showToast('Persentase alokasi harus berada di antara 0% dan 100%.', true); return;
-  }
-  if (Math.abs(p1 + p2 + p3 + p4 - 100) > 0.001) {
-    showToast('Total persentase alokasi harus tepat 100%.', true); return;
-  }
 
-  const percentIds = ['apb-rpct1','apb-rpct2','apb-rpct3','apb-rpct4'];
-  const realizationPercentages = Object.fromEntries(percentIds.map(fieldId => [fieldId, readFiniteNumber(fieldId, { nullable:true })]));
-  if (percentIds.some(fieldId => {
-    const value = realizationPercentages[fieldId];
-    return value !== null && (!Number.isFinite(value) || value < 0 || value > 100);
-  })) {
-    showToast('Persentase realisasi harus berada di antara 0% dan 100%.', true); return;
-  }
-  if (nominal['apb-r2'] > total) {
-    showToast('Realisasi belanja tidak boleh melebihi total anggaran.', true); return;
-  }
-  if (nominal['apb-r3'] > Math.round(total * p2 / 100)) {
-    showToast('Realisasi pembangunan tidak boleh melebihi alokasi pembangunan.', true); return;
-  }
-  if (nominal['apb-r4'] > Math.round(total * p4 / 100)) {
-    showToast('Realisasi pemberdayaan tidak boleh melebihi alokasi pemberdayaan.', true); return;
-  }
+  let lraData;
+  try { lraData = readLraInputs(); }
+  catch (error) { showToast(error.message, true); return; }
+
+  const pendapatanAnggaran = lraTotal(lraData, 'pendapatan', 'anggaran');
+  const pendapatanRealisasi = lraTotal(lraData, 'pendapatan', 'realisasi');
+  const belanjaAnggaran = lraTotal(lraData, 'belanja', 'anggaran');
+  const belanjaRealisasi = lraTotal(lraData, 'belanja', 'realisasi');
+  if (pendapatanAnggaran <= 0) { showToast('Total anggaran pendapatan harus lebih besar dari nol.', true); return; }
+
+  // Kolom lama tetap diisi agar data lama dan constraint database tetap kompatibel.
+  const legacyExpense = ['penyelenggaraan', 'pelaksanaan', 'pembinaan', 'pemberdayaan'];
+  const legacyExpenseBudget = legacyExpense.reduce((sum, key) => sum + lraData.belanja[key].anggaran, 0);
+  const legacyPct = legacyExpenseBudget > 0
+    ? legacyExpense.map(key => (lraData.belanja[key].anggaran / legacyExpenseBudget) * 100)
+    : [25, 25, 25, 25];
+  legacyPct[3] = 100 - legacyPct[0] - legacyPct[1] - legacyPct[2];
 
   const btn = document.getElementById('btn-simpan-apb');
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
-
   const payload = {
-    tahun, total_anggaran: total,
-    pct_pemerintahan:p1, pct_pembangunan:p2, pct_pembinaan:p3, pct_pemberdayaan:p4,
-    nominal_pemerintahan:  Math.round(total*p1/100),
-    nominal_pembangunan:   Math.round(total*p2/100),
-    nominal_pembinaan:     Math.round(total*p3/100),
-    nominal_pemberdayaan:  Math.round(total*p4/100),
-    pendapatan_dd:    nominal['apb-dd'],
-    pendapatan_add:   nominal['apb-add'],
-    pendapatan_pajak: nominal['apb-pajak'],
-    pendapatan_pades: nominal['apb-pades'],
-    realisasi_pendapatan:  nominal['apb-r1'],
-    realisasi_belanja:     nominal['apb-r2'],
-    realisasi_pembangunan: nominal['apb-r3'],
-    realisasi_pemberdayaan:nominal['apb-r4'],
-    realisasi_pct_pendapatan:   realizationPercentages['apb-rpct1'],
-    realisasi_pct_belanja:      realizationPercentages['apb-rpct2'],
-    realisasi_pct_pembangunan:  realizationPercentages['apb-rpct3'],
-    realisasi_pct_pemberdayaan: realizationPercentages['apb-rpct4'],
-    aktif: true,
-    updated_at: new Date().toISOString(),
+    tahun, total_anggaran: pendapatanAnggaran, lra_data: lraData,
+    pct_pemerintahan: legacyPct[0], pct_pembangunan: legacyPct[1], pct_pembinaan: legacyPct[2], pct_pemberdayaan: legacyPct[3],
+    nominal_pemerintahan: lraData.belanja.penyelenggaraan.anggaran,
+    nominal_pembangunan: lraData.belanja.pelaksanaan.anggaran,
+    nominal_pembinaan: lraData.belanja.pembinaan.anggaran,
+    nominal_pemberdayaan: lraData.belanja.pemberdayaan.anggaran,
+    pendapatan_dd: lraData.pendapatan.dana_desa.anggaran,
+    pendapatan_add: lraData.pendapatan.add.anggaran,
+    pendapatan_pajak: lraData.pendapatan.bagi_hasil.anggaran,
+    pendapatan_pades: lraData.pendapatan.pad.anggaran + lraData.pendapatan.bantuan_provinsi.anggaran + lraData.pendapatan.bantuan_kabupaten.anggaran + lraData.pendapatan.lain_lain.anggaran,
+    realisasi_pendapatan: pendapatanRealisasi, realisasi_belanja: belanjaRealisasi,
+    realisasi_pembangunan: lraData.belanja.pelaksanaan.realisasi, realisasi_pemberdayaan: lraData.belanja.pemberdayaan.realisasi,
+    realisasi_pct_pendapatan: pendapatanAnggaran ? Math.round(pendapatanRealisasi / pendapatanAnggaran * 10000) / 100 : 0,
+    realisasi_pct_belanja: belanjaAnggaran ? Math.round(belanjaRealisasi / belanjaAnggaran * 10000) / 100 : 0,
+    realisasi_pct_pembangunan: lraData.belanja.pelaksanaan.anggaran ? Math.round(lraData.belanja.pelaksanaan.realisasi / lraData.belanja.pelaksanaan.anggaran * 10000) / 100 : 0,
+    realisasi_pct_pemberdayaan: lraData.belanja.pemberdayaan.anggaran ? Math.round(lraData.belanja.pemberdayaan.realisasi / lraData.belanja.pemberdayaan.anggaran * 10000) / 100 : 0,
+    aktif: true, updated_at: new Date().toISOString(),
   };
 
   try {
-    const { error } = id
-      ? await sb.from('apbdes').update(payload).eq('id',id)
-      : await sb.from('apbdes').insert(payload);
+    const { error } = id ? await sb.from('apbdes').update(payload).eq('id',id) : await sb.from('apbdes').insert(payload);
     if (error) throw error;
-    showToast('Data APBDes berhasil disimpan');
+    showToast('Data LRA APBDes berhasil disimpan');
     showLastSaved('APBDes disimpan ' + new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));
     await Promise.all([loadApbdes(), loadDashboard()]);
   } catch (error) {
     console.error('Gagal menyimpan APBDes:', error);
-    showToast('Data APBDes gagal disimpan.', true);
+    showToast('Data APBDes gagal disimpan. Pastikan migrasi SQL sudah dijalankan.', true);
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-check"></i> Simpan Data APBDes';

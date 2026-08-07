@@ -1176,85 +1176,117 @@ async function loadPerangkat() {
 }
 
 // ════════════════════
-// LOAD APBDES
+// LOAD APBDES — format Laporan Realisasi APB Desa (LRA)
 // ════════════════════
+const LRA_PUBLIC_SECTIONS = {
+  pendapatan: [
+    ['pad', 'Pendapatan Asli Desa'], ['dana_desa', 'Dana Desa'],
+    ['bagi_hasil', 'Bagi Hasil Pajak dan Retribusi'], ['add', 'Alokasi Dana Desa'],
+    ['bantuan_provinsi', 'Bantuan Keuangan Provinsi'], ['bantuan_kabupaten', 'Bantuan Keuangan Kabupaten/Kota'],
+    ['lain_lain', 'Pendapatan Lain-lain'],
+  ],
+  belanja: [
+    ['penyelenggaraan', 'Penyelenggaraan Pemerintahan'], ['pelaksanaan', 'Pelaksanaan Pembangunan'],
+    ['pembinaan', 'Pembinaan Kemasyarakatan'], ['pemberdayaan', 'Pemberdayaan Masyarakat'],
+    ['penanggulangan_bencana', 'Penanggulangan Bencana'],
+  ],
+  pembiayaan: [['penerimaan', 'Penerimaan Pembiayaan'], ['pengeluaran', 'Pengeluaran Pembiayaan']],
+};
+const lraPublicNumber = value => Number.isFinite(Number(value)) ? Number(value) : 0;
+const lraPublicTotal = (data, section, column) => LRA_PUBLIC_SECTIONS[section]
+  .reduce((sum, [key]) => sum + lraPublicNumber(data[section]?.[key]?.[column]), 0);
+const fmtRpFull = value => {
+  const number = lraPublicNumber(value);
+  return `${number < 0 ? '- ' : ''}Rp ${Math.abs(number).toLocaleString('id-ID')}`;
+};
+
+function normaliseLraData(record = {}) {
+  const lra = record.lra_data && typeof record.lra_data === 'object' ? record.lra_data : {};
+  const legacyIncome = { pad: record.pendapatan_pades, dana_desa: record.pendapatan_dd, bagi_hasil: record.pendapatan_pajak, add: record.pendapatan_add };
+  const legacyExpense = { penyelenggaraan: record.nominal_pemerintahan, pelaksanaan: record.nominal_pembangunan, pembinaan: record.nominal_pembinaan, pemberdayaan: record.nominal_pemberdayaan };
+  const legacyExpenseRealisasi = {
+    penyelenggaraan: Math.max(0, lraPublicNumber(record.realisasi_belanja) - lraPublicNumber(record.realisasi_pembangunan) - lraPublicNumber(record.realisasi_pemberdayaan)),
+    pelaksanaan: record.realisasi_pembangunan, pemberdayaan: record.realisasi_pemberdayaan,
+  };
+  return Object.fromEntries(Object.entries(LRA_PUBLIC_SECTIONS).map(([section, rows]) => [section,
+    Object.fromEntries(rows.map(([key]) => [key, {
+      anggaran: lraPublicNumber(lra[section]?.[key]?.anggaran ?? (section === 'pendapatan' ? legacyIncome[key] : legacyExpense[key])),
+      realisasi: lraPublicNumber(lra[section]?.[key]?.realisasi ?? (section === 'pendapatan' && key === 'pad' ? record.realisasi_pendapatan : section === 'belanja' ? legacyExpenseRealisasi[key] : 0)),
+    }]))
+  ]));
+}
+
 function resetApbdesData(status = 'empty') {
   const unavailable = status === 'error';
   document.getElementById('apb-val').textContent = 'Rp —';
-  document.getElementById('apb-tahun-lbl').textContent = 'Total APBDes';
-  document.getElementById('apb-sub').textContent = unavailable
-    ? 'Data belum dapat dimuat'
-    : 'Belum ada data yang dipublikasikan';
-  document.getElementById('apb-alokasi').innerHTML =
-    '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;">' +
-    `<i class="fa-solid ${unavailable ? 'fa-triangle-exclamation' : 'fa-circle-info'}" style="margin-right:6px;opacity:.5;"></i>` +
-    (unavailable ? 'Data APBDes belum dapat dimuat.' : 'Data APBDes belum tersedia.') + '</div>';
-  document.getElementById('apb-pendapatan-tbody').innerHTML =
-    `<tr><td colspan="2" style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;">${unavailable ? 'Data pendapatan belum dapat dimuat.' : 'Belum ada data pendapatan.'}</td></tr>`;
-  ['apb-r1','apb-r2','apb-r3','apb-r4'].forEach(id => {
-    document.getElementById(id).textContent = '—';
-  });
+  document.getElementById('apb-tahun-lbl').textContent = 'Anggaran Pendapatan APBDes';
+  document.getElementById('apb-sub').textContent = unavailable ? 'Data belum dapat dimuat' : 'Belum ada data yang dipublikasikan';
+  document.getElementById('apb-alokasi').innerHTML = `<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;"><i class="fa-solid ${unavailable ? 'fa-triangle-exclamation' : 'fa-circle-info'}" style="margin-right:6px;opacity:.5;"></i>${unavailable ? 'Data APBDes belum dapat dimuat.' : 'Data APBDes belum tersedia.'}</div>`;
+  document.getElementById('apb-pendapatan-tbody').innerHTML = `<tr><td colspan="4" style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;">${unavailable ? 'Data pendapatan belum dapat dimuat.' : 'Belum ada data pendapatan.'}</td></tr>`;
+  document.getElementById('apb-summary').innerHTML = '';
+  ['apb-r1','apb-r2','apb-r3','apb-r4','apb-r1-nominal','apb-r2-nominal'].forEach(id => document.getElementById(id).textContent = '—');
 }
 
 async function loadApbdes() {
-  const { data, error } = await sb.from('apbdes')
-    .select('*')
-    .order('tahun', { ascending: false })
-    .limit(1);
-
-  if (error || !data || data.length === 0) {
+  const { data, error } = await sb.from('apbdes').select('*').order('tahun', { ascending: false }).limit(1);
+  if (error || !data?.length) {
     if (error) console.error('Gagal memuat APBDes:', error);
     resetApbdesData(error ? 'error' : 'empty');
     return;
   }
   const d = data[0];
+  const lra = normaliseLraData(d);
+  const pendapatanAnggaran = lraPublicTotal(lra, 'pendapatan', 'anggaran');
+  const pendapatanRealisasi = lraPublicTotal(lra, 'pendapatan', 'realisasi');
+  const belanjaAnggaran = lraPublicTotal(lra, 'belanja', 'anggaran');
+  const belanjaRealisasi = lraPublicTotal(lra, 'belanja', 'realisasi');
+  const pembiayaanAnggaran = lra.pembiayaan.penerimaan.anggaran - lra.pembiayaan.pengeluaran.anggaran;
+  const pembiayaanRealisasi = lra.pembiayaan.penerimaan.realisasi - lra.pembiayaan.pengeluaran.realisasi;
+  const surplusAnggaran = pendapatanAnggaran - belanjaAnggaran;
+  const surplusRealisasi = pendapatanRealisasi - belanjaRealisasi;
+  const silpaAnggaran = surplusAnggaran + pembiayaanAnggaran;
+  const silpaRealisasi = surplusRealisasi + pembiayaanRealisasi;
+  const percent = (part, total) => total ? `${Math.round(part / total * 10000) / 100}%` : '—';
 
-  // Total & tahun
-  document.getElementById('apb-val').textContent   = fmtRp(d.total_anggaran);
-  document.getElementById('apb-tahun-lbl').textContent = 'Total APBDes ' + d.tahun;
-  document.getElementById('apb-sub').textContent   = 'Data resmi telah diverifikasi BPD';
+  document.getElementById('apb-val').textContent = fmtRp(pendapatanAnggaran);
+  document.getElementById('apb-tahun-lbl').textContent = `Anggaran Pendapatan APBDes ${d.tahun}`;
+  document.getElementById('apb-sub').textContent = `Realisasi pendapatan: ${fmtRp(pendapatanRealisasi)} (${percent(pendapatanRealisasi, pendapatanAnggaran)})`;
+  document.getElementById('apb-section-sub').textContent = `Informasi APBDes dan realisasi anggaran Desa Kandeman Tahun Anggaran ${d.tahun}.`;
 
-  // Alokasi bars
-  const alokasi = [
-    { label:'Penyelenggaraan Pemerintahan', pct: d.pct_pemerintahan, nominal: d.nominal_pemerintahan, cls:'bf-green' },
-    { label:'Pelaksanaan Pembangunan',      pct: d.pct_pembangunan,  nominal: d.nominal_pembangunan,  cls:'bf-sky' },
-    { label:'Pembinaan Kemasyarakatan',     pct: d.pct_pembinaan,    nominal: d.nominal_pembinaan,    cls:'bf-gold' },
-    { label:'Pemberdayaan Masyarakat',      pct: d.pct_pemberdayaan, nominal: d.nominal_pemberdayaan, cls:'bf-teal' },
-  ];
-  document.getElementById('apb-alokasi').innerHTML = alokasi.map(a => `
-    <div class="budget-item">
-      <div class="budget-header">
-        <span>${a.label}</span>
-        <span>${fmtRp(a.nominal)} (${a.pct || 0}%)</span>
-      </div>
-      <div class="budget-bar"><div class="budget-fill bar-fill ${a.cls}" style="--target-w:${a.pct || 0}%"></div></div>
-    </div>`).join('');
-
-  // Amati bar agar mengisi bertahap saat masuk viewport
+  const barClasses = ['bf-green', 'bf-sky', 'bf-gold', 'bf-teal', 'bf-plum'];
+  document.getElementById('apb-alokasi').innerHTML = LRA_PUBLIC_SECTIONS.belanja.map(([key, label], index) => {
+    const nominal = lra.belanja[key].anggaran;
+    const width = belanjaAnggaran ? nominal / belanjaAnggaran * 100 : 0;
+    return `<div class="budget-item"><div class="budget-header"><span>${label}</span><span>${fmtRp(nominal)} (${Math.round(width * 10) / 10}%)</span></div><div class="budget-bar"><div class="budget-fill bar-fill ${barClasses[index]}" style="--target-w:${width}%"></div></div></div>`;
+  }).join('');
   observeBars();
 
-  // Realisasi cards — utamakan kolom pct jika ada
-  const pct = (pctCol, nominal, total) => {
-    if (pctCol != null) return pctCol + '%';
-    if (total)          return Math.round(nominal / total * 100) + '%';
-    return '—';
-  };
-  document.getElementById('apb-r1').textContent = pct(d.realisasi_pct_pendapatan,   d.realisasi_pendapatan,   d.total_anggaran);
-  document.getElementById('apb-r2').textContent = pct(d.realisasi_pct_belanja,       d.realisasi_belanja,       d.total_anggaran);
-  document.getElementById('apb-r3').textContent = pct(d.realisasi_pct_pembangunan,   d.realisasi_pembangunan,   d.nominal_pembangunan);
-  document.getElementById('apb-r4').textContent = pct(d.realisasi_pct_pemberdayaan,  d.realisasi_pemberdayaan,  d.nominal_pemberdayaan);
+  document.getElementById('apb-r1').textContent = percent(pendapatanRealisasi, pendapatanAnggaran);
+  document.getElementById('apb-r1-nominal').textContent = fmtRp(pendapatanRealisasi);
+  document.getElementById('apb-r2').textContent = percent(belanjaRealisasi, belanjaAnggaran);
+  document.getElementById('apb-r2-nominal').textContent = fmtRp(belanjaRealisasi);
+  document.getElementById('apb-r3').textContent = fmtRp(surplusRealisasi);
+  document.getElementById('apb-r4').textContent = fmtRp(silpaRealisasi);
 
-  // Tabel pendapatan
-  const pendapatan = [
-    ['Dana Desa (APBN)',           d.pendapatan_dd],
-    ['ADD (Alokasi Dana Desa)',    d.pendapatan_add],
-    ['Bagi Hasil Pajak/Retribusi', d.pendapatan_pajak],
-    ['PADes & lain-lain',         d.pendapatan_pades],
-  ].filter(r => r[1]);
+  const pendapatanRow = (label, anggaran, realisasi, className = '') => `<tr class="${className}"><td>${label}</td><td>${fmtRpFull(anggaran)}</td><td>${fmtRpFull(realisasi)}</td><td>${fmtRpFull(realisasi - anggaran)}</td></tr>`;
+  const transferKeys = ['dana_desa', 'bagi_hasil', 'add', 'bantuan_provinsi', 'bantuan_kabupaten'];
+  const transferAnggaran = transferKeys.reduce((sum, key) => sum + lra.pendapatan[key].anggaran, 0);
+  const transferRealisasi = transferKeys.reduce((sum, key) => sum + lra.pendapatan[key].realisasi, 0);
+  const incomeRows = [
+    pendapatanRow('Pendapatan Asli Desa', lra.pendapatan.pad.anggaran, lra.pendapatan.pad.realisasi),
+    pendapatanRow('Pendapatan Transfer', transferAnggaran, transferRealisasi, 'apb-transfer-row'),
+    ...transferKeys.map(key => pendapatanRow(LRA_PUBLIC_SECTIONS.pendapatan.find(([itemKey]) => itemKey === key)[1], lra.pendapatan[key].anggaran, lra.pendapatan[key].realisasi, 'apb-sub-row')),
+    pendapatanRow('Pendapatan Lain-lain', lra.pendapatan.lain_lain.anggaran, lra.pendapatan.lain_lain.realisasi),
+  ];
+  document.getElementById('apb-pendapatan-tbody').innerHTML = incomeRows.join('') +
+    pendapatanRow('<strong>Jumlah Pendapatan</strong>', pendapatanAnggaran, pendapatanRealisasi, 'apb-total-row');
 
-  document.getElementById('apb-pendapatan-tbody').innerHTML = pendapatan.length
-    ? pendapatan.map(r => `<tr><td>${r[0]}</td><td>${fmtRp(r[1])}</td></tr>`).join('')
-    : '<tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:12px;font-size:13px;">Belum ada data pendapatan.</td></tr>';
+  const summaries = [
+    ['Total Belanja', belanjaAnggaran, belanjaRealisasi], ['Surplus / (Defisit)', surplusAnggaran, surplusRealisasi],
+    ['Penerimaan Pembiayaan', lra.pembiayaan.penerimaan.anggaran, lra.pembiayaan.penerimaan.realisasi], ['Pengeluaran Pembiayaan', lra.pembiayaan.pengeluaran.anggaran, lra.pembiayaan.pengeluaran.realisasi],
+    ['Pembiayaan Netto', pembiayaanAnggaran, pembiayaanRealisasi], ['SiLPA Tahun Berjalan', silpaAnggaran, silpaRealisasi],
+  ];
+  document.getElementById('apb-summary').innerHTML = summaries.map(([label, anggaran, realisasi]) => `<div class="apb-summary-item"><span class="apb-summary-label">${label}</span><span class="apb-summary-value ${(realisasi < 0) ? 'negative' : ''}">A: ${fmtRpFull(anggaran)}<br>R: ${fmtRpFull(realisasi)}</span></div>`).join('');
 }
 
 // ════════════════════
