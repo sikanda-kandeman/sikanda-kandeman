@@ -374,7 +374,7 @@
           '.news-card, .layanan-card, .lembaga-card, .potensi-card, .prestasi-card, ' +
           '.info-card, .galeri-item, .budget-item, .quick-card, .sehat-stat, ' +
           '.darurat-card, .umkm-card, .poster-card, .agenda-card, .geo-card, ' +
-          '.kontak-card, .real-card, .transp-info-card, .perdes-item, .arsip-item, ' +
+          '.kontak-card, .realisasi-overview, .realisasi-stat, .realisasi-row, .transp-info-card, .perdes-item, .arsip-item, ' +
           '.surat-item, .maklumat-item, .faq-item, .literasi-item, .jadwal-table tbody tr'
         );
         kids.forEach((k, i) => {
@@ -1222,9 +1222,11 @@ function resetApbdesData(status = 'empty') {
   document.getElementById('apb-tahun-lbl').textContent = 'Anggaran Pendapatan APBDes';
   document.getElementById('apb-sub').textContent = unavailable ? 'Data belum dapat dimuat' : 'Belum ada data yang dipublikasikan';
   document.getElementById('apb-alokasi').innerHTML = `<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;"><i class="fa-solid ${unavailable ? 'fa-triangle-exclamation' : 'fa-circle-info'}" style="margin-right:6px;opacity:.5;"></i>${unavailable ? 'Data APBDes belum dapat dimuat.' : 'Data APBDes belum tersedia.'}</div>`;
-  document.getElementById('apb-pendapatan-tbody').innerHTML = `<tr><td colspan="4" style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;">${unavailable ? 'Data pendapatan belum dapat dimuat.' : 'Belum ada data pendapatan.'}</td></tr>`;
-  document.getElementById('apb-summary').innerHTML = '';
-  ['apb-r1','apb-r2','apb-r3','apb-r4','apb-r1-nominal','apb-r2-nominal'].forEach(id => document.getElementById(id).textContent = '—');
+  document.getElementById('apb-realisasi-list').innerHTML = `<div class="realisasi-loading"><i class="fa-solid ${unavailable ? 'fa-triangle-exclamation' : 'fa-circle-info'}"></i>${unavailable ? 'Data realisasi belum dapat dimuat.' : 'Belum ada data realisasi.'}</div>`;
+  document.getElementById('apb-realisasi-progress').style.setProperty('--progress', 0);
+  document.getElementById('apb-realisasi-progress').setAttribute('aria-label', 'Data realisasi belum tersedia');
+  document.getElementById('apb-belanja-comparison').textContent = unavailable ? 'Data anggaran belum dapat dimuat' : 'Belum ada data anggaran';
+  ['apb-r1','apb-r2','apb-r4','apb-r1-nominal','apb-r2-nominal','apb-sisa-belanja'].forEach(id => document.getElementById(id).textContent = '—');
 }
 
 async function loadApbdes() {
@@ -1261,32 +1263,23 @@ async function loadApbdes() {
   }).join('');
   observeBars();
 
+  const belanjaProgress = belanjaAnggaran > 0 ? Math.max(0, Math.min(100, belanjaRealisasi / belanjaAnggaran * 100)) : 0;
   document.getElementById('apb-r1').textContent = percent(pendapatanRealisasi, pendapatanAnggaran);
   document.getElementById('apb-r1-nominal').textContent = fmtRp(pendapatanRealisasi);
   document.getElementById('apb-r2').textContent = percent(belanjaRealisasi, belanjaAnggaran);
   document.getElementById('apb-r2-nominal').textContent = fmtRp(belanjaRealisasi);
-  document.getElementById('apb-r3').textContent = fmtRp(surplusRealisasi);
   document.getElementById('apb-r4').textContent = fmtRp(silpaRealisasi);
+  document.getElementById('apb-sisa-belanja').textContent = fmtRp(Math.max(0, belanjaAnggaran - belanjaRealisasi));
+  document.getElementById('apb-belanja-comparison').textContent = `dari anggaran belanja ${fmtRp(belanjaAnggaran)}`;
+  document.getElementById('apb-realisasi-progress').style.setProperty('--progress', belanjaProgress);
+  document.getElementById('apb-realisasi-progress').setAttribute('aria-label', `Realisasi belanja ${percent(belanjaRealisasi, belanjaAnggaran)}`);
 
-  const pendapatanRow = (label, anggaran, realisasi, className = '') => `<tr class="${className}"><td>${label}</td><td>${fmtRpFull(anggaran)}</td><td>${fmtRpFull(realisasi)}</td><td>${fmtRpFull(realisasi - anggaran)}</td></tr>`;
-  const transferKeys = ['dana_desa', 'bagi_hasil', 'add', 'bantuan_provinsi', 'bantuan_kabupaten'];
-  const transferAnggaran = transferKeys.reduce((sum, key) => sum + lra.pendapatan[key].anggaran, 0);
-  const transferRealisasi = transferKeys.reduce((sum, key) => sum + lra.pendapatan[key].realisasi, 0);
-  const incomeRows = [
-    pendapatanRow('Pendapatan Asli Desa', lra.pendapatan.pad.anggaran, lra.pendapatan.pad.realisasi),
-    pendapatanRow('Pendapatan Transfer', transferAnggaran, transferRealisasi, 'apb-transfer-row'),
-    ...transferKeys.map(key => pendapatanRow(LRA_PUBLIC_SECTIONS.pendapatan.find(([itemKey]) => itemKey === key)[1], lra.pendapatan[key].anggaran, lra.pendapatan[key].realisasi, 'apb-sub-row')),
-    pendapatanRow('Pendapatan Lain-lain', lra.pendapatan.lain_lain.anggaran, lra.pendapatan.lain_lain.realisasi),
-  ];
-  document.getElementById('apb-pendapatan-tbody').innerHTML = incomeRows.join('') +
-    pendapatanRow('<strong>Jumlah Pendapatan</strong>', pendapatanAnggaran, pendapatanRealisasi, 'apb-total-row');
-
-  const summaries = [
-    ['Total Belanja', belanjaAnggaran, belanjaRealisasi], ['Surplus / (Defisit)', surplusAnggaran, surplusRealisasi],
-    ['Penerimaan Pembiayaan', lra.pembiayaan.penerimaan.anggaran, lra.pembiayaan.penerimaan.realisasi], ['Pengeluaran Pembiayaan', lra.pembiayaan.pengeluaran.anggaran, lra.pembiayaan.pengeluaran.realisasi],
-    ['Pembiayaan Netto', pembiayaanAnggaran, pembiayaanRealisasi], ['SiLPA Tahun Berjalan', silpaAnggaran, silpaRealisasi],
-  ];
-  document.getElementById('apb-summary').innerHTML = summaries.map(([label, anggaran, realisasi]) => `<div class="apb-summary-item"><span class="apb-summary-label">${label}</span><span class="apb-summary-value ${(realisasi < 0) ? 'negative' : ''}">A: ${fmtRpFull(anggaran)}<br>R: ${fmtRpFull(realisasi)}</span></div>`).join('');
+  document.getElementById('apb-realisasi-list').innerHTML = LRA_PUBLIC_SECTIONS.belanja.map(([key, label]) => {
+    const anggaran = lra.belanja[key].anggaran;
+    const realisasi = lra.belanja[key].realisasi;
+    const progress = anggaran > 0 ? Math.max(0, Math.min(100, realisasi / anggaran * 100)) : 0;
+    return `<div class="realisasi-row"><div class="realisasi-row-top"><span class="realisasi-row-label">${label}</span><span class="realisasi-row-percent">${percent(realisasi, anggaran)}</span></div><div class="realisasi-row-bar" aria-hidden="true"><span style="--progress:${progress}"></span></div><div class="realisasi-row-meta"><span>Realisasi <strong>${fmtRp(realisasi)}</strong></span><span>Anggaran ${fmtRp(anggaran)}</span></div></div>`;
+  }).join('');
 }
 
 // ════════════════════
