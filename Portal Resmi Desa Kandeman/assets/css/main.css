@@ -778,7 +778,12 @@
     /* ══════════════════════════════════════
        TRANSPARANSI
     ══════════════════════════════════════ */
-    .trans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    .trans-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+      gap: 30px;
+      align-items: start;
+    }
     @media (max-width: 860px) { .trans-grid { grid-template-columns: 1fr; } }
 
     .apbdes-total {
@@ -817,6 +822,16 @@
     .apbdes-total .lbl { font-size: 13px; opacity: .72; margin-top: 5px; }
     .apbdes-total .sub { font-size: 11px; opacity: .5; margin-top: 4px; font-style: italic; }
 
+    .budget-section-title {
+      margin: 0 0 15px;
+      color: var(--forest);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -.015em;
+    }
+
     .budget-item { margin-bottom: 20px; }
     .budget-header { display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 7px; }
     .budget-header span:first-child { font-weight: 500; }
@@ -836,24 +851,25 @@
       border: 1px solid rgba(13,43,26,.1);
       border-radius: 22px;
       box-shadow: 0 20px 44px -34px rgba(13,43,26,.36);
+      font-family: 'Cormorant Garamond', serif;
     }
     #realisasi .realisasi-heading {
       display: flex; align-items: flex-start; justify-content: space-between;
       gap: 18px; margin-bottom: 18px;
     }
     #realisasi .realisasi-kicker {
-      margin: 0; color: var(--forest); font-size: 16px; font-weight: 700;
+      margin: 0; color: var(--forest); font-size: 20px; font-weight: 700;
       line-height: 1.25; letter-spacing: -.015em;
     }
     #realisasi .realisasi-caption {
       max-width: 35ch; margin: 5px 0 0; color: var(--text-sec);
-      font-size: 11.5px; line-height: 1.55;
+      font-size: 13px; line-height: 1.5;
     }
     #realisasi .realisasi-status {
       display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto;
       padding: 7px 10px; color: var(--emerald); background: #E6F2EA;
       border: 1px solid rgba(28,107,62,.14); border-radius: 999px;
-      font-size: 10px; font-weight: 700; line-height: 1;
+      font-size: 11.5px; font-weight: 700; line-height: 1;
     }
     #realisasi .realisasi-status i { font-size: 10px; }
 
@@ -866,7 +882,7 @@
       min-width: 0; min-height: 38px; display: inline-flex; align-items: center;
       justify-content: center; gap: 7px; padding: 9px 10px;
       color: var(--text-sec); background: transparent; border: 0; border-radius: 9px;
-      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 650;
+      font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 700;
       line-height: 1; cursor: pointer;
       transition: color .25s cubic-bezier(.16,1,.3,1), background-color .25s cubic-bezier(.16,1,.3,1), transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s cubic-bezier(.16,1,.3,1);
     }
@@ -886,13 +902,23 @@
       position: relative; isolation: isolate; overflow: hidden;
       display: grid; grid-template-columns: 104px minmax(0, 1fr);
       align-items: center; gap: 22px; min-height: 154px; padding: 24px;
-      color: #fff; background: var(--forest); border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px; box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+      color: #fff;
+      background: linear-gradient(135deg, #0A2B14 0%, #1C6B3E 40%, #0F4D28 70%, #0A3520 100%);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      box-shadow: 0 18px 34px -26px rgba(10,43,20,.78), inset 0 1px 0 rgba(255,255,255,.09);
+    }
+    #realisasi .realisasi-overview::before {
+      content: ''; position: absolute; z-index: -1; width: 220px; height: 220px;
+      right: -48px; top: -72px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(176,125,42,.24) 0%, transparent 65%);
+      pointer-events: none;
     }
     #realisasi .realisasi-overview::after {
-      content: ''; position: absolute; z-index: -1; width: 210px; height: 210px;
-      right: -92px; top: -120px; border-radius: 50%;
-      background: rgba(142,201,166,.12); pointer-events: none;
+      content: ''; position: absolute; z-index: -1; width: 170px; height: 170px;
+      left: -42px; bottom: -70px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(142,201,166,.18) 0%, transparent 66%);
+      pointer-events: none;
     }
     #realisasi .realisasi-progress {
       --progress: 0; width: 104px; height: 104px; border-radius: 50%;
@@ -906,27 +932,27 @@
       background: #163822; box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
     }
     #realisasi .realisasi-progress-inner strong {
-      color: #fff; font-family: 'DM Sans', sans-serif; font-size: 21px;
+      color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 24px;
       font-weight: 700; line-height: 1; letter-spacing: -.04em;
       font-variant-numeric: tabular-nums;
     }
     #realisasi .realisasi-progress-inner span {
-      margin-top: 6px; color: rgba(255,255,255,.6); font-size: 8.5px;
+      margin-top: 6px; color: rgba(255,255,255,.6); font-size: 10.5px;
       font-weight: 600; line-height: 1; letter-spacing: .08em; text-transform: uppercase;
     }
     #realisasi .realisasi-overview-copy { min-width: 0; }
     #realisasi .realisasi-label {
-      display: block; color: var(--mint); font-size: 10px; font-weight: 700;
+      display: block; color: var(--mint); font-size: 12.5px; font-weight: 700;
       line-height: 1.3; letter-spacing: .09em; text-transform: uppercase;
     }
     #realisasi .realisasi-overview-copy > strong {
       display: block; margin-top: 7px; color: #fff;
-      font-family: 'DM Sans', sans-serif; font-size: clamp(24px, 3.2vw, 32px);
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 3.6vw, 38px);
       font-weight: 700; line-height: 1.1; letter-spacing: -.04em;
       overflow-wrap: anywhere; font-variant-numeric: tabular-nums;
     }
     #realisasi .realisasi-overview-copy p {
-      margin: 8px 0 0; color: rgba(255,255,255,.58); font-size: 11px;
+      margin: 8px 0 0; color: rgba(255,255,255,.62); font-size: 13px;
       line-height: 1.5; font-variant-numeric: tabular-nums;
     }
 
@@ -949,17 +975,17 @@
     #realisasi .realisasi-stat-copy { min-width: 0; }
     #realisasi .realisasi-stat-copy > span {
       display: block; min-height: 28px; color: var(--text-muted);
-      font-size: 9px; font-weight: 600; line-height: 1.4;
+      font-size: 11.5px; font-weight: 600; line-height: 1.35;
     }
     #realisasi .realisasi-stat-copy > strong {
       display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--text);
-      font-size: 13px; font-weight: 700; line-height: 1.25;
+      font-size: 16px; font-weight: 700; line-height: 1.2;
       letter-spacing: -.02em; font-variant-numeric: tabular-nums;
     }
     #realisasi .realisasi-stat:first-child .realisasi-stat-copy > strong { color: var(--emerald); }
     #realisasi .realisasi-stat-copy > small {
       display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--text-sec);
-      font-size: 8.5px; line-height: 1.4; font-variant-numeric: tabular-nums;
+      font-size: 10.5px; line-height: 1.35; font-variant-numeric: tabular-nums;
     }
 
     #realisasi .realisasi-breakdown { margin-top: 27px; }
@@ -968,15 +994,15 @@
       gap: 16px; margin-bottom: 10px;
     }
     #realisasi .realisasi-breakdown-title h3 {
-      margin: 0; color: var(--forest); font-size: 14px; font-weight: 700;
+      margin: 0; color: var(--forest); font-size: 17px; font-weight: 700;
       line-height: 1.3; letter-spacing: -.015em;
     }
     #realisasi .realisasi-breakdown-title p {
-      margin: 4px 0 0; color: var(--text-muted); font-size: 10px; line-height: 1.45;
+      margin: 4px 0 0; color: var(--text-muted); font-size: 12px; line-height: 1.4;
     }
     #realisasi .realisasi-legend {
       display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto;
-      color: var(--text-muted); font-size: 9px; line-height: 1;
+      color: var(--text-muted); font-size: 11px; line-height: 1;
     }
     #realisasi .realisasi-legend i {
       width: 18px; height: 5px; border-radius: 99px; background: var(--emerald);
@@ -996,12 +1022,12 @@
       align-items: start; gap: 14px;
     }
     #realisasi .realisasi-row-label {
-      min-width: 0; color: var(--text); font-size: 11.5px; font-weight: 650;
+      min-width: 0; color: var(--text); font-size: 14px; font-weight: 650;
       line-height: 1.45; overflow-wrap: anywhere;
     }
     #realisasi .realisasi-row-percent {
       flex: 0 0 auto; padding: 5px 7px; color: var(--emerald); background: #EDF5EF;
-      border-radius: 7px; font-size: 10px; font-weight: 700; line-height: 1;
+      border-radius: 7px; font-size: 12px; font-weight: 700; line-height: 1;
       white-space: nowrap; font-variant-numeric: tabular-nums;
     }
     #realisasi .realisasi-row-percent small { font-size: 8px; font-weight: 600; }
@@ -1027,11 +1053,11 @@
       padding-left: 16px; border-left: 1px solid rgba(13,43,26,.09);
     }
     #realisasi .realisasi-row-meta-item small {
-      display: block; color: var(--text-muted); font-size: 8.5px;
+      display: block; color: var(--text-muted); font-size: 10px;
       font-weight: 600; line-height: 1.3; text-transform: uppercase; letter-spacing: .06em;
     }
     #realisasi .realisasi-row-meta-item strong {
-      display: block; margin-top: 3px; color: var(--text-sec); font-size: 10.5px;
+      display: block; margin-top: 3px; color: var(--text-sec); font-size: 12.5px;
       font-weight: 650; line-height: 1.35; overflow-wrap: anywhere;
       font-variant-numeric: tabular-nums;
     }
@@ -1055,13 +1081,14 @@
 
     /* Arsip PDF keuangan ditempatkan bersama data APBDes agar alurnya mudah dipahami. */
     .financial-archive {
-      margin-top: 44px; padding: 28px;
+      margin-top: 30px; padding: 22px;
       background: #F8F8F3; border: 1px solid rgba(13,43,26,.11);
-      border-radius: 22px; box-shadow: 0 22px 50px -42px rgba(13,43,26,.42);
+      border-radius: 20px; box-shadow: 0 22px 50px -42px rgba(13,43,26,.42);
+      font-family: 'Cormorant Garamond', serif;
     }
     .financial-archive-head {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      gap: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(13,43,26,.1);
+      display: flex; align-items: stretch; flex-direction: column;
+      gap: 17px; padding-bottom: 18px; border-bottom: 1px solid rgba(13,43,26,.1);
     }
     .financial-archive-heading { display: flex; align-items: flex-start; gap: 14px; min-width: 0; }
     .financial-archive-icon {
@@ -1074,21 +1101,21 @@
       line-height: 1.2; letter-spacing: .1em; text-transform: uppercase;
     }
     .financial-archive-heading h3 {
-      margin: 0; color: var(--forest); font-size: 20px; font-weight: 700;
+      margin: 0; color: var(--forest); font-size: 22px; font-weight: 700;
       line-height: 1.2; letter-spacing: -.025em;
     }
     .financial-archive-heading p:last-child {
-      max-width: 58ch; margin: 6px 0 0; color: var(--text-sec); font-size: 12px; line-height: 1.6;
+      max-width: 58ch; margin: 6px 0 0; color: var(--text-sec); font-size: 13.5px; line-height: 1.5;
     }
     .financial-year-tabs {
       display: inline-grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
-      flex: 0 0 auto; padding: 4px; background: #E7EAE5;
+      width: 100%; flex: 0 0 auto; padding: 4px; background: #E7EAE5;
       border: 1px solid rgba(13,43,26,.08); border-radius: 12px;
     }
     .financial-year-tab {
       min-width: 58px; min-height: 36px; padding: 8px 11px;
       color: var(--text-sec); background: transparent; border: 0; border-radius: 8px;
-      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 650;
+      font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 700;
       font-variant-numeric: tabular-nums; cursor: pointer;
       transition: color .2s, background-color .2s, box-shadow .2s, transform .15s;
     }
@@ -1101,14 +1128,14 @@
     .financial-year-tab:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
     .financial-archive-summary {
       display: flex; align-items: center; justify-content: space-between; gap: 16px;
-      margin: 18px 0 11px; color: var(--text-muted); font-size: 10.5px;
+      margin: 18px 0 11px; color: var(--text-muted); font-size: 12px;
     }
     .financial-archive-summary span:first-child {
       display: inline-flex; align-items: center; gap: 7px; color: var(--forest); font-weight: 650;
     }
     .financial-archive-summary span:last-child { font-variant-numeric: tabular-nums; }
     .financial-docs-grid {
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      display: grid; grid-template-columns: 1fr;
       gap: 10px;
     }
     .financial-doc-card {
@@ -1130,12 +1157,12 @@
     }
     .financial-doc-copy { min-width: 0; }
     .financial-doc-copy h4 {
-      margin: 0; color: var(--text); font-size: 12.5px; font-weight: 650;
+      margin: 0; color: var(--text); font-size: 15px; font-weight: 650;
       line-height: 1.35; text-wrap: balance;
     }
     .financial-doc-meta {
       display: flex; align-items: center; gap: 7px; margin-top: 5px;
-      color: var(--text-muted); font-size: 9.5px; line-height: 1.3;
+      color: var(--text-muted); font-size: 11px; line-height: 1.3;
     }
     .financial-doc-status {
       display: inline-flex; align-items: center; gap: 4px; color: var(--emerald); font-weight: 650;
@@ -1169,7 +1196,7 @@
     .financial-doc-loading i { margin-right: 7px; }
 
     @media (max-width: 760px) {
-      .financial-archive { margin-top: 34px; padding: 21px; border-radius: 18px; }
+      .financial-archive { margin-top: 28px; padding: 21px; border-radius: 18px; }
       .financial-archive-head { align-items: stretch; flex-direction: column; gap: 18px; }
       .financial-year-tabs { width: 100%; }
       .financial-year-tab { min-width: 0; }
@@ -1195,15 +1222,15 @@
       #realisasi .realisasi-caption { font-size: 10.5px; }
       #realisasi .realisasi-status { padding: 6px 8px; font-size: 9px; }
       #realisasi .realisasi-tabs { margin-bottom: 10px; }
-      #realisasi .realisasi-tab { min-height: 36px; gap: 6px; padding: 8px 7px; font-size: 9.5px; }
+      #realisasi .realisasi-tab { min-height: 36px; gap: 6px; padding: 8px 7px; font-size: 12px; }
       #realisasi .realisasi-overview {
         grid-template-columns: 86px minmax(0, 1fr); gap: 16px;
         min-height: 128px; padding: 18px; border-radius: 15px;
       }
       #realisasi .realisasi-progress { width: 86px; height: 86px; }
       #realisasi .realisasi-progress-inner { width: 70px; height: 70px; }
-      #realisasi .realisasi-progress-inner strong { font-size: 18px; }
-      #realisasi .realisasi-overview-copy > strong { font-size: clamp(21px, 6.5vw, 27px); }
+      #realisasi .realisasi-progress-inner strong { font-size: 21px; }
+      #realisasi .realisasi-overview-copy > strong { font-size: clamp(26px, 7vw, 32px); }
       #realisasi .realisasi-stats { grid-template-columns: 1fr; }
       #realisasi .realisasi-stat { align-items: center; padding: 13px 14px; }
       #realisasi .realisasi-stat + .realisasi-stat { border-top: 1px solid rgba(13,43,26,.09); border-left: 0; }
