@@ -1278,7 +1278,18 @@ async function loadApbdes() {
     const anggaran = lra.belanja[key].anggaran;
     const realisasi = lra.belanja[key].realisasi;
     const progress = anggaran > 0 ? Math.max(0, Math.min(100, realisasi / anggaran * 100)) : 0;
-    return `<div class="realisasi-row"><div class="realisasi-row-top"><span class="realisasi-row-label">${label}</span><span class="realisasi-row-percent">${percent(realisasi, anggaran)}</span></div><div class="realisasi-row-bar" aria-hidden="true"><span style="--progress:${progress}"></span></div><div class="realisasi-row-meta"><span>Realisasi <strong>${fmtRp(realisasi)}</strong></span><span>Anggaran ${fmtRp(anggaran)}</span></div></div>`;
+    const progressState = anggaran <= 0 ? ' is-empty' : realisasi > anggaran ? ' is-over' : '';
+    return `<div class="realisasi-row${progressState}">
+      <div class="realisasi-row-top">
+        <span class="realisasi-row-label">${label}</span>
+        <span class="realisasi-row-percent">${percent(realisasi, anggaran)}<small> terserap</small></span>
+      </div>
+      <div class="realisasi-row-bar" aria-hidden="true"><span style="--progress:${progress}"></span></div>
+      <div class="realisasi-row-meta">
+        <span class="realisasi-row-meta-item"><small>Realisasi</small><strong>${fmtRp(realisasi)}</strong></span>
+        <span class="realisasi-row-meta-item"><small>Anggaran</small><strong>${fmtRp(anggaran)}</strong></span>
+      </div>
+    </div>`;
   }).join('');
 }
 
