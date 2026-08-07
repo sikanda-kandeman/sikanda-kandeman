@@ -293,13 +293,19 @@
                         style="min-height:120px;" oninput="updateCharCount(); scheduleDraftSave()" aria-label="Tulis isi berita atau pengumuman di sini..."></textarea>
             </div>
             <div class="form-group">
-              <label>URL gambar (opsional)</label>
-              <input type="url" id="b-gambar-url" placeholder="https://contoh.com/gambar.jpg"
-                     oninput="previewGambarBerita(this.value)" aria-label="https://contoh.com/gambar.jpg" />
-              <div class="form-hint">Masukkan URL gambar untuk ditampilkan di atas berita. Kosongkan jika tidak ada.</div>
+              <label>Gambar berita (opsional)</label>
+              <input type="file" id="b-gambar-file" accept="image/jpeg,image/png"
+                     aria-label="Pilih gambar berita JPG atau PNG" />
+              <input type="hidden" id="b-gambar-current-url" />
+              <input type="hidden" id="b-gambar-remove" value="0" />
+              <div class="form-hint">Pilih file JPG atau PNG, maksimal 5 MB. Saat mengedit, kosongkan bila gambar lama tetap digunakan.</div>
               <div class="img-preview-wrap" id="b-gambar-preview-wrap">
                 <img id="b-gambar-preview" src="" alt="Preview gambar berita" onerror="this.parentElement.classList.remove('show')" />
               </div>
+              <button type="button" class="btn" id="btn-hapus-gambar-berita"
+                      onclick="hapusPilihanGambarBerita()" style="display:none;margin-top:10px;">
+                <i class="fa-solid fa-image-slash"></i> Hapus gambar
+              </button>
             </div>
             <div class="form-actions">
               <button type="button" class="btn" onclick="resetBeritaForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
@@ -1251,6 +1257,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js?v=20260807-arsip-keuangan-v4" defer></script>
+<script src="assets/js/admin.js?v=20260807-berita-upload-v1" defer></script>
 </body>
 </html>
