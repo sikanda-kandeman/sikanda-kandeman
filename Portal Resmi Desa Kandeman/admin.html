@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   
 
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260808-umkm-galeri-v1" />
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260808-statistik-pertumbuhan-v2" />
 </head>
 <body>
 
@@ -986,6 +986,20 @@
               <div class="form-group"><label>Perempuan</label><input type="number" id="st-perempuan" placeholder="2120" aria-label="2120" /></div>
             </div>
 
+            <div style="font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 10px;">Jumlah laju pertumbuhan penduduk</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Perubahan jumlah penduduk (jiwa)</label>
+                <input type="number" id="st-pertumbuhan-jumlah" step="1" placeholder="42" aria-label="Perubahan jumlah penduduk dalam jiwa" />
+                <div class="form-hint">Gunakan angka negatif jika jumlah penduduk berkurang, misalnya -12.</div>
+              </div>
+              <div class="form-group">
+                <label>Laju pertumbuhan penduduk (%)</label>
+                <input type="number" id="st-pertumbuhan-persen" step="0.001" placeholder="0.82" aria-label="Laju pertumbuhan penduduk dalam persen" />
+                <div class="form-hint">Isi persentase terhadap periode sebelumnya. Angka negatif diperbolehkan.</div>
+              </div>
+            </div>
+
             <div style="font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 10px;">
               Kelompok umur <span style="font-weight:400;color:var(--text-muted);">— jumlah jiwa</span>
             </div>
@@ -1022,16 +1036,16 @@
             </div>
 
             <div style="font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 10px;">
-              Tingkat pendidikan <span style="font-weight:400;color:var(--text-muted);">— jumlah jiwa dari seluruh warga</span>
+              Tingkat pendidikan <span style="font-weight:400;color:var(--text-muted);">- jumlah jiwa dari seluruh warga</span>
             </div>
             <div class="form-grid">
-              <div class="form-group"><label>Belum sekolah</label><input type="number" id="st-belum-sekolah" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga belum sekolah" /></div>
-              <div class="form-group"><label>Masih SD</label><input type="number" id="st-masih-sd" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga masih SD" /></div>
-              <div class="form-group"><label>Tamat SD</label><input type="number" id="st-tamat-sd" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga tamat SD" /></div>
-              <div class="form-group"><label>SLTP</label><input type="number" id="st-sltp" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan SLTP" /></div>
-              <div class="form-group"><label>SLTA</label><input type="number" id="st-slta" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan SLTA" /></div>
+              <div class="form-group"><label>Tidak/Belum Sekolah</label><input type="number" id="st-belum-sekolah" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga tidak atau belum sekolah" /></div>
+              <div class="form-group"><label>Belum Tamat SD/Sederajat</label><input type="number" id="st-masih-sd" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga belum tamat SD atau sederajat" /></div>
+              <div class="form-group"><label>Tamat SD/Sederajat</label><input type="number" id="st-tamat-sd" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga tamat SD atau sederajat" /></div>
+              <div class="form-group"><label>SLTP/Sederajat</label><input type="number" id="st-sltp" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan SLTP atau sederajat" /></div>
+              <div class="form-group"><label>SLTA/Sederajat</label><input type="number" id="st-slta" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan SLTA atau sederajat" /></div>
               <div class="form-group"><label>Diploma I/II</label><input type="number" id="st-diploma-1-2" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan Diploma I atau II" /></div>
-              <div class="form-group"><label>Diploma III</label><input type="number" id="st-diploma-3" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan Diploma III" /></div>
+              <div class="form-group"><label>Akademi/Diploma III</label><input type="number" id="st-diploma-3" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan Akademi atau Diploma III" /></div>
               <div class="form-group"><label>Diploma IV/S1</label><input type="number" id="st-diploma-4-s1" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan Diploma IV atau S1" /></div>
               <div class="form-group"><label>S2</label><input type="number" id="st-s2" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan S2" /></div>
               <div class="form-group"><label>S3</label><input type="number" id="st-s3" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan S3" /></div>
@@ -1263,6 +1277,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js?v=20260808-umkm-galeri-v1" defer></script>
+<script src="assets/js/admin.js?v=20260808-statistik-pertumbuhan-v2" defer></script>
 </body>
 </html>

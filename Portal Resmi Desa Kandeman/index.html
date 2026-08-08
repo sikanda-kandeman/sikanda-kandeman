@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260808-umkm-galeri-v1" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260808-statistik-pertumbuhan-v2" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -1880,7 +1880,7 @@
 
     <div class="stat-grid">
       <!-- Piramida umur -->
-      <div class="stat-panel">
+      <div class="stat-panel stat-panel-age">
         <h3><i class="fa-solid fa-people-group"></i> Komposisi Usia &amp; Jenis Kelamin</h3>
         <div class="sub">Sebaran penduduk per kelompok umur</div>
         <div id="piramida-umur">
@@ -1898,7 +1898,7 @@
       </div>
 
       <!-- Pendidikan -->
-      <div class="stat-panel">
+      <div class="stat-panel stat-panel-education">
         <h3><i class="fa-solid fa-graduation-cap"></i> Tingkat Pendidikan</h3>
         <div class="donut-wrap">
           <svg class="donut-svg" width="150" height="150" viewBox="0 0 42 42" role="img" aria-label="Diagram tingkat pendidikan">
@@ -1925,13 +1925,13 @@
                     stroke-dasharray="0 100" data-len="0" data-off="25" transform="rotate(-90 21 21)"/>
           </svg>
           <div class="donut-legend" id="stat-pendidikan-legend">
-            <div class="donut-item"><span class="dot" style="background:#1C6B3E;"></span><span class="nm">Belum sekolah</span><span class="vl">0%</span></div>
-            <div class="donut-item"><span class="dot" style="background:#B07D2A;"></span><span class="nm">Masih SD</span><span class="vl">0%</span></div>
-            <div class="donut-item"><span class="dot" style="background:#1A5080;"></span><span class="nm">Tamat SD</span><span class="vl">0%</span></div>
-            <div class="donut-item"><span class="dot" style="background:#8EC9A6;"></span><span class="nm">SLTP</span><span class="vl">0%</span></div>
-            <div class="donut-item"><span class="dot" style="background:#D09A3B;"></span><span class="nm">SLTA</span><span class="vl">0%</span></div>
+            <div class="donut-item"><span class="dot" style="background:#1C6B3E;"></span><span class="nm">Tidak/Belum Sekolah</span><span class="vl">0%</span></div>
+            <div class="donut-item"><span class="dot" style="background:#B07D2A;"></span><span class="nm">Belum Tamat SD/Sederajat</span><span class="vl">0%</span></div>
+            <div class="donut-item"><span class="dot" style="background:#1A5080;"></span><span class="nm">Tamat SD/Sederajat</span><span class="vl">0%</span></div>
+            <div class="donut-item"><span class="dot" style="background:#8EC9A6;"></span><span class="nm">SLTP/Sederajat</span><span class="vl">0%</span></div>
+            <div class="donut-item"><span class="dot" style="background:#D09A3B;"></span><span class="nm">SLTA/Sederajat</span><span class="vl">0%</span></div>
             <div class="donut-item"><span class="dot" style="background:#3978A8;"></span><span class="nm">Diploma I/II</span><span class="vl">0%</span></div>
-            <div class="donut-item"><span class="dot" style="background:#6AA5C7;"></span><span class="nm">Diploma III</span><span class="vl">0%</span></div>
+            <div class="donut-item"><span class="dot" style="background:#6AA5C7;"></span><span class="nm">Akademi/Diploma III</span><span class="vl">0%</span></div>
             <div class="donut-item"><span class="dot" style="background:#7B5BA7;"></span><span class="nm">Diploma IV/S1</span><span class="vl">0%</span></div>
             <div class="donut-item"><span class="dot" style="background:#C13584;"></span><span class="nm">S2</span><span class="vl">0%</span></div>
             <div class="donut-item"><span class="dot" style="background:#E668B0;"></span><span class="nm">S3</span><span class="vl">0%</span></div>
@@ -1940,31 +1940,54 @@
       </div>
 
       <!-- Ringkasan -->
-      <div class="stat-panel stat-wide">
+      <div class="stat-panel stat-panel-summary">
         <h3><i class="fa-solid fa-chart-simple"></i> Ringkasan Demografi</h3>
         <div class="sub">Angka pokok kependudukan Desa Kandeman</div>
         <div class="ringkasan-grid" id="stat-ringkasan">
-          <div style="padding:16px;background:linear-gradient(140deg,#E3F4EC,#F0F9F4);border-radius:12px;">
-            <div id="stat-total-penduduk" style="font-family:'DM Mono',monospace;font-size:24px;font-weight:700;color:var(--emerald);">—</div>
-            <div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">Total Penduduk</div>
+          <div class="demography-card demography-card-population">
+            <div id="stat-total-penduduk" class="demography-value">—</div>
+            <div class="demography-label">Total Penduduk</div>
           </div>
-          <div style="padding:16px;background:linear-gradient(140deg,#F7EDD0,#FCF7EA);border-radius:12px;">
-            <div id="stat-total-kk" style="font-family:'DM Mono',monospace;font-size:24px;font-weight:700;color:var(--gold);">—</div>
-            <div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">Kepala Keluarga</div>
+          <div class="demography-card demography-card-family">
+            <div id="stat-total-kk" class="demography-value">—</div>
+            <div class="demography-label">Kepala Keluarga</div>
           </div>
-          <div style="padding:16px;background:linear-gradient(140deg,#E3EEF7,#F2F7FC);border-radius:12px;">
-            <div id="stat-total-laki" style="font-family:'DM Mono',monospace;font-size:24px;font-weight:700;color:#1A5080;">—</div>
-            <div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">Laki-laki</div>
+          <div class="demography-card demography-card-male">
+            <div id="stat-total-laki" class="demography-value">—</div>
+            <div class="demography-label">Laki-laki</div>
           </div>
-          <div style="padding:16px;background:linear-gradient(140deg,#FBEAF3,#FDF5F9);border-radius:12px;">
-            <div id="stat-total-perempuan" style="font-family:'DM Mono',monospace;font-size:24px;font-weight:700;color:#C13584;">—</div>
-            <div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">Perempuan</div>
+          <div class="demography-card demography-card-female">
+            <div id="stat-total-perempuan" class="demography-value">—</div>
+            <div class="demography-label">Perempuan</div>
           </div>
         </div>
         <p style="font-size:11.5px;color:var(--text-muted);margin-top:16px;line-height:1.55;">
           <i class="fa-solid fa-circle-info" style="color:var(--emerald);"></i>
           Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh pada Transparency Hub.
         </p>
+      </div>
+
+      <!-- Laju pertumbuhan -->
+      <div class="stat-panel stat-panel-growth">
+        <h3><i class="fa-solid fa-arrow-trend-up"></i> Jumlah Laju Pertumbuhan Penduduk</h3>
+        <div class="sub">Perubahan jumlah warga dibanding periode sebelumnya</div>
+        <div class="growth-card" id="stat-growth-card" data-state="empty">
+          <div class="growth-card-head">
+            <span class="growth-status" id="stat-growth-status">Data belum tersedia</span>
+            <span class="growth-icon" id="stat-growth-icon" aria-hidden="true"><i class="fa-solid fa-minus"></i></span>
+          </div>
+          <div class="growth-rate" id="stat-growth-rate">—</div>
+          <div class="growth-rate-label">Laju pertumbuhan penduduk</div>
+          <div class="growth-divider"></div>
+          <div class="growth-change-row">
+            <div>
+              <div class="growth-change" id="stat-growth-change">—</div>
+              <div class="growth-change-label">Perubahan jumlah warga</div>
+            </div>
+            <div class="growth-period" id="stat-growth-period">Periode pembanding belum tersedia</div>
+          </div>
+        </div>
+        <p class="growth-note"><i class="fa-solid fa-circle-info"></i> Nilai positif berarti bertambah, sedangkan nilai negatif berarti berkurang.</p>
       </div>
     </div>
   </div>
@@ -2451,6 +2474,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260808-umkm-galeri-v1" defer></script>
+  <script src="assets/js/main.js?v=20260808-statistik-pertumbuhan-v2" defer></script>
 </body>
 </html>
