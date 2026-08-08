@@ -564,12 +564,11 @@
       margin-bottom: 16px;
     }
     .geo-label {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 25px;
-      line-height: 1.05;
+      font-size: 18px;
+      line-height: 1.2;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 8px;
+      margin-bottom: 5px;
     }
     .geo-heading p { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
     .geo-code-badge {
@@ -636,10 +635,8 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 16px 15px 7px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      line-height: 1.15;
+      padding: 14px 15px 5px;
+      font-size: 12.5px;
       font-weight: 700;
       color: var(--text);
     }
@@ -682,24 +679,20 @@
     }
 
     .geo-map-section {
-      margin-top: 52px;
-      padding-top: 32px;
+      margin-top: 48px;
+      padding-top: 28px;
       border-top: 1px solid var(--border);
     }
     .geo-map-header {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 42px;
-      margin-bottom: 28px;
-    }
-    .geo-map-copy {
-      min-width: 0;
-      max-width: 720px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 18px;
     }
     .geo-map-kicker {
       display: block;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       color: var(--emerald);
       font-size: 10.5px;
       font-weight: 700;
@@ -710,52 +703,25 @@
       display: flex;
       align-items: center;
       gap: 9px;
-      margin: 0;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(27px, 2.7vw, 36px);
-      line-height: 1.05;
-      letter-spacing: -.02em;
+      margin-bottom: 6px;
+      font-size: clamp(20px, 2.2vw, 28px);
+      line-height: 1.15;
+      letter-spacing: -.025em;
     }
     .geo-map-header h3 i { color: var(--emerald); font-size: .75em; }
-    .geo-map-header p {
-      max-width: 62ch;
-      margin-top: 13px;
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.7;
-    }
+    .geo-map-header p { max-width: 680px; font-size: 13px; color: var(--text-muted); line-height: 1.65; }
     .geo-map-coordinate {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(132px, 1fr));
-      gap: 1px;
-      overflow: hidden;
-      min-width: 286px;
-      border-radius: 12px;
-      background: var(--border);
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      border-radius: 9px;
+      background: var(--cream);
       border: 1px solid var(--border);
-    }
-    .geo-map-coordinate-item {
-      padding: 14px 16px;
-      background: #F7F4ED;
-    }
-    .geo-map-coordinate-item span {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--text-muted);
-      font-size: 10px;
-      line-height: 1.25;
-      letter-spacing: .035em;
-    }
-    .geo-map-coordinate-item strong {
-      display: block;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      line-height: 1.25;
-      font-weight: 700;
+      color: var(--text-sec);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
       font-variant-numeric: tabular-nums;
-      white-space: nowrap;
     }
+    .geo-map-coordinate i { margin-right: 5px; color: var(--emerald); }
     .geo-map-layout {
       display: grid;
       grid-template-columns: minmax(0, 3fr) minmax(250px, 1fr);
@@ -789,13 +755,8 @@
       background: rgba(255,255,255,.1);
       color: #B7DEC5;
     }
-    .geo-map-aside h4 {
-      margin-bottom: 12px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 23px;
-      line-height: 1.05;
-    }
-    .geo-map-aside > p { font-size: 12px; line-height: 1.72; color: rgba(255,255,255,.68); }
+    .geo-map-aside h4 { margin-bottom: 8px; font-size: 16px; }
+    .geo-map-aside > p { font-size: 12px; line-height: 1.65; color: rgba(255,255,255,.68); }
     .geo-map-aside .peta-legend {
       display: grid;
       gap: 11px;
@@ -815,15 +776,15 @@
     .geo-map-note i { margin-right: 5px; color: #B7DEC5; }
 
     @media (max-width: 920px) {
-      .geo-map-header { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-      .geo-map-coordinate { width: min(100%, 360px); }
+      .geo-map-header { align-items: flex-start; }
       .geo-map-layout { grid-template-columns: minmax(0, 1fr) 240px; }
       .geo-map-frame,
       .geo-map-frame iframe { min-height: 460px; }
     }
     @media (max-width: 720px) {
       .geo-map-section { margin-top: 36px; padding-top: 22px; }
-      .geo-map-header { margin-bottom: 22px; }
+      .geo-map-header { display: block; }
+      .geo-map-coordinate { display: inline-flex; margin-top: 14px; }
       .geo-map-layout { grid-template-columns: 1fr; }
       .geo-map-frame,
       .geo-map-frame iframe { min-height: 420px; }
@@ -837,7 +798,6 @@
       .geo-card { padding: 14px; }
       .geo-card .val { font-size: 18px; }
       .geo-coordinate-grid { grid-template-columns: 1fr; }
-      .geo-map-coordinate { grid-template-columns: 1fr; min-width: 0; }
       .geo-map-frame,
       .geo-map-frame iframe { min-height: 360px; }
       .geo-map-aside { padding: 20px 18px; }
@@ -1040,6 +1000,36 @@
     /* ══════════════════════════════════════
        TRANSPARANSI
     ══════════════════════════════════════ */
+    .trans-period-toolbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 28px;
+      margin: 0 0 28px; padding: 20px 22px;
+      background: #F8F8F3; border: 1px solid rgba(13,43,26,.11); border-radius: 18px;
+      box-shadow: 0 18px 42px -38px rgba(13,43,26,.52);
+    }
+    .trans-period-copy { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .trans-period-icon {
+      width: 44px; height: 44px; flex: 0 0 44px; display: grid; place-items: center;
+      color: var(--mint); background: var(--forest); border-radius: 12px;
+    }
+    .trans-period-kicker {
+      margin: 0 0 2px; color: var(--emerald); font-size: 9px; font-weight: 700;
+      letter-spacing: .11em; line-height: 1.2; text-transform: uppercase;
+    }
+    .trans-period-copy h3 {
+      margin: 0; color: var(--forest); font-family: 'Cormorant Garamond', serif;
+      font-size: 23px; font-weight: 700; line-height: 1.08;
+    }
+    .trans-period-copy h3 + p { margin: 4px 0 0; color: var(--text-muted); font-size: 11.5px; line-height: 1.45; }
+    .trans-period-fields { display: grid; grid-template-columns: minmax(112px, 1fr) minmax(132px, 1fr); gap: 9px; flex: 0 0 auto; }
+    .trans-period-fields label { display: grid; gap: 5px; }
+    .trans-period-fields label > span { color: var(--text-muted); font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .trans-period-fields select {
+      min-height: 42px; padding: 8px 34px 8px 12px; color: var(--forest); background: #fff;
+      border: 1px solid rgba(13,43,26,.15); border-radius: 10px; font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; cursor: pointer;
+    }
+    .trans-period-fields select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .trans-period-fields select:disabled { cursor: wait; opacity: .62; }
     .trans-grid {
       display: grid;
       grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
@@ -1380,6 +1370,12 @@
     .financial-archive-heading p:last-child {
       max-width: 58ch; margin: 6px 0 0; color: var(--text-sec); font-size: 13.5px; line-height: 1.5;
     }
+    .financial-period-badge {
+      align-self: flex-start; display: inline-flex; align-items: center; gap: 7px;
+      min-height: 34px; padding: 8px 11px; color: var(--forest); background: #E7EAE5;
+      border: 1px solid rgba(13,43,26,.08); border-radius: 9px;
+      font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+    }
     .financial-year-tabs {
       display: inline-grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
       width: 100%; flex: 0 0 auto; padding: 4px; background: #E7EAE5;
@@ -1474,6 +1470,8 @@
     .financial-doc-loading i { margin-right: 7px; }
 
     @media (max-width: 760px) {
+      .trans-period-toolbar { align-items: stretch; flex-direction: column; gap: 17px; padding: 18px; }
+      .trans-period-fields { width: 100%; }
       .financial-archive { margin-top: 28px; padding: 21px; border-radius: 18px; }
       .financial-archive-head { align-items: stretch; flex-direction: column; gap: 18px; }
       .financial-year-tabs { width: 100%; }
@@ -1481,6 +1479,9 @@
       .financial-docs-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 430px) {
+      .trans-period-copy { align-items: flex-start; }
+      .trans-period-copy h3 { font-size: 21px; }
+      .trans-period-fields { grid-template-columns: 1fr; }
       .financial-archive { padding: 17px; }
       .financial-archive-heading { gap: 11px; }
       .financial-archive-icon { width: 40px; height: 40px; flex-basis: 40px; border-radius: 11px; }
@@ -1556,8 +1557,6 @@
     }
     .jadwal-card h4 { font-size: 14.5px; font-weight: 600; margin-bottom: 4px; }
     .jadwal-card p { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
-    .jadwal-card p a { color: inherit; font-weight: 600; text-decoration: none; }
-    .jadwal-card p a:hover { color: var(--emerald); }
 
     /* Alur umum */
     .alur-block {
@@ -1913,7 +1912,6 @@
     }
     .kontak-card p, .kontak-card a {
       font-size: 14px; color: var(--text); text-decoration: none; line-height: 1.65;
-      overflow-wrap: anywhere;
     }
     .kontak-card a:hover { color: var(--emerald); }
     .sosmed-row { display: flex; gap: 8px; margin-top: 6px; }
@@ -2322,31 +2320,8 @@
     .bm-isi {
       font-size: 15px; line-height: 1.9;
       color: var(--text-sec, #3A4840);
-      word-break: break-word;
+      white-space: pre-wrap;
     }
-    .bm-isi p { margin: 0 0 14px; }
-    .bm-isi p:last-child { margin-bottom: 0; }
-    .bm-isi h2 {
-      margin: 26px 0 10px; color: var(--text, #1E2820);
-      font-size: clamp(23px, 3vw, 28px); line-height: 1.25; font-weight: 700;
-    }
-    .bm-isi h3 {
-      margin: 22px 0 8px; color: var(--text, #1E2820);
-      font-size: clamp(18px, 2.5vw, 21px); line-height: 1.35; font-weight: 600;
-    }
-    .bm-isi ul, .bm-isi ol { margin: 10px 0 16px; padding-left: 24px; }
-    .bm-isi li { margin: 5px 0; padding-left: 2px; }
-    .bm-isi blockquote {
-      margin: 18px 0; padding: 13px 17px;
-      border-left: 3px solid var(--emerald, #1C6B3E);
-      background: rgba(28,107,62,.06); color: var(--text-sec, #3A4840);
-      font-style: italic;
-    }
-    .bm-isi a {
-      color: var(--emerald, #1C6B3E); text-decoration: underline;
-      text-decoration-thickness: 1px; text-underline-offset: 3px;
-    }
-    .bm-isi a:hover { color: var(--forest, #0D2B1A); }
     .bm-divider {
       height: 1px; background: var(--border, #E5E1D8);
       margin: 28px 0;
@@ -2912,34 +2887,26 @@
        STATISTIK PENDUDUK
     ══════════════════════════════════════ */
     #statistik,
+    #statistik .section-title,
     #statistik .section-sub,
     #statistik .eyebrow,
     #statistik .stat-panel,
     #statistik .stat-panel h3 {
       font-family: 'DM Sans', sans-serif;
     }
-    #statistik .section-title {
-      font-family: 'Cormorant Garamond', serif;
-    }
     .stat-grid {
       display: grid;
       grid-template-columns: minmax(0, 7fr) minmax(340px, 5fr);
-      grid-template-areas:
-        "age education"
-        "summary growth";
-      gap: 24px 20px;
-      align-items: stretch;
+      gap: 18px;
+      align-items: start;
     }
-    .stat-panel-age { grid-area: age; display: flex; flex-direction: column; }
-    .stat-panel-education { grid-area: education; display: flex; flex-direction: column; }
-    .stat-panel-summary { grid-area: summary; display: flex; flex-direction: column; }
-    .stat-panel-growth { grid-area: growth; display: flex; flex-direction: column; }
-    .ringkasan-grid {
+    .stat-column {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      flex: 1;
+      gap: 18px;
+      min-width: 0;
+      align-content: start;
     }
+    .ringkasan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .stat-panel {
       background: #fff; border: 1px solid var(--border);
       border-radius: var(--r-md); padding: 22px;
@@ -2952,14 +2919,6 @@
     }
     .stat-panel h3 i { color: var(--emerald); font-size: 14px; }
     .stat-panel .sub { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; }
-
-    .stat-panel-age #piramida-umur {
-      display: grid;
-      gap: 13px;
-      flex: 1;
-      align-content: center;
-      padding: 8px 0 10px;
-    }
 
     /* Bar horizontal */
     .hbar-row { margin-bottom: 15px; }
@@ -2983,9 +2942,9 @@
     /* Piramida umur */
     .pyr-row {
       display: grid; grid-template-columns: 1fr 62px 1fr;
-      align-items: center; gap: 8px; margin-bottom: 0;
+      align-items: center; gap: 8px; margin-bottom: 7px;
     }
-    .pyr-bar-wrap { display: flex; height: 27px; }
+    .pyr-bar-wrap { display: flex; height: 20px; }
     .pyr-bar-wrap.left  { justify-content: flex-end; }
     .pyr-bar {
       height: 100%; border-radius: 4px; width: 0;
@@ -3010,9 +2969,10 @@
     /* Donut ringkas */
     /* Isi donut dipusatkan vertikal agar tidak menyisakan
        ruang kosong saat sejajar dgn panel piramida yang lebih tinggi */
-    .donut-wrap { display: grid; grid-template-columns: 132px minmax(0,1fr);
-                  align-items: center; gap: 18px; flex: 1; }
-    .donut-svg { width: 132px; height: 132px; flex-shrink: 0; }
+    .donut-wrap { display: grid; grid-template-columns: 150px minmax(0,1fr);
+                  align-items: center; gap: 24px; flex: 1; }
+    .stat-panel-education { display: flex; flex-direction: column; }
+    .donut-svg { flex-shrink: 0; }
     .donut-legend { min-width: 0; display: flex; flex-direction: column; gap: 7px; }
     .donut-item { display: flex; align-items: center; gap: 9px; min-width: 0; font-size: 12.5px; }
     .donut-item .dot { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
@@ -3024,10 +2984,6 @@
       padding: 16px;
       border-radius: 12px;
       min-width: 0;
-      min-height: 88px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
     }
     .demography-card-population { background: linear-gradient(140deg,#E3F4EC,#F0F9F4); }
     .demography-card-family { background: linear-gradient(140deg,#F7EDD0,#FCF7EA); }
@@ -3059,6 +3015,7 @@
     .demography-note i { color: var(--emerald); margin-right: 3px; }
 
     /* Kartu laju pertumbuhan penduduk */
+    .stat-panel-growth { display: flex; flex-direction: column; }
     .growth-card {
       flex: 1;
       padding: 20px;
@@ -3068,7 +3025,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      min-height: 176px;
+      min-height: 190px;
     }
     .growth-card[data-state="up"] {
       border-color: rgba(28,107,62,.22);
@@ -3162,18 +3119,12 @@
     .growth-note i { color: var(--emerald); margin-right: 4px; }
 
     @media (max-width: 1040px) {
+      .ringkasan-grid { grid-template-columns: 1fr 1fr; }
       .donut-wrap { grid-template-columns: 120px minmax(0,1fr); gap: 16px; }
       .donut-svg { width: 120px; height: 120px; }
     }
     @media (max-width: 860px) {
-      .stat-grid {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-          "age"
-          "education"
-          "summary"
-          "growth";
-      }
+      .stat-grid { grid-template-columns: 1fr; }
       .donut-wrap { grid-template-columns: 150px minmax(0,1fr); gap: 24px; }
       .donut-svg { width: 150px; height: 150px; }
     }

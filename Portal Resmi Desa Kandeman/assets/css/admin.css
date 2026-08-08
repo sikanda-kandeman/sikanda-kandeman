@@ -541,6 +541,27 @@
       .apb-input-row input::before { content: ''; }
     }
 
+    /* ── Periode APBDes ── */
+    .apb-period-admin-head {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 18px;
+      margin: 2px 0 16px; padding: 14px 15px; background: var(--cream);
+      border: 1px solid var(--border); border-radius: 12px;
+    }
+    .apb-period-admin-head strong { display: block; color: var(--forest); font-size: 12.5px; font-weight: 650; }
+    .apb-period-admin-head > div > span { display: block; margin-top: 3px; color: var(--text-muted); font-size: 10.5px; line-height: 1.45; }
+    .apb-period-list { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 52%; }
+    .apb-period-chip {
+      min-height: 30px; padding: 6px 9px; color: var(--text-sec); background: #fff;
+      border: 1px solid var(--border); border-radius: 8px; font: 600 10.5px 'DM Sans', sans-serif;
+      font-variant-numeric: tabular-nums; cursor: pointer; transition: .18s ease;
+    }
+    .apb-period-chip:hover { color: var(--forest); border-color: rgba(28,107,62,.3); }
+    .apb-period-chip.active { color: #fff; background: var(--forest); border-color: var(--forest); }
+    .apb-period-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .apb-period-empty { color: var(--text-muted); font-size: 10px; }
+    .apb-period-admin-fields { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .apb-period-load-group .btn { min-height: 40px; justify-content: center; width: 100%; }
+
     /* ── Arsip PDF keuangan ── */
     .finance-admin-card { padding: 0; overflow: hidden; }
     .finance-admin-head {
@@ -606,6 +627,9 @@
     .finance-admin-file-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
     .finance-admin-actions { display: flex; justify-content: flex-end; gap: 5px; white-space: nowrap; }
     @media (max-width: 650px) {
+      .apb-period-admin-head { flex-direction: column; }
+      .apb-period-list { justify-content: flex-start; max-width: none; width: 100%; }
+      .apb-period-admin-fields { grid-template-columns: 1fr 1fr; }
       .finance-admin-head, .finance-admin-form { padding-left: 16px; padding-right: 16px; }
       .finance-admin-list-head { align-items: flex-start; padding-left: 16px; padding-right: 16px; }
       #finance-document-list { padding-left: 16px; padding-right: 16px; }
