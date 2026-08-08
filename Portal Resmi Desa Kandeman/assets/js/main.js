@@ -1286,6 +1286,9 @@ const fmtRpFull = value => {
 };
 let _activeRealisasiCategory = 'belanja';
 let _apbdesPublicState = null;
+let _apbdesPublicLoadGeneration = 0;
+let _apbdesPublicRefreshTimer = null;
+let _apbdesRealtimeChannel = null;
 
 function setApbdesText(id, value) {
   const element = document.getElementById(id);
@@ -1301,8 +1304,22 @@ function lraPercent(part, total) {
   return total ? `${Math.round(lraPublicNumber(part) / lraPublicNumber(total) * 10000) / 100}%` : '—';
 }
 
+function parsePublicLraData(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value;
+  if (typeof value !== 'string' || !value.trim()) return {};
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch (_) {
+    return {};
+  }
+}
+
 function normaliseLraData(record = {}) {
-  const lra = record.lra_data && typeof record.lra_data === 'object' ? record.lra_data : {};
+  // Beberapa instalasi lama mengembalikan lra_data sebagai teks JSON. Panel
+  // admin sudah menanganinya; website publik harus membaca bentuk yang sama
+  // agar nilai Belanja dan Pembiayaan tidak jatuh ke kolom ringkasan lama.
+  const lra = parsePublicLraData(record.lra_data);
   const legacyIncome = { pad: record.pendapatan_pades, dana_desa: record.pendapatan_dd, bagi_hasil: record.pendapatan_pajak, add: record.pendapatan_add };
   const legacyExpense = { penyelenggaraan: record.nominal_pemerintahan, pelaksanaan: record.nominal_pembangunan, pembinaan: record.nominal_pembinaan, pemberdayaan: record.nominal_pemberdayaan };
   const legacyExpenseRealisasi = {
@@ -1463,9 +1480,17 @@ function resetApbdesData(status = 'empty') {
 }
 
 async function loadApbdes() {
+  const loadGeneration = ++_apbdesPublicLoadGeneration;
   try {
-    const { data, error } = await sb.from('apbdes').select('*').order('tahun', { ascending: false }).limit(1);
+    // Gunakan urutan identik dengan panel admin. Urutan id membuat hasil tetap
+    // deterministik jika database lama masih memiliki beberapa baris pada tahun
+    // yang sama; admin menyinkronkan semua baris tersebut saat menyimpan.
+    const { data, error } = await sb.from('apbdes').select('*')
+      .order('tahun', { ascending: false })
+      .order('id', { ascending: true })
+      .limit(1);
     if (error) throw error;
+    if (loadGeneration !== _apbdesPublicLoadGeneration) return;
     if (!data?.length) {
       resetApbdesData('empty');
       return;
@@ -1512,10 +1537,36 @@ async function loadApbdes() {
     renderRealisasiCategory(_activeRealisasiCategory);
     observeBars();
   } catch (error) {
+    if (loadGeneration !== _apbdesPublicLoadGeneration) return;
     console.error('Gagal memuat APBDes:', error);
     resetApbdesData('error');
   }
 }
+
+function scheduleApbdesRefresh(delay = 120) {
+  if (document.visibilityState === 'hidden' || !sb) return;
+  clearTimeout(_apbdesPublicRefreshTimer);
+  _apbdesPublicRefreshTimer = setTimeout(() => loadApbdes(), delay);
+}
+
+function setupApbdesPublicSync() {
+  if (!sb || _apbdesRealtimeChannel || typeof sb.channel !== 'function') return;
+  // Realtime memperbarui tab website yang sedang terbuka. Jika Realtime belum
+  // diaktifkan untuk tabel ini, sinkronisasi tetap dijamin oleh pageshow,
+  // visibilitychange, focus, dan online di bawah.
+  _apbdesRealtimeChannel = sb.channel('sikanda-apbdes-public-sync')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'apbdes' }, () => {
+      scheduleApbdesRefresh(80);
+    })
+    .subscribe();
+}
+
+window.addEventListener('pageshow', () => scheduleApbdesRefresh());
+window.addEventListener('focus', () => scheduleApbdesRefresh());
+window.addEventListener('online', () => scheduleApbdesRefresh());
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') scheduleApbdesRefresh();
+});
 
 document.addEventListener('click', event => {
   const tab = event.target.closest?.('[data-realisasi-category]');
@@ -2641,6 +2692,7 @@ function _initDataLoad() {
     observeCounters();
     return;
   }
+  setupApbdesPublicSync();
   (async () => {
     const loaders = [
       ['berita', loadBerita],
