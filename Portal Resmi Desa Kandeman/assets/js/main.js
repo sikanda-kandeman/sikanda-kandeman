@@ -1942,15 +1942,21 @@ function resetStatistikData(status = 'empty') {
   renderPertumbuhanPenduduk(null, null);
 
   setCounterData('hero-total-penduduk', null);
-  setCounterData('hero-luas-wilayah', null);
+  const heroLuas = document.getElementById('hero-luas-wilayah');
+  if (heroLuas) heroLuas.textContent = '281.7 Ha';
   const emptyIds = [
-    'hero-total-penduduk-duplikat','hero-luas-wilayah-duplikat','hero-rt-rw',
-    'hero-rt-rw-duplikat','profil-total-kk','profil-luas-wilayah',
+    'hero-total-penduduk-duplikat','profil-total-kk','profil-luas-wilayah',
     'profil-total-rt','profil-total-rw',
   ];
   emptyIds.forEach(id => {
     const element = document.getElementById(id);
     if (element) element.textContent = '—';
+  });
+  const heroLuasClone = document.getElementById('hero-luas-wilayah-duplikat');
+  if (heroLuasClone) heroLuasClone.textContent = '281.7 Ha';
+  ['hero-rt-rw','hero-rt-rw-duplikat'].forEach(id => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = '20 RT / 5 RW';
   });
 }
 
@@ -2056,29 +2062,28 @@ async function loadStatistik() {
   const profileKk = document.getElementById('profil-total-kk');
   if (profileKk) profileKk.textContent = '±' + totalKk.toLocaleString('id-ID');
 
-  // Kolom berikut bersifat opsional. Jika belum tersedia di skema database,
-  // website menampilkan tanda pisah, bukan angka hardcoded atau data buatan.
-  const luasWilayah = numberOrNull(s.luas_wilayah_ha);
-  const totalRt = numberOrNull(s.total_rt);
-  const totalRw = numberOrNull(s.total_rw);
-  setCounterData('hero-luas-wilayah', luasWilayah);
+  // Data geografis resmi tetap menjadi fallback ketika kolom opsional statistik
+  // belum tersedia, sehingga ticker selalu konsisten dengan profil wilayah.
+  const luasWilayah = numberOrNull(s.luas_wilayah_ha) ?? 281.7;
+  const totalRt = numberOrNull(s.total_rt) ?? 20;
+  const totalRw = numberOrNull(s.total_rw) ?? 5;
+  const heroLuas = document.getElementById('hero-luas-wilayah');
+  if (heroLuas) heroLuas.textContent = `${String(luasWilayah)} Ha`;
   const heroLuasClone = document.getElementById('hero-luas-wilayah-duplikat');
   const profileLuas = document.getElementById('profil-luas-wilayah');
-  const luasText = luasWilayah === null ? '—' : `±${luasWilayah.toLocaleString('id-ID')} Ha`;
+  const luasText = `${String(luasWilayah)} Ha`;
   if (heroLuasClone) heroLuasClone.textContent = luasText;
   if (profileLuas) profileLuas.textContent = luasText;
 
-  const rtRwText = totalRt === null && totalRw === null
-    ? '—'
-    : `${totalRt ?? '—'} RT / ${totalRw ?? '—'} RW`;
+  const rtRwText = `${totalRt} RT / ${totalRw} RW`;
   ['hero-rt-rw','hero-rt-rw-duplikat'].forEach(id => {
     const element = document.getElementById(id);
     if (element) element.textContent = rtRwText;
   });
   const profileRt = document.getElementById('profil-total-rt');
   const profileRw = document.getElementById('profil-total-rw');
-  if (profileRt) profileRt.textContent = totalRt === null ? '—' : `${totalRt} RT`;
-  if (profileRw) profileRw.textContent = totalRw === null ? '—' : `${totalRw} RW`;
+  if (profileRt) profileRt.textContent = `${totalRt} RT`;
+  if (profileRw) profileRw.textContent = `${totalRw} RW`;
 
   if (totalPenduduk !== totalLaki + totalPerempuan) {
     console.warn('Statistik tidak konsisten: total penduduk berbeda dari jumlah laki-laki dan perempuan.');
