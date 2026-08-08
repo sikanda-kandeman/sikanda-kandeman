@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260808-geografis-v3" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260808-geografis-v4" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -308,7 +308,7 @@
     <div class="hero-stat">
       <div class="hero-stat-icon"><i class="fa-solid fa-ruler-combined"></i></div>
       <div>
-        <div class="hero-stat-val"><span id="hero-luas-wilayah" class="count-up" data-count="0" data-prefix="±" data-suffix=" Ha" data-empty="true">—</span></div>
+        <div class="hero-stat-val"><span id="hero-luas-wilayah" data-suffix=" Ha">281.7 Ha</span></div>
         <div class="hero-stat-lbl">Luas Wilayah</div>
       </div>
     </div>
@@ -322,14 +322,21 @@
     <div class="hero-stat">
       <div class="hero-stat-icon"><i class="fa-solid fa-landmark"></i></div>
       <div>
-        <div class="hero-stat-val" id="hero-rt-rw">—</div>
+        <div class="hero-stat-val" id="hero-rt-rw">20 RT / 5 RW</div>
         <div class="hero-stat-lbl">Rukun Tetangga/Warga</div>
+      </div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-icon"><i class="fa-solid fa-mountain-sun"></i></div>
+      <div>
+        <div class="hero-stat-val">53 m</div>
+        <div class="hero-stat-lbl">Ketinggian Wilayah</div>
       </div>
     </div>
     <div class="hero-stat">
       <div class="hero-stat-icon"><i class="fa-solid fa-compass"></i></div>
       <div>
-        <div class="hero-stat-val">Pesisir Utara</div>
+        <div class="hero-stat-val">Dataran Rendah</div>
         <div class="hero-stat-lbl">Karakter Wilayah</div>
       </div>
     </div>
@@ -337,7 +344,7 @@
     <div class="hero-stat" aria-hidden="true">
       <div class="hero-stat-icon"><i class="fa-solid fa-ruler-combined"></i></div>
       <div>
-        <div class="hero-stat-val" id="hero-luas-wilayah-duplikat">—</div>
+        <div class="hero-stat-val" id="hero-luas-wilayah-duplikat">281.7 Ha</div>
         <div class="hero-stat-lbl">Luas Wilayah</div>
       </div>
     </div>
@@ -351,14 +358,21 @@
     <div class="hero-stat" aria-hidden="true">
       <div class="hero-stat-icon"><i class="fa-solid fa-landmark"></i></div>
       <div>
-        <div class="hero-stat-val" id="hero-rt-rw-duplikat">—</div>
+        <div class="hero-stat-val" id="hero-rt-rw-duplikat">20 RT / 5 RW</div>
         <div class="hero-stat-lbl">Rukun Tetangga/Warga</div>
+      </div>
+    </div>
+    <div class="hero-stat" aria-hidden="true">
+      <div class="hero-stat-icon"><i class="fa-solid fa-mountain-sun"></i></div>
+      <div>
+        <div class="hero-stat-val">53 m</div>
+        <div class="hero-stat-lbl">Ketinggian Wilayah</div>
       </div>
     </div>
     <div class="hero-stat" aria-hidden="true">
       <div class="hero-stat-icon"><i class="fa-solid fa-compass"></i></div>
       <div>
-        <div class="hero-stat-val">Pesisir Utara</div>
+        <div class="hero-stat-val">Dataran Rendah</div>
         <div class="hero-stat-lbl">Karakter Wilayah</div>
       </div>
     </div>
@@ -586,12 +600,21 @@
     <!-- Peta dibuat penuh-lebar agar hasil ekspor QGIS tetap terbaca jelas. -->
     <div class="geo-map-section" id="peta-wilayah">
       <div class="geo-map-header">
-        <div>
+        <div class="geo-map-copy">
           <span class="geo-map-kicker">Peta Administratif</span>
           <h3><i class="fa-solid fa-map-location-dot"></i> Peta Wilayah Desa Kandeman</h3>
           <p>Area peta diperbesar untuk menampilkan batas wilayah dan detail hasil pemetaan QGIS dengan lebih jelas.</p>
         </div>
-        <div class="geo-map-coordinate"><i class="fa-solid fa-location-crosshairs"></i> 6.952° LS · 109.762° BT</div>
+        <div class="geo-map-coordinate" aria-label="Koordinat Desa Kandeman">
+          <div class="geo-map-coordinate-item">
+            <span>Koordinat Bujur</span>
+            <strong>109.762° BT</strong>
+          </div>
+          <div class="geo-map-coordinate-item">
+            <span>Koordinat Lintang</span>
+            <strong>6.952° LS</strong>
+          </div>
+        </div>
       </div>
 
       <div class="geo-map-layout">
@@ -1892,7 +1915,6 @@
     </div>
 
     <div class="stat-grid">
-      <div class="stat-column stat-column-wide">
       <!-- Piramida umur -->
       <div class="stat-panel stat-panel-age">
         <h3><i class="fa-solid fa-people-group"></i> Komposisi Usia &amp; Jenis Kelamin</h3>
@@ -1910,37 +1932,6 @@
           <span><span class="pyr-dot" style="background:#C13584;"></span> Perempuan</span>
         </div>
       </div>
-
-      <!-- Ringkasan -->
-      <div class="stat-panel stat-panel-summary">
-        <h3><i class="fa-solid fa-chart-simple"></i> Ringkasan Demografi</h3>
-        <div class="sub">Angka pokok kependudukan Desa Kandeman</div>
-        <div class="ringkasan-grid" id="stat-ringkasan">
-          <div class="demography-card demography-card-population">
-            <div id="stat-total-penduduk" class="demography-value">—</div>
-            <div class="demography-label">Total Penduduk</div>
-          </div>
-          <div class="demography-card demography-card-family">
-            <div id="stat-total-kk" class="demography-value">—</div>
-            <div class="demography-label">Kepala Keluarga</div>
-          </div>
-          <div class="demography-card demography-card-male">
-            <div id="stat-total-laki" class="demography-value">—</div>
-            <div class="demography-label">Laki-laki</div>
-          </div>
-          <div class="demography-card demography-card-female">
-            <div id="stat-total-perempuan" class="demography-value">—</div>
-            <div class="demography-label">Perempuan</div>
-          </div>
-        </div>
-        <p class="demography-note">
-          <i class="fa-solid fa-circle-info"></i>
-          Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh pada Transparency Hub.
-        </p>
-      </div>
-      </div>
-
-      <div class="stat-column stat-column-side">
 
       <!-- Pendidikan -->
       <div class="stat-panel stat-panel-education">
@@ -1984,6 +1975,34 @@
         </div>
       </div>
 
+      <!-- Ringkasan -->
+      <div class="stat-panel stat-panel-summary">
+        <h3><i class="fa-solid fa-chart-simple"></i> Ringkasan Demografi</h3>
+        <div class="sub">Angka pokok kependudukan Desa Kandeman</div>
+        <div class="ringkasan-grid" id="stat-ringkasan">
+          <div class="demography-card demography-card-population">
+            <div id="stat-total-penduduk" class="demography-value">—</div>
+            <div class="demography-label">Total Penduduk</div>
+          </div>
+          <div class="demography-card demography-card-family">
+            <div id="stat-total-kk" class="demography-value">—</div>
+            <div class="demography-label">Kepala Keluarga</div>
+          </div>
+          <div class="demography-card demography-card-male">
+            <div id="stat-total-laki" class="demography-value">—</div>
+            <div class="demography-label">Laki-laki</div>
+          </div>
+          <div class="demography-card demography-card-female">
+            <div id="stat-total-perempuan" class="demography-value">—</div>
+            <div class="demography-label">Perempuan</div>
+          </div>
+        </div>
+        <p class="demography-note">
+          <i class="fa-solid fa-circle-info"></i>
+          Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh pada Transparency Hub.
+        </p>
+      </div>
+
       <!-- Laju pertumbuhan -->
       <div class="stat-panel stat-panel-growth">
         <h3><i class="fa-solid fa-arrow-trend-up"></i> Jumlah Laju Pertumbuhan Penduduk</h3>
@@ -2005,7 +2024,6 @@
           </div>
         </div>
         <p class="growth-note"><i class="fa-solid fa-circle-info"></i> Nilai positif berarti bertambah, sedangkan nilai negatif berarti berkurang.</p>
-      </div>
       </div>
     </div>
   </div>
@@ -2291,7 +2309,7 @@
       <div class="peta-embed" style="border-radius:var(--r-md); overflow:hidden;">
         <!-- Koordinat mengikuti nilai yang sudah tercantum pada JSON-LD website. -->
         <iframe
-          src="https://maps.google.com/maps?q=-6.9004%2C109.7497&amp;z=16&amp;output=embed"
+          src="https://maps.google.com/maps?q=-6.952%2C109.762&amp;z=16&amp;output=embed"
           loading="lazy"
           allowfullscreen
           referrerpolicy="no-referrer-when-downgrade"
@@ -2492,6 +2510,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260808-geografis-v3" defer></script>
+  <script src="assets/js/main.js?v=20260808-geografis-v4" defer></script>
 </body>
 </html>
