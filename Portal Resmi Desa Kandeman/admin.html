@@ -19,11 +19,11 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2096%2096'%3E%3Crect%20width='96'%20height='96'%20rx='20'%20fill='%230D2B1A'/%3E%3Ctext%20x='48'%20y='68'%20text-anchor='middle'%20font-family='Georgia,serif'%20font-size='62'%20font-weight='700'%20fill='%238EC9A6'%3ES%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400;1,9..40,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   
 
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260808-statistik-pertumbuhan-v2" />
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260808-kontak-editor-v1" />
 </head>
 <body>
 
@@ -285,12 +285,68 @@
               </div>
             </div>
             <div class="form-group">
-              <label>
+              <label for="b-isi">
                 Isi berita
                 <span class="char-count" id="b-isi-count">0 karakter</span>
               </label>
-              <textarea id="b-isi" placeholder="Tulis isi berita atau pengumuman di sini..."
-                        style="min-height:120px;" oninput="updateCharCount(); scheduleDraftSave()" aria-label="Tulis isi berita atau pengumuman di sini..."></textarea>
+              <div class="rich-editor" id="berita-rich-editor">
+                <div class="rich-toolbar" role="toolbar" aria-label="Pemformatan isi berita">
+                  <select class="rich-select rich-font-select" id="b-font-family" aria-label="Pilih jenis font"
+                          onchange="formatBerita('fontName', this.value); this.selectedIndex=0;">
+                    <option value="">Pilih font</option>
+                    <option value="DM Sans">DM Sans</option>
+                    <option value="DM Mono">DM Mono</option>
+                    <option value="Cormorant Garamond">Cormorant Garamond</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                  </select>
+                  <select class="rich-select" id="b-block-format" aria-label="Pilih model paragraf"
+                          onchange="formatBerita('formatBlock', this.value); this.selectedIndex=0;">
+                    <option value="">Model teks</option>
+                    <option value="p">Paragraf</option>
+                    <option value="h2">Judul besar</option>
+                    <option value="h3">Subjudul</option>
+                    <option value="blockquote">Kutipan</option>
+                  </select>
+                  <span class="rich-toolbar-sep" aria-hidden="true"></span>
+                  <button type="button" class="rich-tool-btn" data-command="bold" title="Tebal (Ctrl+B)"
+                          aria-label="Tebal" onmousedown="event.preventDefault(); formatBerita('bold')"><i class="fa-solid fa-bold"></i></button>
+                  <button type="button" class="rich-tool-btn" data-command="italic" title="Miring (Ctrl+I)"
+                          aria-label="Miring" onmousedown="event.preventDefault(); formatBerita('italic')"><i class="fa-solid fa-italic"></i></button>
+                  <button type="button" class="rich-tool-btn" data-command="underline" title="Garis bawah (Ctrl+U)"
+                          aria-label="Garis bawah" onmousedown="event.preventDefault(); formatBerita('underline')"><i class="fa-solid fa-underline"></i></button>
+                  <button type="button" class="rich-tool-btn" data-command="strikeThrough" title="Coret"
+                          aria-label="Coret" onmousedown="event.preventDefault(); formatBerita('strikeThrough')"><i class="fa-solid fa-strikethrough"></i></button>
+                  <span class="rich-toolbar-sep" aria-hidden="true"></span>
+                  <button type="button" class="rich-tool-btn" title="Daftar berpoin" aria-label="Daftar berpoin"
+                          onmousedown="event.preventDefault(); formatBerita('insertUnorderedList')"><i class="fa-solid fa-list-ul"></i></button>
+                  <button type="button" class="rich-tool-btn" title="Daftar bernomor" aria-label="Daftar bernomor"
+                          onmousedown="event.preventDefault(); formatBerita('insertOrderedList')"><i class="fa-solid fa-list-ol"></i></button>
+                  <button type="button" class="rich-tool-btn" title="Rata kiri" aria-label="Rata kiri"
+                          onmousedown="event.preventDefault(); formatBerita('justifyLeft')"><i class="fa-solid fa-align-left"></i></button>
+                  <button type="button" class="rich-tool-btn" title="Rata tengah" aria-label="Rata tengah"
+                          onmousedown="event.preventDefault(); formatBerita('justifyCenter')"><i class="fa-solid fa-align-center"></i></button>
+                  <button type="button" class="rich-tool-btn" title="Rata kanan" aria-label="Rata kanan"
+                          onmousedown="event.preventDefault(); formatBerita('justifyRight')"><i class="fa-solid fa-align-right"></i></button>
+                  <span class="rich-toolbar-sep" aria-hidden="true"></span>
+                  <button type="button" class="rich-tool-btn" title="Sisipkan tautan" aria-label="Sisipkan tautan"
+                          onmousedown="event.preventDefault(); tambahTautanBerita()"><i class="fa-solid fa-link"></i></button>
+                  <button type="button" class="rich-tool-btn" title="Hapus format" aria-label="Hapus format"
+                          onmousedown="event.preventDefault(); formatBerita('removeFormat')"><i class="fa-solid fa-eraser"></i></button>
+                  <button type="button" class="rich-tool-btn" title="Urungkan" aria-label="Urungkan"
+                          onmousedown="event.preventDefault(); formatBerita('undo')"><i class="fa-solid fa-rotate-left"></i></button>
+                  <button type="button" class="rich-tool-btn" title="Ulangi" aria-label="Ulangi"
+                          onmousedown="event.preventDefault(); formatBerita('redo')"><i class="fa-solid fa-rotate-right"></i></button>
+                </div>
+                <div id="b-isi" class="rich-editor-canvas" contenteditable="true" role="textbox" aria-multiline="true"
+                     data-placeholder="Tulis isi berita atau pengumuman di sini..."
+                     oninput="updateCharCount(); scheduleDraftSave()"
+                     onpaste="pastePlainTextBerita(event)"
+                     aria-label="Tulis isi berita atau pengumuman di sini..."></div>
+              </div>
+              <div class="form-hint">Blok teks terlebih dahulu, lalu pilih font atau model pemformatan. Format akan tampil sama pada preview dan website utama.</div>
             </div>
             <div class="form-group">
               <label>Gambar berita (opsional)</label>
@@ -1277,6 +1333,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js?v=20260808-statistik-pertumbuhan-v2" defer></script>
+<script src="assets/js/admin.js?v=20260808-kontak-editor-v1" defer></script>
 </body>
 </html>
