@@ -1549,6 +1549,9 @@ async function loadApbdes() {
 
 function apbdesSaveErrorMessage(error) {
   const detail = `${error?.code || ''} ${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase();
+  if (detail.includes('integer') && (detail.includes('pct') || detail.includes('persentase') || detail.includes('81.97'))) {
+    return 'Kolom persentase realisasi APBDes di database masih bertipe bilangan bulat. Jalankan supabase-perbaikan-apbdes-persentase-v2.sql secara penuh di Supabase SQL Editor, lalu hard refresh panel admin.';
+  }
   if (detail.includes('lra_data') || detail.includes('schema cache')) {
     return 'Struktur data APBDes belum siap. Jalankan supabase-transparansi-fix.sql di Supabase SQL Editor, lalu muat ulang panel admin.';
   }
@@ -1584,10 +1587,13 @@ async function simpanApbdes() {
   // Kolom lama tetap diisi agar data lama dan constraint database tetap kompatibel.
   const legacyExpense = ['penyelenggaraan', 'pelaksanaan', 'pembinaan', 'pemberdayaan'];
   const legacyExpenseBudget = legacyExpense.reduce((sum, key) => sum + lraData.belanja[key].anggaran, 0);
+  // Semua persentase disimpan dengan presisi dua digit agar konsisten dengan
+  // kolom numeric(8,2) di Supabase dan tidak pernah dikirim sebagai pecahan panjang.
+  const roundPercent = (value) => Math.round((Number(value) + Number.EPSILON) * 100) / 100;
   const legacyPct = legacyExpenseBudget > 0
-    ? legacyExpense.map(key => Math.round((lraData.belanja[key].anggaran / legacyExpenseBudget) * 100000000) / 1000000)
+    ? legacyExpense.map(key => roundPercent((lraData.belanja[key].anggaran / legacyExpenseBudget) * 100))
     : [25, 25, 25, 25];
-  legacyPct[3] = Math.round((100 - legacyPct[0] - legacyPct[1] - legacyPct[2]) * 1000000) / 1000000;
+  legacyPct[3] = roundPercent(100 - legacyPct[0] - legacyPct[1] - legacyPct[2]);
 
   const btn = document.getElementById('btn-simpan-apb');
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
@@ -1604,10 +1610,10 @@ async function simpanApbdes() {
     pendapatan_pades: lraData.pendapatan.pad.anggaran + lraData.pendapatan.bantuan_provinsi.anggaran + lraData.pendapatan.bantuan_kabupaten.anggaran + lraData.pendapatan.lain_lain.anggaran,
     realisasi_pendapatan: pendapatanRealisasi, realisasi_belanja: belanjaRealisasi,
     realisasi_pembangunan: lraData.belanja.pelaksanaan.realisasi, realisasi_pemberdayaan: lraData.belanja.pemberdayaan.realisasi,
-    realisasi_pct_pendapatan: pendapatanAnggaran ? Math.round(pendapatanRealisasi / pendapatanAnggaran * 10000) / 100 : 0,
-    realisasi_pct_belanja: belanjaAnggaran ? Math.round(belanjaRealisasi / belanjaAnggaran * 10000) / 100 : 0,
-    realisasi_pct_pembangunan: lraData.belanja.pelaksanaan.anggaran ? Math.round(lraData.belanja.pelaksanaan.realisasi / lraData.belanja.pelaksanaan.anggaran * 10000) / 100 : 0,
-    realisasi_pct_pemberdayaan: lraData.belanja.pemberdayaan.anggaran ? Math.round(lraData.belanja.pemberdayaan.realisasi / lraData.belanja.pemberdayaan.anggaran * 10000) / 100 : 0,
+    realisasi_pct_pendapatan: pendapatanAnggaran ? roundPercent(pendapatanRealisasi / pendapatanAnggaran * 100) : 0,
+    realisasi_pct_belanja: belanjaAnggaran ? roundPercent(belanjaRealisasi / belanjaAnggaran * 100) : 0,
+    realisasi_pct_pembangunan: lraData.belanja.pelaksanaan.anggaran ? roundPercent(lraData.belanja.pelaksanaan.realisasi / lraData.belanja.pelaksanaan.anggaran * 100) : 0,
+    realisasi_pct_pemberdayaan: lraData.belanja.pemberdayaan.anggaran ? roundPercent(lraData.belanja.pemberdayaan.realisasi / lraData.belanja.pemberdayaan.anggaran * 100) : 0,
     aktif: true,
   };
 
