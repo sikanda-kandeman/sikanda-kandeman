@@ -1789,6 +1789,73 @@ function resetPotensiForm() {
 // UMKM
 // ═══════════════════════════════════════════════
 const _umkmMap = {};
+let _umkmExistingPhotoUrls = [];
+let _umkmRemovedPhotoUrls = [];
+let _umkmNewPhotoFiles = [];
+let _umkmPreviewObjectUrls = [];
+
+function getAdminUmkmPhotos(umkm) {
+  let gallery = umkm?.foto_urls;
+  if (typeof gallery === 'string') {
+    try { gallery = JSON.parse(gallery); } catch { gallery = []; }
+  }
+  return [...new Set([
+    ...(Array.isArray(gallery) ? gallery : []),
+    umkm?.foto_url,
+  ].map(value => String(value || '').trim()).filter(value => value && isValidHttpUrl(value)))];
+}
+
+function isGoogleMapsUrl(value) {
+  if (!isValidHttpUrl(value)) return false;
+  try {
+    const host = new URL(value).hostname.toLowerCase();
+    return host === 'maps.app.goo.gl' || host === 'goo.gl' ||
+      host === 'maps.google.com' || host.endsWith('.google.com') ||
+      host.endsWith('.google.co.id');
+  } catch { return false; }
+}
+
+function clearUmkmPreviewObjectUrls() {
+  _umkmPreviewObjectUrls.forEach(url => URL.revokeObjectURL(url));
+  _umkmPreviewObjectUrls = [];
+}
+
+function renderUmkmPhotoPreviews() {
+  const grid = document.getElementById('umkm-foto-preview-grid');
+  if (!grid) return;
+  clearUmkmPreviewObjectUrls();
+  const existing = _umkmExistingPhotoUrls.map((url, index) => ({
+    src: safeAdminUrl(url), type:'existing', index,
+  }));
+  const additions = _umkmNewPhotoFiles.map((file, index) => {
+    const src = URL.createObjectURL(file);
+    _umkmPreviewObjectUrls.push(src);
+    return { src: escHtml(src), type:'new', index };
+  });
+  const photos = [...existing, ...additions];
+  grid.innerHTML = photos.map((photo, position) => `
+    <div class="umkm-photo-preview-item">
+      <img src="${photo.src}" alt="Preview foto UMKM ${position + 1}" />
+      <span class="photo-order">${position + 1}</span>
+      <button type="button" class="photo-remove"
+        onclick="removeUmkmPreviewPhoto('${photo.type}',${photo.index})"
+        aria-label="Hapus foto ${position + 1}" title="Hapus foto">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>`).join('');
+}
+
+function removeUmkmPreviewPhoto(type, index) {
+  if (type === 'existing') {
+    const removed = _umkmExistingPhotoUrls.splice(index, 1)[0];
+    if (removed) _umkmRemovedPhotoUrls.push(removed);
+  } else {
+    _umkmNewPhotoFiles.splice(index, 1);
+    const input = document.getElementById('umkm-foto');
+    if (input) input.value = '';
+  }
+  renderUmkmPhotoPreviews();
+}
 
 async function loadUmkm() {
   const { data, error } = await sb.from('umkm').select('*').order('created_at', { ascending:false });
@@ -1810,8 +1877,9 @@ async function loadUmkm() {
     <th>Produk</th><th>Nama Usaha</th><th>Kategori</th><th>WhatsApp</th><th>Aksi</th>
   </tr></thead><tbody>
     ${data.map(u => {
-      const thumb = u.foto_url
-        ? `<img src="${safeAdminUrl(u.foto_url)}" alt="${escHtml(u.nama || 'UMKM')}" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.outerHTML='<span style=font-size:22px>${u.emoji||'🛒'}</span>'" />`
+      const photoUrls = getAdminUmkmPhotos(u);
+      const thumb = photoUrls.length
+        ? `<div style="display:flex;align-items:center;gap:7px;"><img src="${safeAdminUrl(photoUrls[0])}" alt="${escHtml(u.nama || 'UMKM')}" style="width:36px;height:46px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'" /><span style="font-size:10px;color:var(--text-muted);">${photoUrls.length} foto</span></div>`
         : `<span style="font-size:22px;">${escHtml(u.emoji||'🛒')}</span>`;
       return `<tr>
         <td>${thumb}</td>
@@ -1827,20 +1895,27 @@ async function loadUmkm() {
   </tbody></table>`;
 }
 
-// Preview foto UMKM saat dipilih
+// Preview galeri foto UMKM saat dipilih
 document.addEventListener('DOMContentLoaded', () => {
   const fileInput = document.getElementById('umkm-foto');
   if (fileInput) {
     fileInput.addEventListener('change', e => {
-      const file = e.target.files[0];
-      const wrap = document.getElementById('umkm-foto-preview-wrap');
-      const img  = document.getElementById('umkm-foto-preview');
-      if (file) {
-        img.src = URL.createObjectURL(file);
-        wrap.classList.add('show');
-      } else {
-        wrap.classList.remove('show');
+      const files = [...e.target.files];
+      if (_umkmExistingPhotoUrls.length + files.length > 6) {
+        showToast('Maksimal 6 foto untuk setiap UMKM.', true);
+        e.target.value = '';
+        return;
       }
+      for (const file of files) {
+        const validation = validateUploadFile(file, 'image', 3 * 1024 * 1024);
+        if (!validation.ok) {
+          showToast(`${file.name}: ${validation.message}`, true);
+          e.target.value = '';
+          return;
+        }
+      }
+      _umkmNewPhotoFiles = files;
+      renderUmkmPhotoPreviews();
     });
   }
 });
@@ -1855,10 +1930,10 @@ async function simpanUmkm() {
   const emoji = document.getElementById('umkm-emoji').value.trim() || '🛒';
   const pemilik = document.getElementById('umkm-pemilik').value.trim();
   const produk  = document.getElementById('umkm-produk').value.trim();
-  const alamat  = document.getElementById('umkm-alamat').value.trim();
+  const lokasi  = document.getElementById('umkm-lokasi').value.trim();
   const jam     = document.getElementById('umkm-jam').value.trim();
   const harga   = document.getElementById('umkm-harga').value.trim();
-  const ig      = document.getElementById('umkm-ig').value.trim().replace('@','');
+  const sosial  = document.getElementById('umkm-sosial').value.trim();
   if (!nama || !des) { showToast('Nama dan deskripsi wajib diisi', true); return; }
   if (nama.length > 150) { showToast('Nama UMKM maksimal 150 karakter', true); return; }
   if (des.length > 2000) { showToast('Deskripsi UMKM maksimal 2.000 karakter', true); return; }
@@ -1866,41 +1941,60 @@ async function simpanUmkm() {
     showToast('Nomor WhatsApp tidak valid', true);
     return;
   }
+  if (/^https?:\/\//i.test(lokasi) && !isGoogleMapsUrl(lokasi)) {
+    showToast('Link lokasi harus berupa tautan Google Maps. Jika tidak memakai link, ketik alamat manual.', true);
+    return;
+  }
+  if (sosial && !isValidHttpUrl(sosial)) {
+    showToast('Link media sosial harus diawali http:// atau https://', true);
+    return;
+  }
+  if (_umkmExistingPhotoUrls.length + _umkmNewPhotoFiles.length > 6) {
+    showToast('Maksimal 6 foto untuk setiap UMKM.', true);
+    return;
+  }
 
   const btn = document.getElementById('btn-simpan-umkm');
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
 
-  let foto_url = _umkmMap[id]?.foto_url || null;
-  const fotoFile = document.getElementById('umkm-foto').files[0];
-  let uploadedPath = '';
+  const uploadedFiles = [];
   try {
-    if (fotoFile) {
+    for (const fotoFile of _umkmNewPhotoFiles) {
       const uploaded = await uploadValidatedFile(fotoFile, {
         kind: 'image', folder: 'umkm', maxBytes: 3 * 1024 * 1024,
       });
-      uploadedPath = uploaded.storagePath;
-      foto_url = uploaded.publicUrl;
+      uploadedFiles.push(uploaded);
     }
 
+    const fotoUrls = [..._umkmExistingPhotoUrls, ...uploadedFiles.map(file => file.publicUrl)];
     const payload = {
-      nama, kategori:kat, deskripsi:des, whatsapp:wa, emoji, foto_url,
-      pemilik, produk, alamat, jam_buka:jam, harga, instagram:ig,
+      nama, kategori:kat, deskripsi:des, whatsapp:wa, emoji,
+      foto_url: fotoUrls[0] || null, foto_urls: fotoUrls,
+      pemilik, produk, lokasi, jam_buka:jam, harga, media_sosial:sosial,
       updated_at: new Date().toISOString()
     };
-    const { error } = id
-      ? await sb.from('umkm').update(payload).eq('id',id)
-      : await sb.from('umkm').insert({ ...payload, aktif:true });
+    const { data: saved, error } = id
+      ? await sb.from('umkm').update(payload).eq('id',id).select('id').maybeSingle()
+      : await sb.from('umkm').insert({ ...payload, aktif:true }).select('id').single();
     if (error) throw error;
+    if (!saved?.id) throw new Error('Data UMKM tidak tersimpan. Periksa izin database dan sesi admin.');
 
-    const oldPath = storagePathFromPublicUrl(_umkmMap[id]?.foto_url || '');
-    if (uploadedPath && oldPath && oldPath !== uploadedPath) await rollbackUploadedFile(oldPath);
+    for (const removedUrl of [...new Set(_umkmRemovedPhotoUrls)]) {
+      const removedPath = storagePathFromPublicUrl(removedUrl);
+      if (removedPath) await rollbackUploadedFile(removedPath);
+    }
     showToast('UMKM disimpan');
     resetUmkmForm();
     await loadUmkm();
   } catch (error) {
-    if (uploadedPath) await rollbackUploadedFile(uploadedPath);
+    for (const uploaded of uploadedFiles) await rollbackUploadedFile(uploaded.storagePath);
     console.error('Gagal menyimpan UMKM:', error);
-    showToast(error instanceof UploadValidationError ? error.message : 'Data UMKM gagal disimpan.', true);
+    const message = error instanceof UploadValidationError
+      ? error.message
+      : (error?.message || 'Data UMKM gagal disimpan.');
+    showToast(message.includes('foto_urls') || message.includes('media_sosial') || message.includes('lokasi')
+      ? 'Database UMKM belum diperbarui. Jalankan supabase-umkm-galeri.sql terlebih dahulu.'
+      : message, true);
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan';
@@ -1918,14 +2012,15 @@ function editUmkm(id) {
   document.getElementById('umkm-emoji').value     = u.emoji || '🛒';
   document.getElementById('umkm-pemilik').value   = u.pemilik || '';
   document.getElementById('umkm-produk').value    = u.produk || '';
-  document.getElementById('umkm-alamat').value    = u.alamat || '';
+  document.getElementById('umkm-lokasi').value    = u.lokasi || u.alamat || '';
   document.getElementById('umkm-jam').value       = u.jam_buka || '';
   document.getElementById('umkm-harga').value     = u.harga || '';
-  document.getElementById('umkm-ig').value        = u.instagram || '';
-  const wrap = document.getElementById('umkm-foto-preview-wrap');
-  const img  = document.getElementById('umkm-foto-preview');
-  if (u.foto_url && isValidHttpUrl(u.foto_url)) { img.src = u.foto_url; wrap.classList.add('show'); }
-  else wrap.classList.remove('show');
+  document.getElementById('umkm-sosial').value    = u.media_sosial || (u.instagram ? `https://instagram.com/${String(u.instagram).replace(/^@/,'')}` : '');
+  _umkmExistingPhotoUrls = getAdminUmkmPhotos(u);
+  _umkmRemovedPhotoUrls = [];
+  _umkmNewPhotoFiles = [];
+  document.getElementById('umkm-foto').value = '';
+  renderUmkmPhotoPreviews();
   document.getElementById('umkm-form-title').textContent = 'Edit UMKM';
   document.getElementById('panel-umkm').scrollIntoView({ behavior:'smooth' });
 }
@@ -1939,19 +2034,23 @@ function konfirmasiHapusUmkm(id) {
 }
 
 async function hapusUmkm(id) {
-  const storagePath = storagePathFromPublicUrl(_umkmMap[id]?.foto_url || '');
+  const storagePaths = getAdminUmkmPhotos(_umkmMap[id])
+    .map(storagePathFromPublicUrl).filter(Boolean);
   const hasil = await hapusBaris('umkm', id);
   if (!hasil.ok) { showToast(hasil.pesan, true); return; }
-  if (storagePath) await rollbackUploadedFile(storagePath);
+  for (const storagePath of [...new Set(storagePaths)]) await rollbackUploadedFile(storagePath);
   showToast('UMKM dihapus'); loadUmkm();
 }
 
 function resetUmkmForm() {
   ['umkm-id','umkm-nama','umkm-deskripsi','umkm-wa','umkm-foto',
-   'umkm-pemilik','umkm-produk','umkm-alamat','umkm-jam','umkm-harga','umkm-ig'
+   'umkm-pemilik','umkm-produk','umkm-lokasi','umkm-jam','umkm-harga','umkm-sosial'
   ].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
   document.getElementById('umkm-emoji').value = '🛒';
-  document.getElementById('umkm-foto-preview-wrap').classList.remove('show');
+  _umkmExistingPhotoUrls = [];
+  _umkmRemovedPhotoUrls = [];
+  _umkmNewPhotoFiles = [];
+  renderUmkmPhotoPreviews();
   document.getElementById('umkm-form-title').textContent = 'Tambah / edit UMKM';
 }
 

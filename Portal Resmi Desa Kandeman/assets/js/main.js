@@ -1014,7 +1014,7 @@ function closeLightbox(e) {
   if (e && e.target !== document.getElementById('lightbox')) return;
   const lightbox = document.getElementById('lightbox');
   lightbox?.classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.style.overflow = document.getElementById('umkmModal')?.classList.contains('open') ? 'hidden' : '';
   deactivateDialog(lightbox);
 }
 
@@ -1046,7 +1046,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  lbNav(-1);
   if (e.key === 'Escape') {
     lb.classList.remove('open');
-    document.body.style.overflow = '';
+    document.body.style.overflow = document.getElementById('umkmModal')?.classList.contains('open') ? 'hidden' : '';
     deactivateDialog(lb);
   }
 });
@@ -1332,6 +1332,54 @@ async function loadPotensi() {
 // ════════════════════
 // LOAD UMKM
 // ════════════════════
+function getUmkmPhotos(umkm) {
+  let gallery = umkm?.foto_urls;
+  if (typeof gallery === 'string') {
+    try { gallery = JSON.parse(gallery); } catch { gallery = []; }
+  }
+  const candidates = [
+    ...(Array.isArray(gallery) ? gallery : []),
+    umkm?.foto_url,
+  ];
+  return [...new Set(candidates
+    .map(value => String(value || '').trim())
+    .filter(value => /^https?:\/\//i.test(value))
+  )];
+}
+
+function getUmkmMapUrl(value) {
+  const location = String(value || '').trim();
+  if (!location) return '';
+  if (/^https?:\/\//i.test(location)) {
+    try {
+      const url = new URL(location);
+      return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : '';
+    } catch { return ''; }
+  }
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(location);
+}
+
+function getUmkmSocial(umkm) {
+  let url = String(umkm?.media_sosial || '').trim();
+  if (!url && umkm?.instagram) {
+    url = 'https://instagram.com/' + String(umkm.instagram).replace(/^@/, '').trim();
+  }
+  if (!/^https?:\/\//i.test(url)) return null;
+
+  let label = 'Media Sosial';
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, '').toLowerCase();
+    if (host.includes('instagram')) label = 'Instagram';
+    else if (host.includes('facebook') || host === 'fb.com') label = 'Facebook';
+    else if (host.includes('tiktok')) label = 'TikTok';
+    else if (host.includes('youtube') || host === 'youtu.be') label = 'YouTube';
+    else if (host.includes('x.com') || host.includes('twitter')) label = 'X / Twitter';
+    else if (host.includes('shopee')) label = 'Shopee';
+    else if (host.includes('tokopedia')) label = 'Tokopedia';
+  } catch { return null; }
+  return { url: safeUrl(url), label };
+}
+
 async function loadUmkm() {
   const el = document.getElementById('umkm-grid');
   if (!el) return;
@@ -1355,19 +1403,23 @@ async function loadUmkm() {
   _umkmList = data;
 
   el.innerHTML = data.map((u, i) => {
-    const thumb = u.foto_url
-      ? `<img src="${safeUrl(u.foto_url)}" alt="${escHtml(u.nama)}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<span class=umkm-cat>${escHtml(u.kategori)}</span>${escHtml(u.emoji||'🛒')}'" />`
+    const photos = getUmkmPhotos(u);
+    const thumb = photos.length
+      ? `<span class="umkm-thumb-fallback">${escHtml(u.emoji || '🛒')}</span><img src="${safeUrl(photos[0])}" alt="${escHtml(u.nama)}" loading="lazy" decoding="async" onerror="this.style.display='none'" />`
       : escHtml(u.emoji || '🛒');
     return `
     <div class="umkm-card" onclick="openUmkmModal(${i})" role="button" tabindex="0"
          onkeydown="if(event.key==='Enter')openUmkmModal(${i})"
          aria-label="Lihat detail ${escHtml(u.nama)}">
-      <div class="umkm-thumb"><span class="umkm-cat">${escHtml(u.kategori)}</span>${thumb}</div>
+      <div class="umkm-thumb">
+        <span class="umkm-cat">${escHtml(u.kategori)}</span>${thumb}
+        ${photos.length > 1 ? `<span class="umkm-photo-count"><i class="fa-regular fa-images"></i>${photos.length}</span>` : ''}
+      </div>
       <div class="umkm-body">
         <h3>${escHtml(u.nama)}</h3>
         <p>${escHtml(u.deskripsi)}</p>
         <div class="umkm-detail-cue">
-          <i class="fa-solid fa-circle-info"></i> Lihat detail usaha
+          <i class="fa-regular fa-images"></i> Lihat galeri &amp; detail
         </div>
       </div>
     </div>`;
@@ -1377,18 +1429,69 @@ async function loadUmkm() {
 // ════════════════════
 // MODAL DETAIL UMKM
 // ════════════════════
+let _umkmModalPhotos = [];
+let _umkmModalPhotoIndex = 0;
+let _umkmModalName = '';
+let _umkmModalEmoji = '🛒';
+
+function renderUmkmPhoto() {
+  const visual = document.getElementById('um-hero-visual');
+  const openButton = document.getElementById('um-photo-open');
+  const previous = document.getElementById('um-gallery-prev');
+  const next = document.getElementById('um-gallery-next');
+  const meta = document.getElementById('um-gallery-meta');
+  const dots = document.getElementById('um-gallery-dots');
+  if (!visual || !openButton) return;
+
+  const hasPhotos = _umkmModalPhotos.length > 0;
+  const photo = hasPhotos ? _umkmModalPhotos[_umkmModalPhotoIndex] : '';
+  const fallbackEmoji = escHtml(_umkmModalEmoji);
+  visual.innerHTML = hasPhotos
+    ? `<img src="${safeUrl(photo)}" alt="Foto ${escHtml(_umkmModalName)} ${_umkmModalPhotoIndex + 1}" onerror="this.style.display='none'" />`
+    : fallbackEmoji;
+  openButton.classList.toggle('is-placeholder', !hasPhotos);
+  openButton.disabled = !hasPhotos;
+
+  const showNavigation = _umkmModalPhotos.length > 1;
+  previous.hidden = !showNavigation;
+  next.hidden = !showNavigation;
+  meta.textContent = hasPhotos ? `${_umkmModalPhotoIndex + 1} / ${_umkmModalPhotos.length}` : 'Tanpa foto';
+  dots.innerHTML = showNavigation
+    ? _umkmModalPhotos.map((_, index) => `
+        <button type="button" class="um-gallery-dot${index === _umkmModalPhotoIndex ? ' active' : ''}"
+          onclick="event.stopPropagation();setUmkmPhoto(${index})" aria-label="Tampilkan foto ${index + 1}"></button>`).join('')
+    : '';
+}
+
+function setUmkmPhoto(index) {
+  if (!_umkmModalPhotos.length) return;
+  _umkmModalPhotoIndex = Math.max(0, Math.min(index, _umkmModalPhotos.length - 1));
+  renderUmkmPhoto();
+}
+
+function navUmkmPhoto(direction) {
+  if (_umkmModalPhotos.length < 2) return;
+  _umkmModalPhotoIndex = (_umkmModalPhotoIndex + direction + _umkmModalPhotos.length) % _umkmModalPhotos.length;
+  renderUmkmPhoto();
+}
+
+function openUmkmPhotoPopup() {
+  if (!_umkmModalPhotos.length) return;
+  openLightbox(_umkmModalPhotoIndex, _umkmModalPhotos.map((src, index) => ({
+    src,
+    judul: `${_umkmModalName} — Foto ${index + 1}`,
+  })));
+}
+
 function openUmkmModal(idx) {
   const u = _umkmList[idx];
   if (!u) return;
 
-  // Hero visual
-  const heroVisual = document.getElementById('um-hero-visual');
-  const hero = document.getElementById('um-hero');
-  if (u.foto_url) {
-    heroVisual.outerHTML = `<img id="um-hero-visual" src="${safeUrl(u.foto_url)}" alt="${escHtml(u.nama)}" onerror="this.outerHTML='<span id=um-hero-visual>${escHtml(u.emoji||'🛒')}</span>'" />`;
-  } else {
-    heroVisual.outerHTML = `<span id="um-hero-visual">${escHtml(u.emoji || '🛒')}</span>`;
-  }
+  _umkmModalPhotos = getUmkmPhotos(u);
+  _umkmModalPhotoIndex = 0;
+  _umkmModalName = u.nama || 'UMKM';
+  _umkmModalEmoji = u.emoji || '🛒';
+  renderUmkmPhoto();
 
   document.getElementById('um-kategori').textContent = u.kategori || 'Lainnya';
   document.getElementById('um-nama').textContent     = u.nama || '';
@@ -1423,10 +1526,13 @@ function openUmkmModal(idx) {
       rows.push({ icon:'fa-phone', lbl:'Kontak', val: tautan });
     }
   }
-  if (u.alamat)     rows.push({ icon:'fa-location-dot', lbl:'Alamat',        val: escHtml(u.alamat) });
   if (u.jam_buka)   rows.push({ icon:'fa-clock',        lbl:'Jam Operasional', val: escHtml(u.jam_buka) });
   if (u.harga)      rows.push({ icon:'fa-tag',          lbl:'Kisaran Harga',  val: escHtml(u.harga) });
-  if (u.instagram)  rows.push({ icon:'fa-hashtag',      lbl:'Media Sosial',   val:`<a href="https://instagram.com/${escHtml(u.instagram.replace('@',''))}" target="_blank" rel="noopener noreferrer">@${escHtml(u.instagram.replace('@',''))}</a>` });
+  const social = getUmkmSocial(u);
+  if (social) rows.push({
+    icon:'fa-share-nodes', lbl:'Media Sosial',
+    val:`<a href="${social.url}" target="_blank" rel="noopener noreferrer">${escHtml(social.label)} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px;margin-left:3px;"></i></a>`
+  });
   if (!rows.length) rows.push({ icon:'fa-circle-info', lbl:'Informasi', val:'Detail lengkap belum tersedia. Hubungi via WhatsApp.' });
 
   document.getElementById('um-info-grid').innerHTML = rows.map(r => `
@@ -1453,8 +1559,9 @@ function openUmkmModal(idx) {
 
   // Tombol lokasi
   const mapBtn = document.getElementById('um-map-btn');
-  if (u.alamat) {
-    mapBtn.href = 'https://maps.google.com/?q=' + encodeURIComponent(u.alamat + ', Kandeman, Batang');
+  const mapUrl = getUmkmMapUrl(u.lokasi || u.alamat);
+  if (mapUrl) {
+    mapBtn.href = mapUrl;
     mapBtn.style.display = 'inline-flex';
   } else mapBtn.style.display = 'none';
 
@@ -1471,8 +1578,24 @@ function closeUmkmModal() {
   deactivateDialog(modal);
 }
 
+const umkmHero = document.getElementById('um-hero');
+if (umkmHero) {
+  let touchStartX = 0;
+  umkmHero.addEventListener('touchstart', event => {
+    touchStartX = event.changedTouches[0]?.clientX || 0;
+  }, { passive:true });
+  umkmHero.addEventListener('touchend', event => {
+    const delta = (event.changedTouches[0]?.clientX || 0) - touchStartX;
+    if (Math.abs(delta) > 44) navUmkmPhoto(delta < 0 ? 1 : -1);
+  }, { passive:true });
+}
+
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && document.getElementById('umkmModal')?.classList.contains('open')) {
+  const photoPopupOpen = document.getElementById('lightbox')?.classList.contains('open');
+  const umkmOpen = document.getElementById('umkmModal')?.classList.contains('open');
+  if (!photoPopupOpen && umkmOpen && e.key === 'ArrowRight') navUmkmPhoto(1);
+  if (!photoPopupOpen && umkmOpen && e.key === 'ArrowLeft') navUmkmPhoto(-1);
+  if (!photoPopupOpen && e.key === 'Escape' && umkmOpen) {
     closeUmkmModal();
   }
 });
