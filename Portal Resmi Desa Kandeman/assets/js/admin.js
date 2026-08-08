@@ -1461,8 +1461,19 @@ const lraNumber = value => Number.isFinite(Number(value)) ? Number(value) : 0;
 const lraTotal = (data, section, column) => LRA_SECTIONS[section]
   .reduce((sum, [key]) => sum + lraNumber(data[section]?.[key]?.[column]), 0);
 
+function parseStoredLraData(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value;
+  if (typeof value !== 'string' || !value.trim()) return {};
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch (_) {
+    return {};
+  }
+}
+
 function defaultLraData(record = {}) {
-  const lra = record.lra_data && typeof record.lra_data === 'object' ? record.lra_data : {};
+  const lra = parseStoredLraData(record.lra_data);
   const legacyIncome = {
     pad: record.pendapatan_pades, dana_desa: record.pendapatan_dd, bagi_hasil: record.pendapatan_pajak,
     add: record.pendapatan_add, bantuan_provinsi: 0, bantuan_kabupaten: 0, lain_lain: 0,
@@ -1482,6 +1493,13 @@ function defaultLraData(record = {}) {
       realisasi: lraNumber(lra[section]?.[key]?.realisasi ?? (section === 'pendapatan' && key === 'pad' ? legacyRealization.pendapatan : section === 'belanja' ? legacyRealization[key] : 0)),
     }]))
   ]));
+}
+
+function sameLraData(left, right) {
+  return Object.entries(LRA_SECTIONS).every(([section, rows]) => rows.every(([key]) =>
+    lraNumber(left?.[section]?.[key]?.anggaran) === lraNumber(right?.[section]?.[key]?.anggaran)
+    && lraNumber(left?.[section]?.[key]?.realisasi) === lraNumber(right?.[section]?.[key]?.realisasi)
+  ));
 }
 
 function renderLraInputs(data = defaultLraData()) {
@@ -1534,7 +1552,12 @@ function updateLraCalculations() {
 
 async function loadApbdes() {
   try {
-    const { data, error } = await sb.from('apbdes').select('*').order('tahun',{ascending:false}).limit(1);
+    // Urutan kedua membuat hasil stabil apabila database lama sempat memiliki
+    // lebih dari satu baris pada tahun yang sama.
+    const { data, error } = await sb.from('apbdes').select('*')
+      .order('tahun',{ascending:false})
+      .order('id',{ascending:true})
+      .limit(1);
     if (error) throw error;
     const record = data?.[0] || {};
     document.getElementById('apb-id').value = record.id || '';
@@ -1618,27 +1641,36 @@ async function simpanApbdes() {
   };
 
   try {
-    let targetId = id;
-    if (!targetId) {
-      const { data: existing, error: lookupError } = await sb.from('apbdes')
-        .select('id')
-        .eq('tahun', tahun)
-        .limit(1)
-        .maybeSingle();
-      if (lookupError) throw lookupError;
-      targetId = existing?.id || '';
+    const { data: existingRows, error: lookupError } = await sb.from('apbdes')
+      .select('id')
+      .eq('tahun', tahun);
+    if (lookupError) throw lookupError;
+
+    // Instalasi lama dapat memiliki duplikat tahun. Memperbarui berdasarkan
+    // tahun menyamakan seluruh salinan sekaligus sehingga nilai Belanja dan
+    // Pembiayaan tidak bergantian ketika form dimuat ulang.
+    const query = existingRows?.length
+      ? sb.from('apbdes').update(payload).eq('tahun', tahun)
+      : sb.from('apbdes').insert(payload);
+    const { data: savedRows, error } = await query.select('*');
+    if (error) throw error;
+    const savedList = Array.isArray(savedRows) ? savedRows : (savedRows ? [savedRows] : []);
+    if (!savedList.length || !savedList.every(row => row?.id)) {
+      throw new Error('Penyimpanan selesai tanpa baris hasil. Periksa kebijakan akses tabel APBDes.');
+    }
+    if (!savedList.every(row => sameLraData(defaultLraData(row), lraData))) {
+      throw new Error('Verifikasi APBDes gagal: data Belanja atau Pembiayaan yang tersimpan berbeda dari input.');
     }
 
-    const query = targetId
-      ? sb.from('apbdes').update(payload).eq('id', targetId)
-      : sb.from('apbdes').insert(payload);
-    const { data: saved, error } = await query.select('id,tahun').maybeSingle();
-    if (error) throw error;
-    if (!saved?.id) throw new Error('Penyimpanan selesai tanpa baris hasil. Periksa kebijakan akses tabel APBDes.');
+    const saved = savedList.find(row => String(row.id) === String(id)) || savedList[0];
     document.getElementById('apb-id').value = saved.id;
+    document.getElementById('apb-tahun').value = saved.tahun || tahun;
+    // Gunakan data yang baru diverifikasi, bukan query pemuatan lain yang
+    // berpotensi mengambil salinan tahun lama dari cache/database.
+    renderLraInputs(lraData);
     showToast('Data LRA APBDes berhasil disimpan');
     showLastSaved('APBDes disimpan ' + new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));
-    await Promise.all([loadApbdes(), loadDashboard()]);
+    await loadDashboard();
   } catch (error) {
     console.error('Gagal menyimpan APBDes:', error);
     showToast(apbdesSaveErrorMessage(error), true);
