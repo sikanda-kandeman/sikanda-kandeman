@@ -171,6 +171,77 @@
     .form-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
     .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
 
+    /* Rich text editor berita */
+    .rich-editor {
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--card); overflow: hidden;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .rich-editor:focus-within {
+      border-color: var(--emerald);
+      box-shadow: 0 0 0 3px rgba(28,107,62,.08);
+    }
+    .rich-toolbar {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 5px;
+      padding: 8px; background: #F8FAF7; border-bottom: 1px solid var(--border);
+    }
+    .rich-select {
+      width: auto !important; min-width: 112px; max-width: 165px;
+      height: 32px; padding: 5px 28px 5px 9px !important;
+      border-radius: 7px !important; background: #fff !important;
+      font-size: 12px !important; cursor: pointer;
+    }
+    .rich-font-select { min-width: 142px; }
+    .rich-toolbar-sep {
+      width: 1px; height: 22px; margin: 0 2px;
+      background: var(--border); flex: 0 0 1px;
+    }
+    .rich-tool-btn {
+      width: 32px; height: 32px; padding: 0; border: 1px solid transparent;
+      border-radius: 7px; background: transparent; color: var(--text-sec);
+      display: inline-grid; place-items: center; cursor: pointer;
+      font-size: 12px; transition: background .15s, border-color .15s, color .15s, transform .1s;
+    }
+    .rich-tool-btn:hover, .rich-tool-btn.active {
+      color: var(--emerald); background: #EAF4ED; border-color: #CBE2D2;
+    }
+    .rich-tool-btn:active { transform: translateY(1px); }
+    .rich-tool-btn:focus-visible, .rich-select:focus-visible {
+      outline: 2px solid var(--emerald); outline-offset: 1px;
+    }
+    .rich-editor-canvas {
+      min-height: 230px; max-height: 520px; overflow-y: auto;
+      padding: 18px 20px; outline: none; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.75;
+      word-break: break-word;
+    }
+    .rich-editor-canvas:empty::before {
+      content: attr(data-placeholder); color: var(--text-muted); pointer-events: none;
+    }
+    .rich-editor-canvas h2, .rich-content h2 {
+      margin: 20px 0 8px; font-size: 26px; line-height: 1.25;
+      font-weight: 700; color: var(--text);
+    }
+    .rich-editor-canvas h3, .rich-content h3 {
+      margin: 18px 0 7px; font-size: 20px; line-height: 1.35;
+      font-weight: 600; color: var(--text);
+    }
+    .rich-editor-canvas p, .rich-content p { margin: 0 0 12px; }
+    .rich-editor-canvas ul, .rich-editor-canvas ol,
+    .rich-content ul, .rich-content ol { margin: 10px 0 14px; padding-left: 24px; }
+    .rich-editor-canvas li, .rich-content li { margin: 4px 0; }
+    .rich-editor-canvas blockquote, .rich-content blockquote {
+      margin: 14px 0; padding: 11px 15px; border-left: 3px solid var(--emerald);
+      background: #F3F7F3; color: var(--text-sec); font-style: italic;
+    }
+    .rich-editor-canvas a, .rich-content a { color: var(--emerald); text-decoration: underline; }
+    @media (max-width: 700px) {
+      .rich-toolbar { align-items: stretch; }
+      .rich-select { flex: 1 1 130px; max-width: none; }
+      .rich-toolbar-sep { display: none; }
+      .rich-editor-canvas { min-height: 200px; padding: 15px; }
+    }
+
     /* Buttons */
     .btn {
       padding: 8px 16px; border-radius: var(--r);
@@ -601,7 +672,7 @@
     .preview-body .p-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
     .preview-body .p-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
     .preview-body .p-img { width: 100%; border-radius: 8px; margin-bottom: 16px; max-height: 240px; object-fit: cover; }
-    .preview-body .p-content { font-size: 15px; line-height: 1.85; color: #2A3530; white-space: pre-wrap; }
+    .preview-body .p-content { font-size: 15px; line-height: 1.85; color: #2A3530; }
 
     /* ── Autosave draft indicator ── */
     .autosave-ind {
@@ -633,6 +704,7 @@
       font-size: 11px; color: var(--text-muted); text-align: center;
       padding: 8px; margin-bottom: 10px;
     }
+    .potensi-drag-item {
       display: flex; align-items: center; gap: 12px;
       padding: 10px 0; border-bottom: 1px solid var(--border);
       cursor: grab; user-select: none;
@@ -641,7 +713,7 @@
     .potensi-drag-item.dragging { opacity: .45; background: var(--surface); border-radius: var(--r); }
     .potensi-drag-item.drag-over { border-top: 2px solid var(--emerald); }
     .drag-handle { color: var(--text-muted); font-size: 13px; cursor: grab; padding: 0 4px; }
-      img.logo-desa { content: var(--logo-desa); }
+    img.logo-desa { content: var(--logo-desa); }
 /* Galeri foto UMKM */
 .umkm-photo-preview-grid {
   display: grid;

@@ -1556,6 +1556,8 @@
     }
     .jadwal-card h4 { font-size: 14.5px; font-weight: 600; margin-bottom: 4px; }
     .jadwal-card p { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
+    .jadwal-card p a { color: inherit; font-weight: 600; text-decoration: none; }
+    .jadwal-card p a:hover { color: var(--emerald); }
 
     /* Alur umum */
     .alur-block {
@@ -1911,6 +1913,7 @@
     }
     .kontak-card p, .kontak-card a {
       font-size: 14px; color: var(--text); text-decoration: none; line-height: 1.65;
+      overflow-wrap: anywhere;
     }
     .kontak-card a:hover { color: var(--emerald); }
     .sosmed-row { display: flex; gap: 8px; margin-top: 6px; }
@@ -2319,8 +2322,31 @@
     .bm-isi {
       font-size: 15px; line-height: 1.9;
       color: var(--text-sec, #3A4840);
-      white-space: pre-wrap;
+      word-break: break-word;
     }
+    .bm-isi p { margin: 0 0 14px; }
+    .bm-isi p:last-child { margin-bottom: 0; }
+    .bm-isi h2 {
+      margin: 26px 0 10px; color: var(--text, #1E2820);
+      font-size: clamp(23px, 3vw, 28px); line-height: 1.25; font-weight: 700;
+    }
+    .bm-isi h3 {
+      margin: 22px 0 8px; color: var(--text, #1E2820);
+      font-size: clamp(18px, 2.5vw, 21px); line-height: 1.35; font-weight: 600;
+    }
+    .bm-isi ul, .bm-isi ol { margin: 10px 0 16px; padding-left: 24px; }
+    .bm-isi li { margin: 5px 0; padding-left: 2px; }
+    .bm-isi blockquote {
+      margin: 18px 0; padding: 13px 17px;
+      border-left: 3px solid var(--emerald, #1C6B3E);
+      background: rgba(28,107,62,.06); color: var(--text-sec, #3A4840);
+      font-style: italic;
+    }
+    .bm-isi a {
+      color: var(--emerald, #1C6B3E); text-decoration: underline;
+      text-decoration-thickness: 1px; text-underline-offset: 3px;
+    }
+    .bm-isi a:hover { color: var(--forest, #0D2B1A); }
     .bm-divider {
       height: 1px; background: var(--border, #E5E1D8);
       margin: 28px 0;
