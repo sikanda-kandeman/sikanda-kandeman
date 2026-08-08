@@ -76,8 +76,8 @@
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": -6.9004,
-      "longitude": 109.7497
+      "latitude": -6.952,
+      "longitude": 109.762
     },
     "openingHoursSpecification": [
       {
@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260808-statistik-pertumbuhan-v2" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260808-geografis-v3" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -514,97 +514,110 @@
         </div>
       </div>
 
-      <!-- Kanan -->
-      <div id="profil-geografis">
-        <div class="geo-label" id="profil-demografi">Data Geografis & Demografis</div>
+      <!-- Kanan: ringkasan letak geografis -->
+      <div id="profil-geografis" class="geo-profile-panel">
+        <div class="geo-heading">
+          <div>
+            <div class="geo-label" id="profil-demografi">Letak Geografis</div>
+            <p>Informasi wilayah administratif Desa Kandeman.</p>
+          </div>
+          <span class="geo-code-badge">33.25.13.2002</span>
+        </div>
+
         <div class="geo-grid">
           <div class="geo-card">
-            <div class="val" id="profil-luas-wilayah">—</div>
+            <i class="fa-solid fa-expand"></i>
+            <div class="val">281.7 Ha</div>
             <div class="lbl">Luas Wilayah</div>
           </div>
           <div class="geo-card">
-            <div class="val" id="profil-total-kk">—</div>
-            <div class="lbl">Kepala Keluarga</div>
-          </div>
-          <div class="geo-card">
-            <div class="val" id="profil-total-rt">—</div>
+            <i class="fa-solid fa-road"></i>
+            <div class="val">20 RT</div>
             <div class="lbl">Rukun Tetangga</div>
           </div>
           <div class="geo-card">
-            <div class="val" id="profil-total-rw">—</div>
+            <i class="fa-solid fa-signs-post"></i>
+            <div class="val">5 RW</div>
             <div class="lbl">Rukun Warga</div>
           </div>
           <div class="geo-card">
-            <div class="val">9 m</div>
-            <div class="lbl">Ketinggian (dpl)</div>
+            <i class="fa-solid fa-mountain-sun"></i>
+            <div class="val">53 m</div>
+            <div class="lbl">Ketinggian</div>
           </div>
-          <div class="geo-card">
-            <div class="val">Pesisir</div>
+          <div class="geo-card geo-card-wide">
+            <i class="fa-solid fa-water"></i>
+            <div class="val">Dataran Rendah</div>
             <div class="lbl">Tipe Wilayah</div>
           </div>
         </div>
 
-        <table class="batas-table">
-          <thead>
-            <tr>
-              <th>Arah</th>
-              <th>Berbatasan dengan</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Utara</td><td>Laut Jawa</td></tr>
-            <tr><td>Selatan</td><td>Desa Tegalsari</td></tr>
-            <tr><td>Barat</td><td>Desa Ketanggan</td></tr>
-            <tr><td>Timur</td><td>Desa Ujungnegoro</td></tr>
-          </tbody>
-        </table>
-
-        <div class="kode-box mt-12">
-          <p style="font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); margin-bottom:8px;">Kode & Nomor Desa</p>
-          <!-- TODO: Isi kode desa resmi setelah data dikonfirmasi. -->
-          <p>Kode Desa: <strong>[Isi Kode]</strong></p>
-          <p>Kode Pos: <strong>51261</strong></p>
-          <p>Kecamatan: <strong>Kandeman</strong></p>
-          <p>Kabupaten: <strong>Batang</strong></p>
+        <div class="geo-boundary-card">
+          <div class="geo-card-title"><i class="fa-solid fa-draw-polygon"></i> Batas Wilayah</div>
+          <table class="batas-table">
+            <thead>
+              <tr>
+                <th>Arah</th>
+                <th>Berbatasan dengan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Utara</td><td>Desa Depok &amp; Desa Tegalsari</td></tr>
+              <tr><td>Selatan</td><td>Desa Cempereng dan Desa Tragung</td></tr>
+              <tr><td>Barat</td><td>Desa Tegalsari</td></tr>
+              <tr><td>Timur</td><td>Desa Cempereng &amp; Desa Juragan</td></tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- Peta Interaktif QGIS / Google My Maps -->
-        <div class="mt-24" id="peta-wilayah">
-          <p style="font-size:15px; font-weight:600; margin-bottom:6px;">
-            <i class="fa-solid fa-map-location-dot" style="color:var(--emerald); margin-right:6px;"></i>
-            Peta Wilayah & Fasilitas Umum
-          </p>
-          <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px; line-height:1.6;">
-            Peta interaktif hasil pemetaan QGIS menampilkan batas wilayah desa serta sebaran fasilitas umum di Desa Kandeman.
-          </p>
-          <div class="peta-tools">
-            <button type="button" class="peta-tool-btn active" onclick="switchPetaLayer('semua',this)"><i class="fa-solid fa-layer-group"></i> Semua</button>
-            <button type="button" class="peta-tool-btn" onclick="switchPetaLayer('fasilitas',this)"><i class="fa-solid fa-building"></i> Fasilitas Umum</button>
-            <button type="button" class="peta-tool-btn" onclick="switchPetaLayer('batas',this)"><i class="fa-solid fa-draw-polygon"></i> Batas Wilayah</button>
+        <div class="geo-coordinate-grid">
+          <div>
+            <span>Koordinat Bujur</span>
+            <strong>109.762° BT</strong>
           </div>
-          <div class="peta-embed" style="border-radius:var(--r-md); overflow:hidden;">
-            <!-- TODO: Ganti dengan URL embed Google Maps Desa Kandeman yang telah dikonfirmasi jika peta batas/layer resmi sudah tersedia. -->
-            <iframe id="peta-iframe"
-              src="https://www.google.com/maps?q=-6.9004%2C109.7497&amp;z=14&amp;output=embed"
-              loading="lazy"
-              allowfullscreen
-              referrerpolicy="no-referrer-when-downgrade"
-              title="Peta Interaktif Wilayah Desa Kandeman"
-              style="width:100%; min-height:400px; border:none;">
-            </iframe>
+          <div>
+            <span>Koordinat Lintang</span>
+            <strong>6.952° LS</strong>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Peta dibuat penuh-lebar agar hasil ekspor QGIS tetap terbaca jelas. -->
+    <div class="geo-map-section" id="peta-wilayah">
+      <div class="geo-map-header">
+        <div>
+          <span class="geo-map-kicker">Peta Administratif</span>
+          <h3><i class="fa-solid fa-map-location-dot"></i> Peta Wilayah Desa Kandeman</h3>
+          <p>Area peta diperbesar untuk menampilkan batas wilayah dan detail hasil pemetaan QGIS dengan lebih jelas.</p>
+        </div>
+        <div class="geo-map-coordinate"><i class="fa-solid fa-location-crosshairs"></i> 6.952° LS · 109.762° BT</div>
+      </div>
+
+      <div class="geo-map-layout">
+        <div class="peta-embed geo-map-frame">
+          <!-- Ganti sumber iframe ini dengan hasil publikasi QGIS saat peta resmi tersedia. -->
+          <iframe id="peta-iframe"
+            src="https://www.google.com/maps?q=-6.952%2C109.762&amp;z=14&amp;output=embed"
+            loading="lazy"
+            allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Peta Wilayah Desa Kandeman">
+          </iframe>
+        </div>
+
+        <aside class="geo-map-aside" aria-label="Keterangan peta wilayah">
+          <div class="geo-map-aside-icon"><i class="fa-solid fa-layer-group"></i></div>
+          <h4>Keterangan Peta</h4>
+          <p>Panel ini disiapkan untuk peta resmi hasil QGIS. Komposisi yang lebih lebar menjaga nama wilayah, batas desa, dan simbol fasilitas tetap mudah dibaca.</p>
           <div class="peta-legend">
-            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#1C6B3E;"></span> Kantor Desa</div>
-            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#C0392B;"></span> Fasilitas Kesehatan</div>
-            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#1A5080;"></span> Sekolah</div>
-            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#B07D2A;"></span> Tempat Ibadah</div>
-            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#7A3E9E;"></span> Batas Dusun</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#1C6B3E;"></span> Batas Desa</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#C0392B;"></span> Kantor Desa</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#1A5080;"></span> Fasilitas Umum</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#B07D2A;"></span> Jalan Utama</div>
           </div>
-          <p style="font-size:11.5px; color:var(--text-muted); margin-top:10px; line-height:1.5;">
-            <i class="fa-solid fa-circle-info" style="color:var(--emerald);"></i>
-            Peta batas wilayah dan fasilitas dapat dilengkapi setelah URL Google My Maps resmi tersedia.
-          </p>
-        </div>
+          <div class="geo-map-note"><i class="fa-solid fa-circle-info"></i> Ganti sumber peta ketika berkas QGIS resmi sudah siap dipublikasikan.</div>
+        </aside>
       </div>
     </div>
   </div>
@@ -1879,6 +1892,7 @@
     </div>
 
     <div class="stat-grid">
+      <div class="stat-column stat-column-wide">
       <!-- Piramida umur -->
       <div class="stat-panel stat-panel-age">
         <h3><i class="fa-solid fa-people-group"></i> Komposisi Usia &amp; Jenis Kelamin</h3>
@@ -1896,6 +1910,37 @@
           <span><span class="pyr-dot" style="background:#C13584;"></span> Perempuan</span>
         </div>
       </div>
+
+      <!-- Ringkasan -->
+      <div class="stat-panel stat-panel-summary">
+        <h3><i class="fa-solid fa-chart-simple"></i> Ringkasan Demografi</h3>
+        <div class="sub">Angka pokok kependudukan Desa Kandeman</div>
+        <div class="ringkasan-grid" id="stat-ringkasan">
+          <div class="demography-card demography-card-population">
+            <div id="stat-total-penduduk" class="demography-value">—</div>
+            <div class="demography-label">Total Penduduk</div>
+          </div>
+          <div class="demography-card demography-card-family">
+            <div id="stat-total-kk" class="demography-value">—</div>
+            <div class="demography-label">Kepala Keluarga</div>
+          </div>
+          <div class="demography-card demography-card-male">
+            <div id="stat-total-laki" class="demography-value">—</div>
+            <div class="demography-label">Laki-laki</div>
+          </div>
+          <div class="demography-card demography-card-female">
+            <div id="stat-total-perempuan" class="demography-value">—</div>
+            <div class="demography-label">Perempuan</div>
+          </div>
+        </div>
+        <p class="demography-note">
+          <i class="fa-solid fa-circle-info"></i>
+          Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh pada Transparency Hub.
+        </p>
+      </div>
+      </div>
+
+      <div class="stat-column stat-column-side">
 
       <!-- Pendidikan -->
       <div class="stat-panel stat-panel-education">
@@ -1939,34 +1984,6 @@
         </div>
       </div>
 
-      <!-- Ringkasan -->
-      <div class="stat-panel stat-panel-summary">
-        <h3><i class="fa-solid fa-chart-simple"></i> Ringkasan Demografi</h3>
-        <div class="sub">Angka pokok kependudukan Desa Kandeman</div>
-        <div class="ringkasan-grid" id="stat-ringkasan">
-          <div class="demography-card demography-card-population">
-            <div id="stat-total-penduduk" class="demography-value">—</div>
-            <div class="demography-label">Total Penduduk</div>
-          </div>
-          <div class="demography-card demography-card-family">
-            <div id="stat-total-kk" class="demography-value">—</div>
-            <div class="demography-label">Kepala Keluarga</div>
-          </div>
-          <div class="demography-card demography-card-male">
-            <div id="stat-total-laki" class="demography-value">—</div>
-            <div class="demography-label">Laki-laki</div>
-          </div>
-          <div class="demography-card demography-card-female">
-            <div id="stat-total-perempuan" class="demography-value">—</div>
-            <div class="demography-label">Perempuan</div>
-          </div>
-        </div>
-        <p style="font-size:11.5px;color:var(--text-muted);margin-top:16px;line-height:1.55;">
-          <i class="fa-solid fa-circle-info" style="color:var(--emerald);"></i>
-          Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh pada Transparency Hub.
-        </p>
-      </div>
-
       <!-- Laju pertumbuhan -->
       <div class="stat-panel stat-panel-growth">
         <h3><i class="fa-solid fa-arrow-trend-up"></i> Jumlah Laju Pertumbuhan Penduduk</h3>
@@ -1988,6 +2005,7 @@
           </div>
         </div>
         <p class="growth-note"><i class="fa-solid fa-circle-info"></i> Nilai positif berarti bertambah, sedangkan nilai negatif berarti berkurang.</p>
+      </div>
       </div>
     </div>
   </div>
@@ -2120,8 +2138,8 @@
           <p style="font-size:12.5px;color:var(--text-sec);line-height:1.65;">
             <i class="fa-solid fa-triangle-exclamation" style="color:var(--gold);margin-right:5px;"></i>
             Untuk keadaan darurat (kesehatan, kebakaran, keamanan), hubungi langsung nomor darurat pada bagian Pusat Layanan Kesehatan.
-          </p>
-        </div>
+        </p>
+      </div>
       </div>
     </div>
   </div>
@@ -2474,6 +2492,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260808-statistik-pertumbuhan-v2" defer></script>
+  <script src="assets/js/main.js?v=20260808-geografis-v3" defer></script>
 </body>
 </html>
