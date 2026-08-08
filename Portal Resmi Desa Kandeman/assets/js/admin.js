@@ -873,13 +873,14 @@ async function loadDashboard() {
 
   // APBDes summary
   try {
-    const { data } = await sb.from('apbdes').select('*').order('tahun',{ascending:false}).limit(1);
+    const { data } = await sb.from('apbdes').select('*')
+      .order('tahun',{ascending:false}).order('semester',{ascending:false}).limit(1);
     const el = document.getElementById('dash-apbdes-info');
     if (data?.length) {
       const d = data[0];
       const upd = d.updated_at ? new Date(d.updated_at).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}) : '—';
       el.innerHTML = `
-        <strong>APBDes ${d.tahun}</strong> — Total: <strong>${fmtRpShort(d.total_anggaran)}</strong><br>
+        <strong>APBDes ${d.tahun} · Semester ${apbdesRecordSemester(d)}</strong> — Total: <strong>${fmtRpShort(d.total_anggaran)}</strong><br>
         <span style="color:var(--text-muted);font-size:12px;">Terakhir diperbarui: ${upd}</span>`;
     } else {
       el.textContent = 'Data APBDes belum tersedia. Tambahkan di menu APBDes.';
@@ -1438,8 +1439,6 @@ const FINANCE_DOCUMENT_TYPES = Object.freeze({
   laporan_keuangan: { label:'Laporan Keuangan', icon:'fa-book-open' },
   lppd: { label:'LPPD', icon:'fa-landmark' },
 });
-const FINANCE_DOCUMENT_YEARS = Object.freeze([2024, 2025, 2026]);
-
 const LRA_SECTIONS = {
   pendapatan: [
     ['pad', 'Pendapatan Asli Desa'], ['dana_desa', 'Dana Desa'],
@@ -1462,6 +1461,16 @@ const LRA_SECTIONS = {
 let _apbdesLoadGeneration = 0;
 let _apbdesFormDirty = false;
 let _apbdesSaving = false;
+let _apbdesRecords = [];
+let _loadedApbdesPeriodKey = '';
+
+function apbdesRecordSemester(record) {
+  return Number(record?.semester) === 1 ? 1 : 2;
+}
+
+function apbdesPeriodKey(year, semester) {
+  return `${Number(year)}-${Number(semester) === 1 ? 1 : 2}`;
+}
 
 function markApbdesFormDirty() {
   if (_apbdesSaving) return;
@@ -1471,7 +1480,7 @@ function markApbdesFormDirty() {
 
 function setApbdesFormBusy(isBusy) {
   _apbdesSaving = Boolean(isBusy);
-  document.querySelectorAll('#apb-tahun, .apb-input-row input').forEach(input => {
+  document.querySelectorAll('#apb-tahun, #apb-semester, #btn-muat-apb, .apb-input-row input').forEach(input => {
     input.disabled = Boolean(isBusy);
   });
   const button = document.getElementById('btn-simpan-apb');
@@ -1577,18 +1586,28 @@ async function loadApbdes(options = {}) {
   if (!force && (_apbdesSaving || _apbdesFormDirty)) return;
   const loadGeneration = ++_apbdesLoadGeneration;
   try {
-    // Urutan kedua membuat hasil stabil apabila database lama sempat memiliki
-    // lebih dari satu baris pada tahun yang sama.
     const { data, error } = await sb.from('apbdes').select('*')
       .order('tahun',{ascending:false})
+      .order('semester',{ascending:false})
       .order('id',{ascending:true})
-      .limit(1);
+      ;
     if (error) throw error;
     if (loadGeneration !== _apbdesLoadGeneration || _apbdesSaving || (!force && _apbdesFormDirty)) return;
-    const record = data?.[0] || {};
-    document.getElementById('apb-id').value = record.id || '';
-    document.getElementById('apb-tahun').value = record.tahun || new Date().getFullYear();
-    renderLraInputs(defaultLraData(record));
+    _apbdesRecords = data || [];
+    renderAdminApbdesPeriods();
+    const requestedYear = Number(options.year);
+    const requestedSemester = Number(options.semester);
+    const record = Number.isInteger(requestedYear)
+      ? _apbdesRecords.find(item => Number(item.tahun) === requestedYear && apbdesRecordSemester(item) === requestedSemester)
+      : _apbdesRecords[0];
+    const year = Number.isInteger(requestedYear) ? requestedYear : Number(record?.tahun || new Date().getFullYear());
+    const semester = requestedSemester === 1 || requestedSemester === 2 ? requestedSemester : apbdesRecordSemester(record);
+    document.getElementById('apb-id').value = record?.id || '';
+    document.getElementById('apb-tahun').value = year;
+    document.getElementById('apb-semester').value = String(semester);
+    _loadedApbdesPeriodKey = apbdesPeriodKey(year, semester);
+    renderLraInputs(defaultLraData(record || {}));
+    renderAdminApbdesPeriods();
   } catch (error) {
     if (loadGeneration !== _apbdesLoadGeneration) return;
     console.error('Gagal memuat APBDes:', error);
@@ -1597,13 +1616,51 @@ async function loadApbdes(options = {}) {
   }
 }
 
+function renderAdminApbdesPeriods() {
+  const container = document.getElementById('apb-period-list');
+  if (!container) return;
+  const seen = new Set();
+  const periods = _apbdesRecords.filter(record => {
+    const key = apbdesPeriodKey(record.tahun, apbdesRecordSemester(record));
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  container.innerHTML = periods.length
+    ? periods.map(record => {
+      const semester = apbdesRecordSemester(record);
+      const key = apbdesPeriodKey(record.tahun, semester);
+      return `<button type="button" class="apb-period-chip${key === _loadedApbdesPeriodKey ? ' active' : ''}"
+        onclick="selectAdminApbdesPeriod(${Number(record.tahun)},${semester})">${Number(record.tahun)} · S${semester}</button>`;
+    }).join('')
+    : '<span class="apb-period-empty">Belum ada periode tersimpan</span>';
+}
+
+function selectAdminApbdesPeriod(year, semester) {
+  document.getElementById('apb-tahun').value = year;
+  document.getElementById('apb-semester').value = String(semester);
+  return loadApbdes({ force:true, year, semester });
+}
+
+function loadSelectedApbdesPeriod() {
+  const year = readFiniteNumber('apb-tahun');
+  const semester = Number(document.getElementById('apb-semester').value);
+  if (!Number.isInteger(year) || year < 2000 || year > 2100 || ![1,2].includes(semester)) {
+    showToast('Pilih tahun dan semester yang valid.', true); return;
+  }
+  return loadApbdes({ force:true, year, semester });
+}
+
 function apbdesSaveErrorMessage(error) {
   const detail = `${error?.code || ''} ${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase();
   if (detail.includes('integer') && (detail.includes('pct') || detail.includes('persentase') || detail.includes('81.97'))) {
     return 'Kolom persentase realisasi APBDes di database masih bertipe bilangan bulat. Jalankan supabase-perbaikan-apbdes-persentase-v2.sql secara penuh di Supabase SQL Editor, lalu hard refresh panel admin.';
   }
+  if (detail.includes('semester')) {
+    return 'Kolom semester belum tersedia. Jalankan supabase-apbdes-periode.sql secara penuh, lalu hard refresh panel admin.';
+  }
   if (detail.includes('lra_data') || detail.includes('schema cache')) {
-    return 'Struktur data APBDes belum siap. Jalankan supabase-transparansi-fix.sql di Supabase SQL Editor, lalu muat ulang panel admin.';
+    return 'Struktur data APBDes belum siap. Jalankan supabase-apbdes-periode.sql dan migrasi transparansi sebelumnya, lalu muat ulang panel admin.';
   }
   if (detail.includes('row-level security') || detail.includes('permission denied') || error?.code === '42501') {
     return 'Akun ini tidak memiliki izin menyimpan APBDes. Masuk kembali memakai akun admin yang terdaftar.';
@@ -1622,6 +1679,11 @@ async function simpanApbdes() {
   const tahun = readFiniteNumber('apb-tahun');
   if (!Number.isInteger(tahun) || tahun < 2000 || tahun > 2100) {
     showToast('Tahun APBDes harus berupa empat digit tahun yang valid.', true); return;
+  }
+  const semester = Number(document.getElementById('apb-semester').value);
+  if (![1, 2].includes(semester)) { showToast('Semester APBDes harus Semester 1 atau Semester 2.', true); return; }
+  if (_loadedApbdesPeriodKey !== apbdesPeriodKey(tahun, semester)) {
+    showToast('Klik “Tampilkan periode” terlebih dahulu agar data periode lain tidak tertimpa.', true); return;
   }
 
   let lraData;
@@ -1653,7 +1715,7 @@ async function simpanApbdes() {
   setApbdesFormBusy(true);
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
   const payload = {
-    tahun, total_anggaran: pendapatanAnggaran, lra_data: lraData,
+    tahun, semester, total_anggaran: pendapatanAnggaran, lra_data: lraData,
     pct_pemerintahan: legacyPct[0], pct_pembangunan: legacyPct[1], pct_pembinaan: legacyPct[2], pct_pemberdayaan: legacyPct[3],
     nominal_pemerintahan: lraData.belanja.penyelenggaraan.anggaran,
     nominal_pembangunan: lraData.belanja.pelaksanaan.anggaran,
@@ -1675,14 +1737,14 @@ async function simpanApbdes() {
   try {
     const { data: existingRows, error: lookupError } = await sb.from('apbdes')
       .select('id')
-      .eq('tahun', tahun);
+      .eq('tahun', tahun)
+      .eq('semester', semester);
     if (lookupError) throw lookupError;
 
-    // Instalasi lama dapat memiliki duplikat tahun. Memperbarui berdasarkan
-    // tahun menyamakan seluruh salinan sekaligus sehingga nilai Belanja dan
-    // Pembiayaan tidak bergantian ketika form dimuat ulang.
+    // Jika instalasi lama mempunyai duplikat, hanya baris pada tahun dan
+    // semester yang sama yang diselaraskan.
     const query = existingRows?.length
-      ? sb.from('apbdes').update(payload).eq('tahun', tahun)
+      ? sb.from('apbdes').update(payload).eq('tahun', tahun).eq('semester', semester)
       : sb.from('apbdes').insert(payload);
     const { data: savedRows, error } = await query.select('*');
     if (error) throw error;
@@ -1697,14 +1759,18 @@ async function simpanApbdes() {
     const saved = savedList.find(row => String(row.id) === String(id)) || savedList[0];
     document.getElementById('apb-id').value = saved.id;
     document.getElementById('apb-tahun').value = saved.tahun || tahun;
+    document.getElementById('apb-semester').value = String(apbdesRecordSemester(saved));
+    _loadedApbdesPeriodKey = apbdesPeriodKey(tahun, semester);
     // Jangan bangun ulang elemen input setelah simpan. Nilai yang sedang
     // terlihat adalah snapshot yang sudah diverifikasi dan harus tetap utuh.
     if (!sameLraData(readLraInputs(), lraData)) {
       throw new Error('Form APBDes berubah saat proses simpan. Muat ulang panel lalu coba kembali.');
     }
     _apbdesFormDirty = false;
-    showToast('Data LRA APBDes berhasil disimpan');
+    showToast(`Data LRA APBDes ${tahun} Semester ${semester} berhasil disimpan`);
     showLastSaved('APBDes disimpan ' + new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));
+    const refreshed = await sb.from('apbdes').select('*').order('tahun',{ascending:false}).order('semester',{ascending:false}).order('id',{ascending:true});
+    if (!refreshed.error) { _apbdesRecords = refreshed.data || []; renderAdminApbdesPeriods(); }
     await loadDashboard();
   } catch (error) {
     console.error('Gagal menyimpan APBDes:', error);
@@ -1722,9 +1788,13 @@ const _financeDocumentMap = {};
 
 function financeRecordYear(record) {
   const storedYear = Number(record?.tahun);
-  if (FINANCE_DOCUMENT_YEARS.includes(storedYear)) return storedYear;
-  const titleYear = String(record?.judul || '').match(/\b(2024|2025|2026)\b/);
-  return titleYear ? Number(titleYear[1]) : 2026;
+  if (Number.isInteger(storedYear) && storedYear >= 2000 && storedYear <= 2100) return storedYear;
+  const titleYear = String(record?.judul || '').match(/\b(20\d{2})\b/);
+  return titleYear ? Number(titleYear[1]) : new Date().getFullYear();
+}
+
+function financeRecordSemester(record) {
+  return Number(record?.semester) === 1 ? 1 : 2;
 }
 
 async function loadFinanceDocuments() {
@@ -1744,6 +1814,7 @@ async function loadFinanceDocuments() {
   const records = (data || [])
     .filter(record => Object.hasOwn(FINANCE_DOCUMENT_TYPES, record.kategori))
     .sort((a, b) => financeRecordYear(b) - financeRecordYear(a)
+      || financeRecordSemester(b) - financeRecordSemester(a)
       || Object.keys(FINANCE_DOCUMENT_TYPES).indexOf(a.kategori) - Object.keys(FINANCE_DOCUMENT_TYPES).indexOf(b.kategori));
   records.forEach(record => { _financeDocumentMap[record.id] = record; });
 
@@ -1755,12 +1826,12 @@ async function loadFinanceDocuments() {
   }
 
   list.innerHTML = `<div class="finance-admin-table-wrap"><table class="finance-admin-table">
-    <thead><tr><th>Tahun</th><th>Dokumen</th><th>Softfile</th><th style="text-align:right;">Aksi</th></tr></thead>
+    <thead><tr><th>Periode</th><th>Dokumen</th><th>Softfile</th><th style="text-align:right;">Aksi</th></tr></thead>
     <tbody>${records.map(record => {
       const type = FINANCE_DOCUMENT_TYPES[record.kategori];
       const fileUrl = safeAdminUrl(record.file_url);
       return `<tr>
-        <td><span class="finance-admin-year">${financeRecordYear(record)}</span></td>
+        <td><span class="finance-admin-year">${financeRecordYear(record)} · S${financeRecordSemester(record)}</span></td>
         <td><div class="finance-admin-document"><i class="fa-solid ${type.icon}"></i><div><strong>${escHtml(type.label)}</strong><span>${escHtml(record.keterangan || record.judul || '')}</span></div></div></td>
         <td>${fileUrl ? `<a class="finance-admin-file-link" href="${fileUrl}" target="_blank" rel="noopener noreferrer"><i class="fa-regular fa-eye"></i> Lihat PDF</a>` : '<span style="color:var(--danger);font-size:10px;">File tidak tersedia</span>'}</td>
         <td><div class="finance-admin-actions">
@@ -1776,18 +1847,21 @@ async function saveFinanceDocument() {
   const id = document.getElementById('fin-id').value;
   const category = document.getElementById('fin-kategori').value;
   const year = Number(document.getElementById('fin-tahun').value);
+  const semester = Number(document.getElementById('fin-semester').value);
   const description = document.getElementById('fin-keterangan').value.trim();
   const file = document.getElementById('fin-file').files[0];
   const type = FINANCE_DOCUMENT_TYPES[category];
   if (!type) { showToast('Jenis dokumen tidak valid.', true); return; }
-  if (!FINANCE_DOCUMENT_YEARS.includes(year)) { showToast('Tahun dokumen harus 2024, 2025, atau 2026.', true); return; }
+  if (!Number.isInteger(year) || year < 2000 || year > 2100) { showToast('Tahun dokumen harus berupa empat digit tahun yang valid.', true); return; }
+  if (![1, 2].includes(semester)) { showToast('Semester dokumen harus Semester 1 atau Semester 2.', true); return; }
   if (description.length > 240) { showToast('Keterangan maksimal 240 karakter.', true); return; }
 
   const duplicate = Object.values(_financeDocumentMap).find(record =>
     record.id !== id && record.kategori === category && financeRecordYear(record) === year
+      && financeRecordSemester(record) === semester
   );
   if (duplicate) {
-    showToast(`${type.label} tahun ${year} sudah tersedia. Edit dokumen tersebut untuk mengganti file.`, true);
+    showToast(`${type.label} ${year} Semester ${semester} sudah tersedia. Edit dokumen tersebut untuk mengganti file.`, true);
     return;
   }
 
@@ -1809,14 +1883,15 @@ async function saveFinanceDocument() {
 
     const typeOrder = Object.keys(FINANCE_DOCUMENT_TYPES).indexOf(category) + 1;
     const payload = {
-      judul: `${type.label} Tahun ${year}`,
+      judul: `${type.label} Semester ${semester} Tahun ${year}`,
       kategori: category,
       tahun: year,
+      semester,
       tipe: 'pdf',
       keterangan: description,
       file_url: fileUrl,
       aktif: true,
-      urutan: (2026 - year) * 10 + typeOrder,
+      urutan: (2100 - year) * 100 + (2 - semester) * 10 + typeOrder,
       updated_at: new Date().toISOString(),
     };
     const { error } = id
@@ -1826,7 +1901,7 @@ async function saveFinanceDocument() {
 
     const oldPath = storagePathFromPublicUrl(_financeDocumentMap[id]?.file_url || '');
     if (uploadedPath && oldPath && oldPath !== uploadedPath) await rollbackUploadedFile(oldPath);
-    showToast(`${type.label} ${year} berhasil dipublikasikan`);
+    showToast(`${type.label} ${year} Semester ${semester} berhasil dipublikasikan`);
     resetFinanceDocumentForm();
     await loadFinanceDocuments();
   } catch (error) {
@@ -1847,6 +1922,7 @@ function editFinanceDocument(id) {
   document.getElementById('fin-id').value = record.id;
   document.getElementById('fin-kategori').value = record.kategori;
   document.getElementById('fin-tahun').value = String(financeRecordYear(record));
+  document.getElementById('fin-semester').value = String(financeRecordSemester(record));
   document.getElementById('fin-keterangan').value = record.keterangan || '';
   document.getElementById('fin-file').value = '';
   const current = document.getElementById('fin-file-current');
@@ -1859,7 +1935,7 @@ function editFinanceDocument(id) {
 function confirmDeleteFinanceDocument(id) {
   const record = _financeDocumentMap[id];
   const label = FINANCE_DOCUMENT_TYPES[record?.kategori]?.label || 'Dokumen';
-  openConfirm('Hapus arsip keuangan?', `${label} tahun ${financeRecordYear(record)} akan dihapus permanen.`,
+  openConfirm('Hapus arsip keuangan?', `${label} ${financeRecordYear(record)} Semester ${financeRecordSemester(record)} akan dihapus permanen.`,
     'Hapus', () => deleteFinanceDocument(id));
 }
 
@@ -1879,7 +1955,8 @@ function resetFinanceDocumentForm() {
     if (element) element.value = '';
   });
   document.getElementById('fin-kategori').value = 'apbdes';
-  document.getElementById('fin-tahun').value = '2026';
+  document.getElementById('fin-tahun').value = String(new Date().getFullYear());
+  document.getElementById('fin-semester').value = '2';
   document.getElementById('fin-file-current').classList.remove('show');
   document.getElementById('btn-simpan-finance').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publikasikan PDF';
 }
