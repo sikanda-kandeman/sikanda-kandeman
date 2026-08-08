@@ -980,7 +980,7 @@
 
             <div style="font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 10px;">Ringkasan demografi</div>
             <div class="form-grid-3">
-              <div class="form-group"><label>Total penduduk</label><input type="number" id="st-total" placeholder="5200" aria-label="5200" /></div>
+              <div class="form-group"><label>Total penduduk</label><input type="number" id="st-total" placeholder="5200" oninput="cekJumlahDidik()" aria-label="5200" /></div>
               <div class="form-group"><label>Kepala keluarga</label><input type="number" id="st-kk" placeholder="1350" aria-label="1350" /></div>
               <div class="form-group"><label>Laki-laki</label><input type="number" id="st-laki" placeholder="2080" aria-label="2080" /></div>
               <div class="form-group"><label>Perempuan</label><input type="number" id="st-perempuan" placeholder="2120" aria-label="2120" /></div>
@@ -1022,16 +1022,22 @@
             </div>
 
             <div style="font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 10px;">
-              Tingkat pendidikan <span style="font-weight:400;color:var(--text-muted);">— dalam persen</span>
+              Tingkat pendidikan <span style="font-weight:400;color:var(--text-muted);">— jumlah jiwa dari seluruh warga</span>
             </div>
             <div class="form-grid">
-              <div class="form-group"><label>SD / sederajat</label><input type="number" id="st-sd"     step="0.1" oninput="cekJumlahDidik()" aria-label="st sd" /></div>
-              <div class="form-group"><label>SMP / sederajat</label><input type="number" id="st-smp"    step="0.1" oninput="cekJumlahDidik()" aria-label="st smp" /></div>
-              <div class="form-group"><label>SMA / sederajat</label><input type="number" id="st-sma"    step="0.1" oninput="cekJumlahDidik()" aria-label="st sma" /></div>
-              <div class="form-group"><label>Diploma / Sarjana</label><input type="number" id="st-tinggi" step="0.1" oninput="cekJumlahDidik()" aria-label="st tinggi" /></div>
+              <div class="form-group"><label>Belum sekolah</label><input type="number" id="st-belum-sekolah" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga belum sekolah" /></div>
+              <div class="form-group"><label>Masih SD</label><input type="number" id="st-masih-sd" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga masih SD" /></div>
+              <div class="form-group"><label>Tamat SD</label><input type="number" id="st-tamat-sd" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga tamat SD" /></div>
+              <div class="form-group"><label>SLTP</label><input type="number" id="st-sltp" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan SLTP" /></div>
+              <div class="form-group"><label>SLTA</label><input type="number" id="st-slta" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan SLTA" /></div>
+              <div class="form-group"><label>Diploma I/II</label><input type="number" id="st-diploma-1-2" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan Diploma I atau II" /></div>
+              <div class="form-group"><label>Diploma III</label><input type="number" id="st-diploma-3" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan Diploma III" /></div>
+              <div class="form-group"><label>Diploma IV/S1</label><input type="number" id="st-diploma-4-s1" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan Diploma IV atau S1" /></div>
+              <div class="form-group"><label>S2</label><input type="number" id="st-s2" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan S2" /></div>
+              <div class="form-group"><label>S3</label><input type="number" id="st-s3" min="0" step="1" oninput="cekJumlahDidik()" aria-label="Jumlah warga berpendidikan S3" /></div>
             </div>
-            <div id="st-didik-sum" class="pct-sum-indicator pct-sum-ok">
-              <i class="fa-solid fa-circle-check"></i> Total: 100%
+            <div id="st-didik-sum" class="pct-sum-indicator pct-sum-warn">
+              <i class="fa-solid fa-triangle-exclamation"></i> Total pendidikan: 0 jiwa
             </div>
 
             <div class="form-actions">
@@ -1257,6 +1263,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js?v=20260807-berita-upload-v3" defer></script>
+<script src="assets/js/admin.js?v=20260808-statistik-pendidikan-v1" defer></script>
 </body>
 </html>
