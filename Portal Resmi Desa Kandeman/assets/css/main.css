@@ -554,33 +554,254 @@
     }
     .misi-item p { font-size: 14.5px; color: var(--text-sec); line-height: 1.75; }
 
-    /* Geo cards */
-    .geo-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
-    .geo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
-    .geo-card {
-      background: var(--cream); border: 1px solid var(--border);
-      border-radius: var(--r-md); padding: 18px;
+    /* Letak geografis */
+    .geo-profile-panel { min-width: 0; }
+    .geo-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
     }
-    .geo-card .val { font-family: 'Cormorant Garamond', serif; font-size: 25px; font-weight: 700; color: var(--emerald); }
-    .geo-card .lbl { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
+    .geo-label {
+      font-size: 18px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+    .geo-heading p { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+    .geo-code-badge {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: #E9F5EE;
+      color: var(--emerald);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .geo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .geo-card {
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      background: linear-gradient(145deg, #F7F4ED, #FCFAF5);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 16px;
+    }
+    .geo-card::after {
+      content: '';
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      right: -24px;
+      bottom: -28px;
+      border-radius: 50%;
+      background: rgba(28,107,62,.06);
+    }
+    .geo-card > i {
+      display: block;
+      margin-bottom: 11px;
+      color: var(--emerald);
+      font-size: 13px;
+    }
+    .geo-card .val {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(19px, 2vw, 23px);
+      line-height: 1.08;
+      font-weight: 700;
+      letter-spacing: -.025em;
+      color: var(--emerald);
+      font-variant-numeric: tabular-nums;
+    }
+    .geo-card .lbl { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+    .geo-card-wide { grid-column: 1 / -1; }
 
-    .batas-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 16px; }
+    .geo-boundary-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      background: #fff;
+    }
+    .geo-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 15px 5px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .geo-card-title i { color: var(--emerald); }
+    .batas-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 5px; }
     .batas-table th {
       text-align: left; font-size: 10.5px; font-weight: 600;
       text-transform: uppercase; letter-spacing: .06em;
       color: var(--text-muted); padding: 9px 12px;
       border-bottom: 1px solid var(--border);
     }
-    .batas-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text-sec); font-size: 14px; }
+    .batas-table td { padding: 10px 15px; border-bottom: 1px solid var(--border); color: var(--text-sec); font-size: 12.5px; line-height: 1.45; }
     .batas-table tr:last-child td { border-bottom: none; }
-    .batas-table td:first-child { font-weight: 600; color: var(--text); width: 96px; }
+    .batas-table td:first-child { font-weight: 600; color: var(--text); width: 76px; }
 
-    .kode-box {
-      margin-top: 18px; padding: 16px 18px;
-      background: var(--cream); border: 1px solid var(--border); border-radius: var(--r-md);
+    .geo-coordinate-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
     }
-    .kode-box p { font-size: 13.5px; color: var(--text-sec); margin-top: 4px; }
-    .kode-box p strong { color: var(--text); }
+    .geo-coordinate-grid > div {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #F1F7F3;
+    }
+    .geo-coordinate-grid span {
+      display: block;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .geo-coordinate-grid strong {
+      display: block;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .geo-map-section {
+      margin-top: 48px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+    .geo-map-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 18px;
+    }
+    .geo-map-kicker {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--emerald);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .geo-map-header h3 {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 6px;
+      font-size: clamp(20px, 2.2vw, 28px);
+      line-height: 1.15;
+      letter-spacing: -.025em;
+    }
+    .geo-map-header h3 i { color: var(--emerald); font-size: .75em; }
+    .geo-map-header p { max-width: 680px; font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+    .geo-map-coordinate {
+      flex: 0 0 auto;
+      padding: 9px 12px;
+      border-radius: 9px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      color: var(--text-sec);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+    .geo-map-coordinate i { margin-right: 5px; color: var(--emerald); }
+    .geo-map-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(250px, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+    .geo-map-frame {
+      min-height: 540px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 34px rgba(13,43,26,.08);
+    }
+    .geo-map-frame iframe { min-height: 540px; }
+    .geo-map-aside {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: 24px 22px;
+      border-radius: 16px;
+      background: #0D2B1A;
+      color: #fff;
+    }
+    .geo-map-aside-icon {
+      width: 42px;
+      height: 42px;
+      margin-bottom: 22px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,.1);
+      color: #B7DEC5;
+    }
+    .geo-map-aside h4 { margin-bottom: 8px; font-size: 16px; }
+    .geo-map-aside > p { font-size: 12px; line-height: 1.65; color: rgba(255,255,255,.68); }
+    .geo-map-aside .peta-legend {
+      display: grid;
+      gap: 11px;
+      margin: 24px 0 0;
+      padding: 0;
+      background: transparent;
+      border: none;
+    }
+    .geo-map-aside .peta-legend-item { color: rgba(255,255,255,.82); }
+    .geo-map-note {
+      margin-top: auto;
+      padding-top: 22px;
+      font-size: 10.5px;
+      line-height: 1.55;
+      color: rgba(255,255,255,.58);
+    }
+    .geo-map-note i { margin-right: 5px; color: #B7DEC5; }
+
+    @media (max-width: 920px) {
+      .geo-map-header { align-items: flex-start; }
+      .geo-map-layout { grid-template-columns: minmax(0, 1fr) 240px; }
+      .geo-map-frame,
+      .geo-map-frame iframe { min-height: 460px; }
+    }
+    @media (max-width: 720px) {
+      .geo-map-section { margin-top: 36px; padding-top: 22px; }
+      .geo-map-header { display: block; }
+      .geo-map-coordinate { display: inline-flex; margin-top: 14px; }
+      .geo-map-layout { grid-template-columns: 1fr; }
+      .geo-map-frame,
+      .geo-map-frame iframe { min-height: 420px; }
+      .geo-map-aside { min-height: 0; }
+      .geo-map-note { margin-top: 22px; }
+    }
+    @media (max-width: 480px) {
+      .geo-heading { display: block; }
+      .geo-code-badge { display: inline-flex; margin-top: 10px; }
+      .geo-grid { grid-template-columns: 1fr 1fr; }
+      .geo-card { padding: 14px; }
+      .geo-card .val { font-size: 18px; }
+      .geo-coordinate-grid { grid-template-columns: 1fr; }
+      .geo-map-frame,
+      .geo-map-frame iframe { min-height: 360px; }
+      .geo-map-aside { padding: 20px 18px; }
+    }
 
     /* ══════════════════════════════════════
        PEMERINTAHAN
@@ -1668,6 +1889,20 @@
       border: 1px solid var(--border); min-height: 380px;
     }
     .peta-embed iframe { width: 100%; height: 100%; min-height: 380px; border: none; display: block; }
+    .peta-embed.geo-map-frame,
+    .peta-embed.geo-map-frame iframe { min-height: 540px; }
+    @media (max-width: 920px) {
+      .peta-embed.geo-map-frame,
+      .peta-embed.geo-map-frame iframe { min-height: 460px; }
+    }
+    @media (max-width: 720px) {
+      .peta-embed.geo-map-frame,
+      .peta-embed.geo-map-frame iframe { min-height: 420px; }
+    }
+    @media (max-width: 480px) {
+      .peta-embed.geo-map-frame,
+      .peta-embed.geo-map-frame iframe { min-height: 360px; }
+    }
 
     /* ══════════════════════════════════════
        FOOTER
@@ -2621,17 +2856,19 @@
     .stat-grid {
       display: grid;
       grid-template-columns: minmax(0, 7fr) minmax(340px, 5fr);
-      gap: 24px;
-      align-items: stretch;
+      gap: 18px;
+      align-items: start;
     }
-    .stat-panel-age,
-    .stat-panel-summary { grid-column: 1; }
-    .stat-panel-education,
-    .stat-panel-growth { grid-column: 2; }
+    .stat-column {
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+      align-content: start;
+    }
     .ringkasan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .stat-panel {
       background: #fff; border: 1px solid var(--border);
-      border-radius: var(--r-md); padding: 24px;
+      border-radius: var(--r-md); padding: 22px;
       box-shadow: 0 1px 2px rgba(13,43,26,.03), 0 4px 12px rgba(13,43,26,.05);
       min-width: 0;
     }
@@ -2728,6 +2965,13 @@
       margin-top: 5px;
       line-height: 1.35;
     }
+    .demography-note {
+      margin-top: 14px;
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+    .demography-note i { color: var(--emerald); margin-right: 3px; }
 
     /* Kartu laju pertumbuhan penduduk */
     .stat-panel-growth { display: flex; flex-direction: column; }
@@ -2840,10 +3084,6 @@
     }
     @media (max-width: 860px) {
       .stat-grid { grid-template-columns: 1fr; }
-      .stat-panel-age,
-      .stat-panel-summary,
-      .stat-panel-education,
-      .stat-panel-growth { grid-column: 1; }
       .donut-wrap { grid-template-columns: 150px minmax(0,1fr); gap: 24px; }
       .donut-svg { width: 150px; height: 150px; }
     }
