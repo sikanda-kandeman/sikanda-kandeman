@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   
 
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260808-kontak-editor-v1" />
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260809-apbdes-periode-v6" />
 </head>
 <body>
 
@@ -518,14 +518,34 @@
           <div class="card">
             <div class="card-title">Data APBDes</div>
             <input type="hidden" id="apb-id" aria-label="apb id" />
-            <div class="form-grid" style="margin-bottom:16px;">
+            <div class="apb-period-admin-head">
+              <div>
+                <strong>Pilih periode yang akan dikelola</strong>
+                <span>Data setiap tahun dan semester disimpan sebagai laporan terpisah.</span>
+              </div>
+              <div id="apb-period-list" class="apb-period-list" aria-label="Periode APBDes tersedia"></div>
+            </div>
+            <div class="form-grid apb-period-admin-fields" style="margin-bottom:16px;">
               <div class="form-group">
-                <label>Tahun anggaran</label>
-                <input type="number" id="apb-tahun" value="2026" oninput="markApbdesFormDirty()" aria-label="apb tahun" />
+                <label for="apb-tahun">Tahun anggaran</label>
+                <input type="number" id="apb-tahun" value="2026" min="2000" max="2100" aria-label="Tahun APBDes" />
+              </div>
+              <div class="form-group">
+                <label for="apb-semester">Semester laporan</label>
+                <select id="apb-semester" aria-label="Semester APBDes">
+                  <option value="1">Semester 1</option>
+                  <option value="2" selected>Semester 2</option>
+                </select>
               </div>
               <div class="form-group">
                 <label>Total anggaran pendapatan (terhitung otomatis)</label>
                 <input type="number" id="apb-total" readonly aria-label="Total anggaran pendapatan" />
+              </div>
+              <div class="form-group apb-period-load-group">
+                <label>&nbsp;</label>
+                <button type="button" class="btn" id="btn-muat-apb" onclick="loadSelectedApbdesPeriod()">
+                  <i class="fa-solid fa-magnifying-glass"></i> Tampilkan periode
+                </button>
               </div>
             </div>
 
@@ -575,7 +595,7 @@
               <span class="finance-admin-head-icon"><i class="fa-solid fa-file-pdf"></i></span>
               <div>
                 <div class="card-title">Arsip PDF keuangan desa</div>
-                <p>Publikasikan APBDes, Realisasi Anggaran, Laporan Keuangan, dan LPPD untuk tahun 2024–2026.</p>
+                <p>Publikasikan APBDes, Realisasi Anggaran, Laporan Keuangan, dan LPPD berdasarkan tahun dan semester.</p>
               </div>
             </div>
             <div class="finance-admin-form" id="finance-document-form">
@@ -592,10 +612,13 @@
                 </div>
                 <div class="form-group">
                   <label for="fin-tahun">Tahun dokumen</label>
-                  <select id="fin-tahun">
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026" selected>2026</option>
+                  <input type="number" id="fin-tahun" min="2000" max="2100" value="2026" />
+                </div>
+                <div class="form-group">
+                  <label for="fin-semester">Semester dokumen</label>
+                  <select id="fin-semester">
+                    <option value="1">Semester 1</option>
+                    <option value="2" selected>Semester 2</option>
                   </select>
                 </div>
               </div>
@@ -1333,6 +1356,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js?v=20260809-apbdes-stabil-v4" defer></script>
+<script src="assets/js/admin.js?v=20260809-apbdes-periode-v6" defer></script>
 </body>
 </html>

@@ -68,14 +68,12 @@
     "description": "Portal informasi dan layanan terpadu Desa Kandeman, Kecamatan Kandeman, Kabupaten Batang, Jawa Tengah.",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Jl. Raya Kandeman KM 4, Johosari, Desa Kandeman",
-      "addressLocality": "Kecamatan Kandeman",
+      "streetAddress": "Jl. Raya Kandeman",
+      "addressLocality": "Kandeman",
       "addressRegion": "Kabupaten Batang",
       "addressCountry": "ID",
       "postalCode": "51261"
     },
-    "telephone": "+62-857-2766-2773",
-    "email": "desakandeman271@gmail.com",
     "geo": {
       "@type": "GeoCoordinates",
       "latitude": -6.952,
@@ -86,7 +84,7 @@
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday"],
         "opens": "07:30",
-        "closes": "15:00"
+        "closes": "14:00"
       },
       {
         "@type": "OpeningHoursSpecification",
@@ -99,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260808-kontak-editor-v1" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260809-apbdes-periode-v6" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -310,7 +308,7 @@
     <div class="hero-stat">
       <div class="hero-stat-icon"><i class="fa-solid fa-ruler-combined"></i></div>
       <div>
-        <div class="hero-stat-val"><span id="hero-luas-wilayah" data-suffix=" Ha">281.7 Ha</span></div>
+        <div class="hero-stat-val"><span id="hero-luas-wilayah" class="count-up" data-count="0" data-prefix="±" data-suffix=" Ha" data-empty="true">—</span></div>
         <div class="hero-stat-lbl">Luas Wilayah</div>
       </div>
     </div>
@@ -324,21 +322,14 @@
     <div class="hero-stat">
       <div class="hero-stat-icon"><i class="fa-solid fa-landmark"></i></div>
       <div>
-        <div class="hero-stat-val" id="hero-rt-rw">20 RT / 5 RW</div>
+        <div class="hero-stat-val" id="hero-rt-rw">—</div>
         <div class="hero-stat-lbl">Rukun Tetangga/Warga</div>
-      </div>
-    </div>
-    <div class="hero-stat">
-      <div class="hero-stat-icon"><i class="fa-solid fa-mountain-sun"></i></div>
-      <div>
-        <div class="hero-stat-val">53 m</div>
-        <div class="hero-stat-lbl">Ketinggian Wilayah</div>
       </div>
     </div>
     <div class="hero-stat">
       <div class="hero-stat-icon"><i class="fa-solid fa-compass"></i></div>
       <div>
-        <div class="hero-stat-val">Dataran Rendah</div>
+        <div class="hero-stat-val">Pesisir Utara</div>
         <div class="hero-stat-lbl">Karakter Wilayah</div>
       </div>
     </div>
@@ -346,7 +337,7 @@
     <div class="hero-stat" aria-hidden="true">
       <div class="hero-stat-icon"><i class="fa-solid fa-ruler-combined"></i></div>
       <div>
-        <div class="hero-stat-val" id="hero-luas-wilayah-duplikat">281.7 Ha</div>
+        <div class="hero-stat-val" id="hero-luas-wilayah-duplikat">—</div>
         <div class="hero-stat-lbl">Luas Wilayah</div>
       </div>
     </div>
@@ -360,21 +351,14 @@
     <div class="hero-stat" aria-hidden="true">
       <div class="hero-stat-icon"><i class="fa-solid fa-landmark"></i></div>
       <div>
-        <div class="hero-stat-val" id="hero-rt-rw-duplikat">20 RT / 5 RW</div>
+        <div class="hero-stat-val" id="hero-rt-rw-duplikat">—</div>
         <div class="hero-stat-lbl">Rukun Tetangga/Warga</div>
-      </div>
-    </div>
-    <div class="hero-stat" aria-hidden="true">
-      <div class="hero-stat-icon"><i class="fa-solid fa-mountain-sun"></i></div>
-      <div>
-        <div class="hero-stat-val">53 m</div>
-        <div class="hero-stat-lbl">Ketinggian Wilayah</div>
       </div>
     </div>
     <div class="hero-stat" aria-hidden="true">
       <div class="hero-stat-icon"><i class="fa-solid fa-compass"></i></div>
       <div>
-        <div class="hero-stat-val">Dataran Rendah</div>
+        <div class="hero-stat-val">Pesisir Utara</div>
         <div class="hero-stat-lbl">Karakter Wilayah</div>
       </div>
     </div>
@@ -602,21 +586,12 @@
     <!-- Peta dibuat penuh-lebar agar hasil ekspor QGIS tetap terbaca jelas. -->
     <div class="geo-map-section" id="peta-wilayah">
       <div class="geo-map-header">
-        <div class="geo-map-copy">
+        <div>
           <span class="geo-map-kicker">Peta Administratif</span>
           <h3><i class="fa-solid fa-map-location-dot"></i> Peta Wilayah Desa Kandeman</h3>
           <p>Area peta diperbesar untuk menampilkan batas wilayah dan detail hasil pemetaan QGIS dengan lebih jelas.</p>
         </div>
-        <div class="geo-map-coordinate" aria-label="Koordinat Desa Kandeman">
-          <div class="geo-map-coordinate-item">
-            <span>Koordinat Bujur</span>
-            <strong>109.762° BT</strong>
-          </div>
-          <div class="geo-map-coordinate-item">
-            <span>Koordinat Lintang</span>
-            <strong>6.952° LS</strong>
-          </div>
-        </div>
+        <div class="geo-map-coordinate"><i class="fa-solid fa-location-crosshairs"></i> 6.952° LS · 109.762° BT</div>
       </div>
 
       <div class="geo-map-layout">
@@ -945,6 +920,31 @@
       <p class="section-sub" id="apb-section-sub">Informasi APBDes, realisasi anggaran, dan arsip keuangan resmi Desa Kandeman.</p>
     </div>
 
+    <div class="trans-period-toolbar" aria-labelledby="trans-period-title">
+      <div class="trans-period-copy">
+        <span class="trans-period-icon" aria-hidden="true"><i class="fa-solid fa-calendar-check"></i></span>
+        <div>
+          <p class="trans-period-kicker">Periode laporan</p>
+          <h3 id="trans-period-title">Pilih tahun dan semester</h3>
+          <p>Seluruh ringkasan, rincian realisasi, dan arsip di bawah mengikuti periode yang dipilih.</p>
+        </div>
+      </div>
+      <div class="trans-period-fields">
+        <label for="apb-period-year">
+          <span>Tahun</span>
+          <select id="apb-period-year" aria-label="Pilih tahun transparansi keuangan" disabled>
+            <option>Memuat…</option>
+          </select>
+        </label>
+        <label for="apb-period-semester">
+          <span>Semester</span>
+          <select id="apb-period-semester" aria-label="Pilih semester transparansi keuangan" disabled>
+            <option>Memuat…</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
     <div class="trans-grid">
       <!-- Kiri -->
       <div id="apbdes">
@@ -967,21 +967,17 @@
               <div>
                 <p class="financial-archive-kicker">Dokumen publik</p>
                 <h3 id="financial-archive-title">Arsip Keuangan Desa</h3>
-                <p>Pilih tahun untuk melihat atau mengunduh berkas PDF yang telah dipublikasikan.</p>
+                <p>Dokumen mengikuti tahun dan semester transparansi yang dipilih di atas.</p>
               </div>
             </div>
-            <div class="financial-year-tabs" role="tablist" aria-label="Pilih tahun arsip keuangan">
-              <button type="button" class="financial-year-tab" role="tab" aria-selected="false" tabindex="-1" data-financial-year="2024">2024</button>
-              <button type="button" class="financial-year-tab" role="tab" aria-selected="false" tabindex="-1" data-financial-year="2025">2025</button>
-              <button type="button" class="financial-year-tab active" role="tab" aria-selected="true" tabindex="0" data-financial-year="2026">2026</button>
-            </div>
+            <span class="financial-period-badge" id="financial-period-badge"><i class="fa-regular fa-calendar"></i> Semester —</span>
           </div>
 
           <div class="financial-archive-summary" aria-live="polite">
-            <span id="financial-archive-year"><i class="fa-regular fa-calendar"></i> Tahun 2026</span>
+            <span id="financial-archive-year"><i class="fa-regular fa-calendar"></i> Periode belum dipilih</span>
             <span id="financial-archive-count">Memuat dokumen...</span>
           </div>
-          <div class="financial-docs-grid" id="financial-docs-grid" role="tabpanel" aria-label="Arsip keuangan tahun 2026">
+          <div class="financial-docs-grid" id="financial-docs-grid" aria-label="Arsip keuangan desa">
             <div class="financial-doc-loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuat arsip keuangan...</div>
           </div>
         </section>
@@ -1429,7 +1425,7 @@
         <div class="jadwal-icon"><i class="fa-solid fa-calendar-week"></i></div>
         <div>
           <h4>Senin – Kamis</h4>
-          <p>07.30 – 15.00 WIB<br>Pelayanan administrasi umum</p>
+          <p>07.30 – 14.00 WIB<br>Pelayanan administrasi umum</p>
         </div>
       </div>
       <div class="jadwal-card">
@@ -1450,7 +1446,7 @@
         <div class="jadwal-icon"><i class="fa-solid fa-phone"></i></div>
         <div>
           <h4>Hubungi Kami</h4>
-          <p><a href="tel:+6285727662773">0857 2766 2773 (Handa)</a><br>Konfirmasi sebelum datang</p>
+          <p>(0285) — —<br>Konfirmasi sebelum datang</p>
         </div>
       </div>
     </div>
@@ -1917,6 +1913,7 @@
     </div>
 
     <div class="stat-grid">
+      <div class="stat-column stat-column-wide">
       <!-- Piramida umur -->
       <div class="stat-panel stat-panel-age">
         <h3><i class="fa-solid fa-people-group"></i> Komposisi Usia &amp; Jenis Kelamin</h3>
@@ -1934,6 +1931,37 @@
           <span><span class="pyr-dot" style="background:#C13584;"></span> Perempuan</span>
         </div>
       </div>
+
+      <!-- Ringkasan -->
+      <div class="stat-panel stat-panel-summary">
+        <h3><i class="fa-solid fa-chart-simple"></i> Ringkasan Demografi</h3>
+        <div class="sub">Angka pokok kependudukan Desa Kandeman</div>
+        <div class="ringkasan-grid" id="stat-ringkasan">
+          <div class="demography-card demography-card-population">
+            <div id="stat-total-penduduk" class="demography-value">—</div>
+            <div class="demography-label">Total Penduduk</div>
+          </div>
+          <div class="demography-card demography-card-family">
+            <div id="stat-total-kk" class="demography-value">—</div>
+            <div class="demography-label">Kepala Keluarga</div>
+          </div>
+          <div class="demography-card demography-card-male">
+            <div id="stat-total-laki" class="demography-value">—</div>
+            <div class="demography-label">Laki-laki</div>
+          </div>
+          <div class="demography-card demography-card-female">
+            <div id="stat-total-perempuan" class="demography-value">—</div>
+            <div class="demography-label">Perempuan</div>
+          </div>
+        </div>
+        <p class="demography-note">
+          <i class="fa-solid fa-circle-info"></i>
+          Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh pada Transparency Hub.
+        </p>
+      </div>
+      </div>
+
+      <div class="stat-column stat-column-side">
 
       <!-- Pendidikan -->
       <div class="stat-panel stat-panel-education">
@@ -1977,34 +2005,6 @@
         </div>
       </div>
 
-      <!-- Ringkasan -->
-      <div class="stat-panel stat-panel-summary">
-        <h3><i class="fa-solid fa-chart-simple"></i> Ringkasan Demografi</h3>
-        <div class="sub">Angka pokok kependudukan Desa Kandeman</div>
-        <div class="ringkasan-grid" id="stat-ringkasan">
-          <div class="demography-card demography-card-population">
-            <div id="stat-total-penduduk" class="demography-value">—</div>
-            <div class="demography-label">Total Penduduk</div>
-          </div>
-          <div class="demography-card demography-card-family">
-            <div id="stat-total-kk" class="demography-value">—</div>
-            <div class="demography-label">Kepala Keluarga</div>
-          </div>
-          <div class="demography-card demography-card-male">
-            <div id="stat-total-laki" class="demography-value">—</div>
-            <div class="demography-label">Laki-laki</div>
-          </div>
-          <div class="demography-card demography-card-female">
-            <div id="stat-total-perempuan" class="demography-value">—</div>
-            <div class="demography-label">Perempuan</div>
-          </div>
-        </div>
-        <p class="demography-note">
-          <i class="fa-solid fa-circle-info"></i>
-          Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh pada Transparency Hub.
-        </p>
-      </div>
-
       <!-- Laju pertumbuhan -->
       <div class="stat-panel stat-panel-growth">
         <h3><i class="fa-solid fa-arrow-trend-up"></i> Jumlah Laju Pertumbuhan Penduduk</h3>
@@ -2026,6 +2026,7 @@
           </div>
         </div>
         <p class="growth-note"><i class="fa-solid fa-circle-info"></i> Nilai positif berarti bertambah, sedangkan nilai negatif berarti berkurang.</p>
+      </div>
       </div>
     </div>
   </div>
@@ -2222,7 +2223,7 @@
           <i class="fa-solid fa-chevron-down"></i>
         </div>
         <div class="faq-a">
-          Balai Desa Kandeman buka setiap hari kerja: Senin–Kamis pukul 07.30–15.00 WIB, dan Jumat pukul 07.30–11.30 WIB. Balai Desa tutup pada Sabtu, Minggu, dan hari libur nasional.
+          Balai Desa Kandeman buka setiap hari kerja: Senin–Kamis pukul 07.30–14.00 WIB, dan Jumat pukul 07.30–11.30 WIB. Balai Desa tutup pada Sabtu, Minggu, dan hari libur nasional.
         </div>
       </div>
       <div class="faq-item">
@@ -2271,29 +2272,30 @@
           <div class="kontak-icon"><i class="fa-solid fa-location-dot"></i></div>
           <div>
             <h4>Alamat</h4>
-            <p>Jl. Raya Kandeman KM 4, Johosari<br>Desa Kandeman, Kec. Kandeman<br>Kab. Batang, Jawa Tengah 51261</p>
+            <p>Jl. Raya Kandeman, Desa Kandeman<br>Kec. Kandeman, Kab. Batang<br>Jawa Tengah 51261</p>
           </div>
         </div>
         <div class="kontak-card">
           <div class="kontak-icon"><i class="fa-solid fa-phone"></i></div>
           <div>
             <h4>Telepon</h4>
-            <a href="tel:+6285727662773">0857 2766 2773 (Handa)</a>
-            <p style="margin-top:2px; font-size:11.5px; color:var(--text-muted);">Jam layanan: Senin–Kamis, 07.30–15.00 WIB</p>
+            <!-- TODO: Isi nomor telepon resmi kantor desa. -->
+            <a href="tel:0285000000">(0285) — —</a>
+            <p style="margin-top:2px; font-size:11.5px; color:var(--text-muted);">Jam kerja: Senin–Jumat</p>
           </div>
         </div>
         <div class="kontak-card">
           <div class="kontak-icon"><i class="fa-solid fa-envelope"></i></div>
           <div>
             <h4>Email</h4>
-            <a href="mailto:desakandeman271@gmail.com">desakandeman271@gmail.com</a>
+            <a href="mailto:kandeman@batangkab.go.id">kandeman@batangkab.go.id</a>
           </div>
         </div>
         <div class="kontak-card">
           <div class="kontak-icon"><i class="fa-regular fa-clock"></i></div>
           <div>
             <h4>Jam Pelayanan</h4>
-            <p>Senin – Kamis: 07.30 – 15.00 WIB<br>Jumat: 07.30 – 11.30 WIB<br>Sabtu & Minggu: Tutup</p>
+            <p>Senin – Kamis: 07.30 – 14.00 WIB<br>Jumat: 07.30 – 11.30 WIB<br>Sabtu & Minggu: Tutup</p>
           </div>
         </div>
         <div class="kontak-card" style="flex-direction:column; align-items:flex-start;">
@@ -2310,7 +2312,7 @@
       <div class="peta-embed" style="border-radius:var(--r-md); overflow:hidden;">
         <!-- Koordinat mengikuti nilai yang sudah tercantum pada JSON-LD website. -->
         <iframe
-          src="https://maps.google.com/maps?q=Kantor%20Desa%20Kandeman%2C%20Jl.%20Raya%20Kandeman%20KM%204%2C%20Batang&amp;z=17&amp;output=embed"
+          src="https://maps.google.com/maps?q=-6.9004%2C109.7497&amp;z=16&amp;output=embed"
           loading="lazy"
           allowfullscreen
           referrerpolicy="no-referrer-when-downgrade"
@@ -2460,7 +2462,7 @@
         <p>Sistem Informasi Kandeman Digital — portal resmi informasi dan layanan terpadu Desa Kandeman, Kecamatan Kandeman, Kabupaten Batang, Jawa Tengah.</p>
         <p style="margin-top:12px; font-size:12px;">
           <i class="fa-solid fa-location-dot" style="color:var(--mint); margin-right:6px;"></i>
-          Jl. Raya Kandeman KM 4, Johosari, Desa Kandeman, Kec. Kandeman, Kab. Batang 51261
+          Jl. Raya Kandeman, Kec. Kandeman, Kab. Batang 51261
         </p>
       </div>
       <div>
@@ -2482,9 +2484,10 @@
       <div>
         <h4>Kontak</h4>
         <ul>
-          <li><a href="tel:+6285727662773"><i class="fa-solid fa-phone" style="width:14px; margin-right:6px;"></i>0857 2766 2773 (Handa)</a></li>
-          <li><a href="mailto:desakandeman271@gmail.com"><i class="fa-solid fa-envelope" style="width:14px; margin-right:6px;"></i>desakandeman271@gmail.com</a></li>
-          <li><a href="#kontak"><i class="fa-solid fa-clock" style="width:14px; margin-right:6px;"></i>Senin–Kamis, 07.30–15.00 WIB</a></li>
+          <!-- TODO: Isi nomor telepon resmi kantor desa. -->
+          <li><a href="tel:0285000000"><i class="fa-solid fa-phone" style="width:14px; margin-right:6px;"></i>(0285) — —</a></li>
+          <li><a href="mailto:kandeman@batangkab.go.id"><i class="fa-solid fa-envelope" style="width:14px; margin-right:6px;"></i>kandeman@batangkab.go.id</a></li>
+          <li><a href="#"><i class="fa-solid fa-clock" style="width:14px; margin-right:6px;"></i>Senin–Jumat, 07.30–14.00</a></li>
         </ul>
         <div style="margin-top:16px;">
           <p style="font-size:11.5px; margin-bottom:10px; color:rgba(255,255,255,.4);">Ikuti kami:</p>
@@ -2510,6 +2513,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260809-apbdes-public-sync-v5" defer></script>
+  <script src="assets/js/main.js?v=20260809-apbdes-periode-v6" defer></script>
 </body>
 </html>
