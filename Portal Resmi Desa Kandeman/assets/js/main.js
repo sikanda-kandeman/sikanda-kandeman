@@ -1834,6 +1834,69 @@ function numberOrNull(value) {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
 }
 
+function signedNumberOrNull(value) {
+  if (value === null || value === undefined || value === '') return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function statistikPeriodName(record) {
+  if (!record) return '';
+  return `${Number(record.periode) >= 7 ? 'Juli' : 'Januari'} ${record.tahun}`;
+}
+
+function renderPertumbuhanPenduduk(current, previous) {
+  const card = document.getElementById('stat-growth-card');
+  const rateEl = document.getElementById('stat-growth-rate');
+  const changeEl = document.getElementById('stat-growth-change');
+  const statusEl = document.getElementById('stat-growth-status');
+  const iconEl = document.getElementById('stat-growth-icon');
+  const periodEl = document.getElementById('stat-growth-period');
+  if (!card || !rateEl || !changeEl || !statusEl || !iconEl || !periodEl) return;
+
+  const currentTotal = signedNumberOrNull(current?.total_penduduk);
+  const previousTotal = signedNumberOrNull(previous?.total_penduduk);
+  const storedChange = signedNumberOrNull(current?.pertumbuhan_penduduk);
+  const storedRate = signedNumberOrNull(current?.laju_pertumbuhan_persen);
+  const calculatedChange = currentTotal !== null && previousTotal !== null
+    ? currentTotal - previousTotal
+    : null;
+  const calculatedRate = calculatedChange !== null && previousTotal > 0
+    ? calculatedChange / previousTotal * 100
+    : null;
+  const change = storedChange ?? calculatedChange;
+  const rate = storedRate ?? calculatedRate;
+
+  if (change === null && rate === null) {
+    card.dataset.state = 'empty';
+    rateEl.textContent = '—';
+    changeEl.textContent = '—';
+    statusEl.textContent = 'Data belum tersedia';
+    iconEl.innerHTML = '<i class="fa-solid fa-minus"></i>';
+    periodEl.textContent = 'Periode pembanding belum tersedia';
+    return;
+  }
+
+  const directionValue = rate ?? change ?? 0;
+  const state = directionValue > 0 ? 'up' : directionValue < 0 ? 'down' : 'flat';
+  const stateMeta = {
+    up: { label:'Penduduk bertambah', icon:'fa-arrow-trend-up' },
+    down: { label:'Penduduk berkurang', icon:'fa-arrow-trend-down' },
+    flat: { label:'Penduduk stabil', icon:'fa-minus' }
+  }[state];
+  const rateValue = rate ?? 0;
+  const changeValue = change ?? 0;
+
+  card.dataset.state = state;
+  rateEl.textContent = `${rateValue > 0 ? '+' : ''}${rateValue.toLocaleString('id-ID', { minimumFractionDigits:1, maximumFractionDigits:2 })}%`;
+  changeEl.textContent = `${changeValue > 0 ? '+' : ''}${Math.round(changeValue).toLocaleString('id-ID')} jiwa`;
+  statusEl.textContent = stateMeta.label;
+  iconEl.innerHTML = `<i class="fa-solid ${stateMeta.icon}"></i>`;
+  periodEl.textContent = previous
+    ? `${statistikPeriodName(previous)} ke ${statistikPeriodName(current)}`
+    : `Periode ${statistikPeriodName(current)}`;
+}
+
 function setCounterData(id, value) {
   const element = document.getElementById(id);
   if (!element) return;
@@ -1876,6 +1939,7 @@ function resetStatistikData(status = 'empty') {
     const element = document.getElementById(id);
     if (element) element.textContent = '—';
   });
+  renderPertumbuhanPenduduk(null, null);
 
   setCounterData('hero-total-penduduk', null);
   setCounterData('hero-luas-wilayah', null);
@@ -1895,7 +1959,7 @@ async function loadStatistik() {
     .select('*').eq('aktif', true)
     .order('tahun', { ascending:false })
     .order('periode', { ascending:false })
-    .limit(1);
+    .limit(2);
   if (error) {
     console.error('Gagal memuat statistik:', error);
     resetStatistikData('error');
@@ -1906,6 +1970,7 @@ async function loadStatistik() {
     return;
   }
   const s = data[0];
+  const previousStatistik = data[1] || null;
 
   // ── Label periode ──
   const lbl = document.getElementById('stat-periode-label');
@@ -1936,16 +2001,16 @@ async function loadStatistik() {
 
   // ── Tingkat pendidikan (jumlah jiwa → persentase seluruh warga) ──
   const didik = [
-    ['Belum sekolah',  s.didik_belum_sekolah],
-    ['Masih SD',       s.didik_masih_sd],
-    ['Tamat SD',       s.didik_tamat_sd],
-    ['SLTP',           s.didik_sltp],
-    ['SLTA',           s.didik_slta],
-    ['Diploma I/II',   s.didik_diploma_1_2],
-    ['Diploma III',    s.didik_diploma_3],
-    ['Diploma IV/S1',  s.didik_diploma_4_s1],
-    ['S2',             s.didik_s2],
-    ['S3',             s.didik_s3]
+    ['Tidak/Belum Sekolah',       s.didik_belum_sekolah],
+    ['Belum Tamat SD/Sederajat',  s.didik_masih_sd],
+    ['Tamat SD/Sederajat',        s.didik_tamat_sd],
+    ['SLTP/Sederajat',            s.didik_sltp],
+    ['SLTA/Sederajat',            s.didik_slta],
+    ['Diploma I/II',              s.didik_diploma_1_2],
+    ['Akademi/Diploma III',       s.didik_diploma_3],
+    ['Diploma IV/S1',             s.didik_diploma_4_s1],
+    ['S2',                        s.didik_s2],
+    ['S3',                        s.didik_s3]
   ];
   const totalPendudukPendidikan = Number(s.total_penduduk) || 0;
   const seg = document.querySelectorAll('.donut-seg');
@@ -1982,6 +2047,7 @@ async function loadStatistik() {
     const element = document.getElementById(id);
     if (element) element.textContent = '±' + value.toLocaleString('id-ID');
   });
+  renderPertumbuhanPenduduk(s, previousStatistik);
 
   // Semua angka penduduk menggunakan record statistik yang sama.
   setCounterData('hero-total-penduduk', totalPenduduk);

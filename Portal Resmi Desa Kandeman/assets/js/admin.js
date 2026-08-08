@@ -2616,6 +2616,11 @@ const ST_FIELD = {
   'st-s3':'didik_s3'
 };
 
+const ST_GROWTH_FIELD = {
+  'st-pertumbuhan-jumlah':'pertumbuhan_penduduk',
+  'st-pertumbuhan-persen':'laju_pertumbuhan_persen'
+};
+
 const ST_EDUCATION_IDS = [
   'st-belum-sekolah','st-masih-sd','st-tamat-sd','st-sltp','st-slta',
   'st-diploma-1-2','st-diploma-3','st-diploma-4-s1','st-s2','st-s3'
@@ -2656,7 +2661,7 @@ async function loadStatistik() {
   data.forEach(s => { _statistikMap[s.id] = s; });
 
   el.innerHTML = `<table><thead><tr>
-    <th>Periode</th><th>Penduduk</th><th>KK</th><th>L / P</th><th>Aksi</th>
+    <th>Periode</th><th>Penduduk</th><th>KK</th><th>L / P</th><th>Pertumbuhan</th><th>Aksi</th>
   </tr></thead><tbody>
     ${data.map((s, i) => `<tr>
       <td style="font-weight:500;white-space:nowrap;">
@@ -2666,6 +2671,10 @@ async function loadStatistik() {
       <td style="font-family:'DM Mono',monospace;">${Number(s.total_penduduk||0).toLocaleString('id-ID')}</td>
       <td style="font-family:'DM Mono',monospace;">${Number(s.total_kk||0).toLocaleString('id-ID')}</td>
       <td style="font-size:12px;">${Number(s.total_laki||0).toLocaleString('id-ID')} / ${Number(s.total_perempuan||0).toLocaleString('id-ID')}</td>
+      <td style="font-size:12px;white-space:nowrap;">
+        ${Number(s.pertumbuhan_penduduk||0) > 0 ? '+' : ''}${Number(s.pertumbuhan_penduduk||0).toLocaleString('id-ID')} jiwa<br>
+        <span style="color:var(--text-muted);">${Number(s.laju_pertumbuhan_persen||0) > 0 ? '+' : ''}${Number(s.laju_pertumbuhan_persen||0).toLocaleString('id-ID',{maximumFractionDigits:3})}%</span>
+      </td>
       <td style="white-space:nowrap;">
         <button class="icon-btn" onclick="editStatistik('${escHtml(s.id)}')" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
         <button class="icon-btn danger" onclick="konfirmasiHapusStatistik('${escHtml(s.id)}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
@@ -2687,6 +2696,24 @@ async function simpanStatistik() {
       showToast('Seluruh nilai statistik harus berupa angka dan tidak boleh negatif.', true); return;
     }
     payload[kolom] = value;
+  }
+  for (const [idEl, kolom] of Object.entries(ST_GROWTH_FIELD)) {
+    const value = readFiniteNumber(idEl);
+    if (!Number.isFinite(value)) {
+      showToast('Jumlah dan laju pertumbuhan penduduk harus berupa angka.', true); return;
+    }
+    payload[kolom] = value;
+  }
+  if (!Number.isInteger(payload.pertumbuhan_penduduk)) {
+    showToast('Perubahan jumlah penduduk harus berupa bilangan bulat dalam satuan jiwa.', true); return;
+  }
+  if (payload.laju_pertumbuhan_persen < -100 || payload.laju_pertumbuhan_persen > 1000) {
+    showToast('Laju pertumbuhan harus berada di antara -100% dan 1.000%.', true); return;
+  }
+  const growthCountDirection = Math.sign(payload.pertumbuhan_penduduk);
+  const growthRateDirection = Math.sign(payload.laju_pertumbuhan_persen);
+  if (growthCountDirection !== growthRateDirection) {
+    showToast('Arah perubahan jumlah penduduk dan persentasenya harus sama. Gunakan positif untuk bertambah, negatif untuk berkurang, atau nol untuk stabil.', true); return;
   }
   if (![1, 7].includes(payload.periode)) {
     showToast('Periode statistik harus Januari atau Juli.', true); return;
@@ -2736,10 +2763,13 @@ async function simpanStatistik() {
     console.error('Gagal menyimpan statistik:', error);
     const message = String(error?.message || '').toLowerCase();
     const duplicate = message.includes('duplicate');
-    const missingEducationSchema = message.includes('didik_belum_sekolah') ||
-      message.includes('schema cache') || message.includes('column');
+    const missingGrowthSchema = message.includes('pertumbuhan_penduduk') ||
+      message.includes('laju_pertumbuhan_persen');
+    const missingEducationSchema = message.includes('didik_belum_sekolah');
     showToast(duplicate
       ? 'Periode ini sudah ada. Gunakan tombol edit pada daftar di bawah.'
+      : missingGrowthSchema
+        ? 'Kolom laju pertumbuhan belum tersedia. Jalankan supabase-statistik-pertumbuhan.sql terlebih dahulu.'
       : missingEducationSchema
         ? 'Kolom pendidikan baru belum tersedia. Jalankan supabase-statistik-pendidikan.sql terlebih dahulu.'
         : 'Data statistik gagal disimpan: ' + (error?.message || 'kesalahan tidak diketahui'), true);
@@ -2756,6 +2786,10 @@ function editStatistik(id) {
   for (const [idEl, kolom] of Object.entries(ST_FIELD)) {
     const el = document.getElementById(idEl);
     if (el) el.value = s[kolom] ?? '';
+  }
+  for (const [idEl, kolom] of Object.entries(ST_GROWTH_FIELD)) {
+    const el = document.getElementById(idEl);
+    if (el) el.value = s[kolom] ?? 0;
   }
   document.getElementById('statistik-form-title').textContent =
     'Edit periode ' + (s.periode >= 7 ? 'Juli' : 'Januari') + ' ' + s.tahun;
@@ -2780,6 +2814,10 @@ function resetStatistikForm() {
   for (const idEl of Object.keys(ST_FIELD)) {
     const el = document.getElementById(idEl);
     if (el && idEl !== 'st-periode') el.value = '';
+  }
+  for (const idEl of Object.keys(ST_GROWTH_FIELD)) {
+    const el = document.getElementById(idEl);
+    if (el) el.value = '0';
   }
   const kini = new Date();
   document.getElementById('st-tahun').value = kini.getFullYear();
