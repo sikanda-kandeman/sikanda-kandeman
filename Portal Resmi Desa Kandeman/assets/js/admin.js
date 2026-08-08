@@ -2505,19 +2505,33 @@ const ST_FIELD = {
   'st-u3044l':'umur_30_44_l','st-u3044p':'umur_30_44_p',
   'st-u4559l':'umur_45_59_l','st-u4559p':'umur_45_59_p',
   'st-u60l':'umur_60plus_l','st-u60p':'umur_60plus_p',
-  'st-sd':'didik_sd','st-smp':'didik_smp','st-sma':'didik_sma','st-tinggi':'didik_tinggi'
+  'st-belum-sekolah':'didik_belum_sekolah',
+  'st-masih-sd':'didik_masih_sd',
+  'st-tamat-sd':'didik_tamat_sd',
+  'st-sltp':'didik_sltp',
+  'st-slta':'didik_slta',
+  'st-diploma-1-2':'didik_diploma_1_2',
+  'st-diploma-3':'didik_diploma_3',
+  'st-diploma-4-s1':'didik_diploma_4_s1',
+  'st-s2':'didik_s2',
+  'st-s3':'didik_s3'
 };
 
+const ST_EDUCATION_IDS = [
+  'st-belum-sekolah','st-masih-sd','st-tamat-sd','st-sltp','st-slta',
+  'st-diploma-1-2','st-diploma-3','st-diploma-4-s1','st-s2','st-s3'
+];
+
 function cekJumlahDidik() {
-  const ids = ['st-sd','st-smp','st-sma','st-tinggi'];
-  const t = ids.reduce((a,i) => a + (parseFloat(document.getElementById(i)?.value) || 0), 0);
+  const t = ST_EDUCATION_IDS.reduce((a,i) => a + (parseInt(document.getElementById(i)?.value, 10) || 0), 0);
+  const totalPenduduk = parseInt(document.getElementById('st-total')?.value, 10) || 0;
   const el = document.getElementById('st-didik-sum');
   if (!el) return;
-  const bulat = Math.round(t * 10) / 10;
-  const pas = Math.abs(bulat - 100) < 0.05;
+  const pas = totalPenduduk > 0 && t === totalPenduduk;
   el.className = 'pct-sum-indicator ' + (pas ? 'pct-sum-ok' : 'pct-sum-warn');
-  el.innerHTML = `<i class="fa-solid fa-${pas ? 'circle-check' : 'triangle-exclamation'}"></i> Total: ${bulat}%` +
-                 (pas ? ' — sudah benar' : ' — harus berjumlah 100%');
+  el.innerHTML = `<i class="fa-solid fa-${pas ? 'circle-check' : 'triangle-exclamation'}"></i> ` +
+    `Total pendidikan: ${t.toLocaleString('id-ID')} jiwa` +
+    (pas ? ' — sesuai total penduduk' : ` — harus sama dengan ${totalPenduduk.toLocaleString('id-ID')} jiwa`);
 }
 
 async function loadStatistik() {
@@ -2595,9 +2609,16 @@ async function simpanStatistik() {
     showToast('Total seluruh kelompok umur harus sama dengan total penduduk.', true); return;
   }
 
-  const educationTotal = payload.didik_sd + payload.didik_smp + payload.didik_sma + payload.didik_tinggi;
-  if (Math.abs(educationTotal - 100) > 0.05) {
-    showToast('Jumlah persentase pendidikan harus tepat 100%.', true); return;
+  const educationColumns = [
+    'didik_belum_sekolah','didik_masih_sd','didik_tamat_sd','didik_sltp','didik_slta',
+    'didik_diploma_1_2','didik_diploma_3','didik_diploma_4_s1','didik_s2','didik_s3'
+  ];
+  if (educationColumns.some(column => !Number.isInteger(payload[column]))) {
+    showToast('Seluruh data tingkat pendidikan harus berupa jumlah jiwa dalam bilangan bulat.', true); return;
+  }
+  const educationTotal = educationColumns.reduce((sum, column) => sum + payload[column], 0);
+  if (educationTotal !== payload.total_penduduk) {
+    showToast('Total seluruh kategori pendidikan harus sama dengan total penduduk.', true); return;
   }
 
   const btn = document.getElementById('btn-simpan-st');
@@ -2614,10 +2635,15 @@ async function simpanStatistik() {
     await loadStatistik();
   } catch (error) {
     console.error('Gagal menyimpan statistik:', error);
-    const duplicate = String(error?.message || '').toLowerCase().includes('duplicate');
+    const message = String(error?.message || '').toLowerCase();
+    const duplicate = message.includes('duplicate');
+    const missingEducationSchema = message.includes('didik_belum_sekolah') ||
+      message.includes('schema cache') || message.includes('column');
     showToast(duplicate
       ? 'Periode ini sudah ada. Gunakan tombol edit pada daftar di bawah.'
-      : 'Data statistik gagal disimpan.', true);
+      : missingEducationSchema
+        ? 'Kolom pendidikan baru belum tersedia. Jalankan supabase-statistik-pendidikan.sql terlebih dahulu.'
+        : 'Data statistik gagal disimpan: ' + (error?.message || 'kesalahan tidak diketahui'), true);
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Statistik';
