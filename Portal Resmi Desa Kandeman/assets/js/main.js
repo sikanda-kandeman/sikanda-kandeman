@@ -1284,6 +1284,22 @@ const fmtRpFull = value => {
   const number = lraPublicNumber(value);
   return `${number < 0 ? '- ' : ''}Rp ${Math.abs(number).toLocaleString('id-ID')}`;
 };
+let _activeRealisasiCategory = 'belanja';
+let _apbdesPublicState = null;
+
+function setApbdesText(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = value;
+}
+
+function setApbdesIcon(id, className) {
+  const element = document.getElementById(id);
+  if (element) element.className = `fa-solid ${className}`;
+}
+
+function lraPercent(part, total) {
+  return total ? `${Math.round(lraPublicNumber(part) / lraPublicNumber(total) * 10000) / 100}%` : '—';
+}
 
 function normaliseLraData(record = {}) {
   const lra = record.lra_data && typeof record.lra_data === 'object' ? record.lra_data : {};
@@ -1301,73 +1317,18 @@ function normaliseLraData(record = {}) {
   ]));
 }
 
-function resetApbdesData(status = 'empty') {
-  const unavailable = status === 'error';
-  document.getElementById('apb-val').textContent = 'Rp —';
-  document.getElementById('apb-tahun-lbl').textContent = 'Anggaran Pendapatan APBDes';
-  document.getElementById('apb-sub').textContent = unavailable ? 'Data belum dapat dimuat' : 'Belum ada data yang dipublikasikan';
-  document.getElementById('apb-alokasi').innerHTML = `<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;"><i class="fa-solid ${unavailable ? 'fa-triangle-exclamation' : 'fa-circle-info'}" style="margin-right:6px;opacity:.5;"></i>${unavailable ? 'Data APBDes belum dapat dimuat.' : 'Data APBDes belum tersedia.'}</div>`;
-  document.getElementById('apb-realisasi-list').innerHTML = `<div class="realisasi-loading"><i class="fa-solid ${unavailable ? 'fa-triangle-exclamation' : 'fa-circle-info'}"></i>${unavailable ? 'Data realisasi belum dapat dimuat.' : 'Belum ada data realisasi.'}</div>`;
-  document.getElementById('apb-realisasi-progress').style.setProperty('--progress', 0);
-  document.getElementById('apb-realisasi-progress').setAttribute('aria-label', 'Data realisasi belum tersedia');
-  document.getElementById('apb-belanja-comparison').textContent = unavailable ? 'Data anggaran belum dapat dimuat' : 'Belum ada data anggaran';
-  ['apb-r1','apb-r2','apb-r4','apb-r1-nominal','apb-r2-nominal','apb-sisa-belanja'].forEach(id => document.getElementById(id).textContent = '—');
-}
-
-async function loadApbdes() {
-  const { data, error } = await sb.from('apbdes').select('*').order('tahun', { ascending: false }).limit(1);
-  if (error || !data?.length) {
-    if (error) console.error('Gagal memuat APBDes:', error);
-    resetApbdesData(error ? 'error' : 'empty');
-    return;
-  }
-  const d = data[0];
-  const lra = normaliseLraData(d);
-  const pendapatanAnggaran = lraPublicTotal(lra, 'pendapatan', 'anggaran');
-  const pendapatanRealisasi = lraPublicTotal(lra, 'pendapatan', 'realisasi');
-  const belanjaAnggaran = lraPublicTotal(lra, 'belanja', 'anggaran');
-  const belanjaRealisasi = lraPublicTotal(lra, 'belanja', 'realisasi');
-  const pembiayaanAnggaran = lra.pembiayaan.penerimaan.anggaran - lra.pembiayaan.pengeluaran.anggaran;
-  const pembiayaanRealisasi = lra.pembiayaan.penerimaan.realisasi - lra.pembiayaan.pengeluaran.realisasi;
-  const surplusAnggaran = pendapatanAnggaran - belanjaAnggaran;
-  const surplusRealisasi = pendapatanRealisasi - belanjaRealisasi;
-  const silpaAnggaran = surplusAnggaran + pembiayaanAnggaran;
-  const silpaRealisasi = surplusRealisasi + pembiayaanRealisasi;
-  const percent = (part, total) => total ? `${Math.round(part / total * 10000) / 100}%` : '—';
-
-  document.getElementById('apb-val').textContent = fmtRp(pendapatanAnggaran);
-  document.getElementById('apb-tahun-lbl').textContent = `Anggaran Pendapatan APBDes ${d.tahun}`;
-  document.getElementById('apb-sub').textContent = `Realisasi pendapatan: ${fmtRp(pendapatanRealisasi)} (${percent(pendapatanRealisasi, pendapatanAnggaran)})`;
-  document.getElementById('apb-section-sub').textContent = `Informasi APBDes dan realisasi anggaran Desa Kandeman Tahun Anggaran ${d.tahun}.`;
-
-  const barClasses = ['bf-green', 'bf-sky', 'bf-gold', 'bf-teal', 'bf-plum'];
-  document.getElementById('apb-alokasi').innerHTML = LRA_PUBLIC_SECTIONS.belanja.map(([key, label], index) => {
-    const nominal = lra.belanja[key].anggaran;
-    const width = belanjaAnggaran ? nominal / belanjaAnggaran * 100 : 0;
-    return `<div class="budget-item"><div class="budget-header"><span>${label}</span><span>${fmtRp(nominal)} (${Math.round(width * 10) / 10}%)</span></div><div class="budget-bar"><div class="budget-fill bar-fill ${barClasses[index]}" style="--target-w:${width}%"></div></div></div>`;
-  }).join('');
-  observeBars();
-
-  const belanjaProgress = belanjaAnggaran > 0 ? Math.max(0, Math.min(100, belanjaRealisasi / belanjaAnggaran * 100)) : 0;
-  document.getElementById('apb-r1').textContent = percent(pendapatanRealisasi, pendapatanAnggaran);
-  document.getElementById('apb-r1-nominal').textContent = fmtRp(pendapatanRealisasi);
-  document.getElementById('apb-r2').textContent = percent(belanjaRealisasi, belanjaAnggaran);
-  document.getElementById('apb-r2-nominal').textContent = fmtRp(belanjaRealisasi);
-  document.getElementById('apb-r4').textContent = fmtRp(silpaRealisasi);
-  document.getElementById('apb-sisa-belanja').textContent = fmtRp(Math.max(0, belanjaAnggaran - belanjaRealisasi));
-  document.getElementById('apb-belanja-comparison').textContent = `dari anggaran belanja ${fmtRp(belanjaAnggaran)}`;
-  document.getElementById('apb-realisasi-progress').style.setProperty('--progress', belanjaProgress);
-  document.getElementById('apb-realisasi-progress').setAttribute('aria-label', `Realisasi belanja ${percent(belanjaRealisasi, belanjaAnggaran)}`);
-
-  document.getElementById('apb-realisasi-list').innerHTML = LRA_PUBLIC_SECTIONS.belanja.map(([key, label]) => {
-    const anggaran = lra.belanja[key].anggaran;
-    const realisasi = lra.belanja[key].realisasi;
+function renderRealisasiRows(section, rows) {
+  const list = document.getElementById('apb-realisasi-list');
+  if (!list) return;
+  list.innerHTML = rows.map(([key, label], index) => {
+    const anggaran = lraPublicNumber(section[key]?.anggaran);
+    const realisasi = lraPublicNumber(section[key]?.realisasi);
     const progress = anggaran > 0 ? Math.max(0, Math.min(100, realisasi / anggaran * 100)) : 0;
     const progressState = anggaran <= 0 ? ' is-empty' : realisasi > anggaran ? ' is-over' : '';
-    return `<div class="realisasi-row${progressState}">
+    return `<div class="realisasi-row realisasi-row-enter${progressState}" style="--row-index:${index}">
       <div class="realisasi-row-top">
-        <span class="realisasi-row-label">${label}</span>
-        <span class="realisasi-row-percent">${percent(realisasi, anggaran)}<small> terserap</small></span>
+        <span class="realisasi-row-label">${escHtml(label)}</span>
+        <span class="realisasi-row-percent">${lraPercent(realisasi, anggaran)}<small> terserap</small></span>
       </div>
       <div class="realisasi-row-bar" aria-hidden="true"><span style="--progress:${progress}"></span></div>
       <div class="realisasi-row-meta">
@@ -1377,6 +1338,201 @@ async function loadApbdes() {
     </div>`;
   }).join('');
 }
+
+function renderRealisasiCategory(category = _activeRealisasiCategory) {
+  if (!_apbdesPublicState) return;
+  const { lra, totals } = _apbdesPublicState;
+  const selected = Object.prototype.hasOwnProperty.call(LRA_PUBLIC_SECTIONS, category) ? category : 'belanja';
+  _activeRealisasiCategory = selected;
+
+  let rows = LRA_PUBLIC_SECTIONS[selected];
+  let section = lra[selected];
+  let overviewActual = 0;
+  let overviewBudget = 0;
+  let overviewLabel = '';
+  let progressLabel = 'terserap';
+  let comparison = '';
+  let breakdownTitle = '';
+  let breakdownCaption = '';
+  let breakdownLegend = 'Dana terpakai';
+  let stats = [];
+
+  if (selected === 'pendapatan') {
+    overviewActual = totals.pendapatanRealisasi;
+    overviewBudget = totals.pendapatanAnggaran;
+    overviewLabel = 'Pendapatan terealisasi';
+    progressLabel = 'tercapai';
+    comparison = `dari target pendapatan ${fmtRp(overviewBudget)}`;
+    breakdownTitle = 'Realisasi per sumber pendapatan';
+    breakdownCaption = 'Lihat capaian setiap sumber pendapatan desa.';
+    breakdownLegend = 'Pendapatan diterima';
+    stats = [
+      ['Realisasi pendapatan', lraPercent(totals.pendapatanRealisasi, totals.pendapatanAnggaran), fmtRp(totals.pendapatanRealisasi), 'fa-arrow-trend-up'],
+      ['Sisa target pendapatan', fmtRp(Math.max(0, totals.pendapatanAnggaran - totals.pendapatanRealisasi)), 'Belum terealisasi', 'fa-bullseye'],
+      ['Surplus / (Defisit)', fmtRpFull(totals.surplusRealisasi), 'Pendapatan dikurangi belanja', 'fa-scale-balanced'],
+    ];
+  } else if (selected === 'pembiayaan') {
+    overviewActual = lra.pembiayaan.penerimaan.realisasi;
+    overviewBudget = lra.pembiayaan.penerimaan.anggaran;
+    overviewLabel = 'Penerimaan pembiayaan';
+    progressLabel = 'tercapai';
+    comparison = `dari anggaran penerimaan ${fmtRp(overviewBudget)}`;
+    breakdownTitle = 'Rincian realisasi pembiayaan';
+    breakdownCaption = 'Bandingkan penerimaan dan pengeluaran pembiayaan.';
+    breakdownLegend = 'Realisasi pembiayaan';
+    stats = [
+      ['Penerimaan pembiayaan', lraPercent(lra.pembiayaan.penerimaan.realisasi, lra.pembiayaan.penerimaan.anggaran), fmtRp(lra.pembiayaan.penerimaan.realisasi), 'fa-arrow-down'],
+      ['Pengeluaran pembiayaan', fmtRp(lra.pembiayaan.pengeluaran.realisasi), lraPercent(lra.pembiayaan.pengeluaran.realisasi, lra.pembiayaan.pengeluaran.anggaran), 'fa-arrow-up'],
+      ['Pembiayaan netto', fmtRpFull(totals.pembiayaanRealisasi), 'Penerimaan dikurangi pengeluaran', 'fa-scale-balanced'],
+    ];
+  } else {
+    overviewActual = totals.belanjaRealisasi;
+    overviewBudget = totals.belanjaAnggaran;
+    overviewLabel = 'Belanja terealisasi';
+    comparison = `dari anggaran belanja ${fmtRp(overviewBudget)}`;
+    breakdownTitle = 'Realisasi per bidang belanja';
+    breakdownCaption = 'Lihat penyerapan dana pada setiap bidang.';
+    stats = [
+      ['Realisasi pendapatan', lraPercent(totals.pendapatanRealisasi, totals.pendapatanAnggaran), fmtRp(totals.pendapatanRealisasi), 'fa-arrow-trend-up'],
+      ['Sisa anggaran belanja', fmtRp(Math.max(0, totals.belanjaAnggaran - totals.belanjaRealisasi)), 'Belum digunakan', 'fa-wallet'],
+      ['SiLPA tahun berjalan', fmtRpFull(totals.silpaRealisasi), 'Setelah pembiayaan netto', 'fa-scale-balanced'],
+    ];
+  }
+
+  const rawProgress = overviewBudget > 0 ? overviewActual / overviewBudget * 100 : 0;
+  const progress = Math.max(0, Math.min(100, rawProgress));
+  const progressElement = document.getElementById('apb-realisasi-progress');
+  if (progressElement) {
+    progressElement.style.setProperty('--progress', progress);
+    progressElement.setAttribute('aria-label', `${overviewLabel} ${lraPercent(overviewActual, overviewBudget)}`);
+  }
+  setApbdesText('apb-overview-percent', lraPercent(overviewActual, overviewBudget));
+  setApbdesText('apb-overview-progress-label', progressLabel);
+  setApbdesText('apb-overview-label', overviewLabel);
+  setApbdesText('apb-overview-nominal', fmtRp(overviewActual));
+  setApbdesText('apb-overview-comparison', comparison);
+  setApbdesText('apb-breakdown-title', breakdownTitle);
+  setApbdesText('apb-breakdown-caption', breakdownCaption);
+  setApbdesText('apb-breakdown-legend', breakdownLegend);
+
+  stats.forEach(([label, value, note, icon], index) => {
+    const position = index + 1;
+    setApbdesText(`apb-stat-${position}-label`, label);
+    setApbdesText(`apb-stat-${position}-value`, value);
+    setApbdesText(`apb-stat-${position}-note`, note);
+    setApbdesIcon(`apb-stat-${position}-icon`, icon);
+  });
+  renderRealisasiRows(section, rows);
+
+  document.querySelectorAll('[data-realisasi-category]').forEach(tab => {
+    const active = tab.dataset.realisasiCategory === selected;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+  });
+}
+
+function resetApbdesData(status = 'empty') {
+  const unavailable = status === 'error';
+  _apbdesPublicState = null;
+  setApbdesText('apb-val', 'Rp —');
+  setApbdesText('apb-tahun-lbl', 'Anggaran Pendapatan APBDes');
+  setApbdesText('apb-sub', unavailable ? 'Data belum dapat dimuat' : 'Belum ada data yang dipublikasikan');
+  setApbdesText('apb-section-sub', 'Informasi APBDes, realisasi anggaran, dan arsip keuangan resmi Desa Kandeman.');
+  const allocation = document.getElementById('apb-alokasi');
+  if (allocation) allocation.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:13px;"><i class="fa-solid ${unavailable ? 'fa-triangle-exclamation' : 'fa-circle-info'}" style="margin-right:6px;opacity:.5;"></i>${unavailable ? 'Data APBDes belum dapat dimuat.' : 'Data APBDes belum tersedia.'}</div>`;
+  const list = document.getElementById('apb-realisasi-list');
+  if (list) list.innerHTML = `<div class="realisasi-loading"><i class="fa-solid ${unavailable ? 'fa-triangle-exclamation' : 'fa-circle-info'}"></i>${unavailable ? 'Data realisasi belum dapat dimuat.' : 'Belum ada data realisasi.'}</div>`;
+  const progress = document.getElementById('apb-realisasi-progress');
+  if (progress) {
+    progress.style.setProperty('--progress', 0);
+    progress.setAttribute('aria-label', 'Data realisasi belum tersedia');
+  }
+  setApbdesText('apb-overview-percent', '—');
+  setApbdesText('apb-overview-progress-label', 'terserap');
+  setApbdesText('apb-overview-label', 'Belanja terealisasi');
+  setApbdesText('apb-overview-nominal', 'Rp —');
+  setApbdesText('apb-overview-comparison', unavailable ? 'Data anggaran belum dapat dimuat' : 'Belum ada data anggaran');
+  [['1','Realisasi pendapatan','Rp —'], ['2','Sisa anggaran belanja','Belum digunakan'], ['3','SiLPA tahun berjalan','Setelah pembiayaan netto']].forEach(([position, label, note]) => {
+    setApbdesText(`apb-stat-${position}-label`, label);
+    setApbdesText(`apb-stat-${position}-value`, '—');
+    setApbdesText(`apb-stat-${position}-note`, note);
+  });
+  const statusElement = document.querySelector('#realisasi .realisasi-status');
+  if (statusElement) statusElement.innerHTML = `<i class="fa-solid ${unavailable ? 'fa-triangle-exclamation' : 'fa-circle-info'}"></i> ${unavailable ? 'Gagal dimuat' : 'Belum tersedia'}`;
+}
+
+async function loadApbdes() {
+  try {
+    const { data, error } = await sb.from('apbdes').select('*').order('tahun', { ascending: false }).limit(1);
+    if (error) throw error;
+    if (!data?.length) {
+      resetApbdesData('empty');
+      return;
+    }
+
+    const record = data[0];
+    const lra = normaliseLraData(record);
+    const pendapatanAnggaran = lraPublicTotal(lra, 'pendapatan', 'anggaran');
+    const pendapatanRealisasi = lraPublicTotal(lra, 'pendapatan', 'realisasi');
+    const belanjaAnggaran = lraPublicTotal(lra, 'belanja', 'anggaran');
+    const belanjaRealisasi = lraPublicTotal(lra, 'belanja', 'realisasi');
+    const pembiayaanAnggaran = lra.pembiayaan.penerimaan.anggaran - lra.pembiayaan.pengeluaran.anggaran;
+    const pembiayaanRealisasi = lra.pembiayaan.penerimaan.realisasi - lra.pembiayaan.pengeluaran.realisasi;
+    const surplusAnggaran = pendapatanAnggaran - belanjaAnggaran;
+    const surplusRealisasi = pendapatanRealisasi - belanjaRealisasi;
+    const silpaAnggaran = surplusAnggaran + pembiayaanAnggaran;
+    const silpaRealisasi = surplusRealisasi + pembiayaanRealisasi;
+    _apbdesPublicState = {
+      record,
+      lra,
+      totals: {
+        pendapatanAnggaran, pendapatanRealisasi, belanjaAnggaran, belanjaRealisasi,
+        pembiayaanAnggaran, pembiayaanRealisasi, surplusAnggaran, surplusRealisasi,
+        silpaAnggaran, silpaRealisasi,
+      },
+    };
+
+    setApbdesText('apb-val', fmtRp(pendapatanAnggaran));
+    setApbdesText('apb-tahun-lbl', `Anggaran Pendapatan APBDes ${record.tahun}`);
+    setApbdesText('apb-sub', `Realisasi pendapatan: ${fmtRp(pendapatanRealisasi)} (${lraPercent(pendapatanRealisasi, pendapatanAnggaran)})`);
+    setApbdesText('apb-section-sub', `Informasi APBDes dan realisasi anggaran Desa Kandeman Tahun Anggaran ${record.tahun}.`);
+
+    const allocation = document.getElementById('apb-alokasi');
+    if (allocation) {
+      const barClasses = ['bf-green', 'bf-sky', 'bf-gold', 'bf-teal', 'bf-plum'];
+      allocation.innerHTML = LRA_PUBLIC_SECTIONS.belanja.map(([key, label], index) => {
+        const nominal = lra.belanja[key].anggaran;
+        const width = belanjaAnggaran ? nominal / belanjaAnggaran * 100 : 0;
+        return `<div class="budget-item"><div class="budget-header"><span>${escHtml(label)}</span><span>${fmtRp(nominal)} (${Math.round(width * 10) / 10}%)</span></div><div class="budget-bar"><div class="budget-fill bar-fill ${barClasses[index]}" style="--target-w:${width}%"></div></div></div>`;
+      }).join('');
+    }
+    const statusElement = document.querySelector('#realisasi .realisasi-status');
+    if (statusElement) statusElement.innerHTML = '<i class="fa-solid fa-circle-check"></i> Data terbaru';
+    renderRealisasiCategory(_activeRealisasiCategory);
+    observeBars();
+  } catch (error) {
+    console.error('Gagal memuat APBDes:', error);
+    resetApbdesData('error');
+  }
+}
+
+document.addEventListener('click', event => {
+  const tab = event.target.closest?.('[data-realisasi-category]');
+  if (!tab) return;
+  renderRealisasiCategory(tab.dataset.realisasiCategory);
+});
+
+document.addEventListener('keydown', event => {
+  const tab = event.target.closest?.('[data-realisasi-category]');
+  if (!tab || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+  event.preventDefault();
+  const tabs = [...document.querySelectorAll('[data-realisasi-category]')];
+  const offset = event.key === 'ArrowRight' ? 1 : -1;
+  const next = tabs[(tabs.indexOf(tab) + offset + tabs.length) % tabs.length];
+  renderRealisasiCategory(next.dataset.realisasiCategory);
+  next.focus();
+});
 
 // ════════════════════
 // LOAD POTENSI
@@ -2479,6 +2635,7 @@ function _initDataLoad() {
     ].forEach(id => renderDataState(id, 'error'));
     renderDataState('perangkat-tbody', 'error', null, { colspan: 4 });
     renderDataState('jadwal-kesehatan-body', 'error', null, { colspan: 4 });
+    renderFinancialArchive('error');
     resetApbdesData('error');
     resetStatistikData('error');
     observeCounters();
@@ -2520,20 +2677,126 @@ function switchPetaLayer(layer, btn) {
   // TODO: Ganti src iframe berdasarkan layer setelah URL My Maps resmi dikonfirmasi.
 }
 
+const FINANCIAL_PUBLIC_TYPES = Object.freeze({
+  apbdes: { label: 'APBDes', icon: 'fa-file-invoice-dollar' },
+  realisasi_anggaran: { label: 'Realisasi Anggaran', icon: 'fa-chart-column' },
+  laporan_keuangan: { label: 'Laporan Keuangan', icon: 'fa-book-open' },
+  lppd: { label: 'LPPD', icon: 'fa-landmark' },
+});
+const FINANCIAL_PUBLIC_YEARS = Object.freeze([2024, 2025, 2026]);
+let _financialDocuments = [];
+let _selectedFinancialYear = 2026;
+
+function publicFinanceRecordYear(record) {
+  const storedYear = Number(record?.tahun);
+  if (FINANCIAL_PUBLIC_YEARS.includes(storedYear)) return storedYear;
+  const titleYear = String(record?.judul || '').match(/\b(2024|2025|2026)\b/);
+  return titleYear ? Number(titleYear[1]) : null;
+}
+
+function renderFinancialArchive(status = 'ready') {
+  const grid = document.getElementById('financial-docs-grid');
+  const yearLabel = document.getElementById('financial-archive-year');
+  const countLabel = document.getElementById('financial-archive-count');
+  if (!grid || !yearLabel || !countLabel) return;
+
+  document.querySelectorAll('[data-financial-year]').forEach(tab => {
+    const active = Number(tab.dataset.financialYear) === _selectedFinancialYear;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+  });
+  yearLabel.innerHTML = `<i class="fa-regular fa-calendar"></i> Tahun ${_selectedFinancialYear}`;
+  grid.setAttribute('aria-label', `Arsip keuangan tahun ${_selectedFinancialYear}`);
+
+  if (status === 'error') {
+    countLabel.textContent = 'Gagal dimuat';
+    grid.innerHTML = '<div class="financial-doc-loading"><i class="fa-solid fa-triangle-exclamation"></i> Arsip keuangan belum dapat dimuat. Silakan coba lagi.</div>';
+    return;
+  }
+
+  const records = _financialDocuments.filter(record => publicFinanceRecordYear(record) === _selectedFinancialYear);
+  const byCategory = new Map();
+  records.forEach(record => {
+    if (!byCategory.has(record.kategori)) byCategory.set(record.kategori, record);
+  });
+  const availableCount = Object.keys(FINANCIAL_PUBLIC_TYPES)
+    .filter(category => safeUrl(byCategory.get(category)?.file_url)).length;
+  countLabel.textContent = `${availableCount} dari ${Object.keys(FINANCIAL_PUBLIC_TYPES).length} dokumen tersedia`;
+
+  grid.innerHTML = Object.entries(FINANCIAL_PUBLIC_TYPES).map(([category, type]) => {
+    const record = byCategory.get(category);
+    const url = safeUrl(record?.file_url);
+    const available = Boolean(url);
+    const description = record?.keterangan || (available ? 'PDF resmi telah dipublikasikan' : 'Belum dipublikasikan');
+    return `<article class="financial-doc-card${available ? ' is-available' : ''}">
+      <div class="financial-doc-symbol" aria-hidden="true"><i class="fa-solid ${type.icon}"></i></div>
+      <div class="financial-doc-copy">
+        <h4>${escHtml(type.label)}</h4>
+        <div class="financial-doc-meta">
+          <span class="financial-doc-status">${available ? 'Tersedia' : 'Belum tersedia'}</span>
+          <span>·</span>
+          <span>${escHtml(description)}</span>
+        </div>
+      </div>
+      <div class="financial-doc-actions">
+        ${available
+          ? `<a class="financial-doc-action" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Lihat ${escHtml(type.label)} tahun ${_selectedFinancialYear}"><i class="fa-solid fa-eye"></i><span>Lihat</span></a>
+             <a class="financial-doc-action download" href="${url}" target="_blank" rel="noopener noreferrer" download aria-label="Unduh ${escHtml(type.label)} tahun ${_selectedFinancialYear}"><i class="fa-solid fa-download"></i><span>Unduh</span></a>`
+          : '<span class="financial-doc-unavailable">Belum diunggah</span>'}
+      </div>
+    </article>`;
+  }).join('');
+}
+
+function selectFinancialYear(year) {
+  const selected = Number(year);
+  if (!FINANCIAL_PUBLIC_YEARS.includes(selected)) return;
+  _selectedFinancialYear = selected;
+  renderFinancialArchive();
+}
+
+document.addEventListener('click', event => {
+  const tab = event.target.closest?.('[data-financial-year]');
+  if (!tab) return;
+  selectFinancialYear(tab.dataset.financialYear);
+});
+
+document.addEventListener('keydown', event => {
+  const tab = event.target.closest?.('[data-financial-year]');
+  if (!tab || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+  event.preventDefault();
+  const tabs = [...document.querySelectorAll('[data-financial-year]')];
+  const offset = event.key === 'ArrowRight' ? 1 : -1;
+  const next = tabs[(tabs.indexOf(tab) + offset + tabs.length) % tabs.length];
+  selectFinancialYear(next.dataset.financialYear);
+  next.focus();
+});
+
 // Load semua dokumen download dari tabel Supabase
 async function loadDokumen() {
-  let { data, error } = await sb.from('dokumen')
-    .select('*')
-    .eq('aktif', true)
-    .order('urutan');
+  let data;
+  let error;
+  try {
+    ({ data, error } = await sb.from('dokumen')
+      .select('*')
+      .eq('aktif', true)
+      .order('urutan'));
+  } catch (requestError) {
+    error = requestError;
+  }
   if (error) {
     console.error('Gagal memuat dokumen:', error);
+    _financialDocuments = [];
+    renderFinancialArchive('error');
     renderDataState('arsip-apbdes-list', 'error', 'Dokumen APBDes belum dapat dimuat.');
     renderDataState('perdes-list', 'error', 'Peraturan desa belum dapat dimuat.');
     renderDataState('poster-edukasi-list', 'error', 'Poster edukasi belum dapat dimuat.');
     return;
   }
   data = data || [];
+  _financialDocuments = data.filter(record => Object.prototype.hasOwnProperty.call(FINANCIAL_PUBLIC_TYPES, record.kategori));
+  renderFinancialArchive();
 
   const ICON = {
     pdf:   { i:'fa-file-pdf',   c:'#C0392B' },

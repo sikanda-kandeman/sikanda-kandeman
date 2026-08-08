@@ -1547,6 +1547,23 @@ async function loadApbdes() {
   }
 }
 
+function apbdesSaveErrorMessage(error) {
+  const detail = `${error?.code || ''} ${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`.toLowerCase();
+  if (detail.includes('lra_data') || detail.includes('schema cache')) {
+    return 'Struktur data APBDes belum siap. Jalankan supabase-transparansi-fix.sql di Supabase SQL Editor, lalu muat ulang panel admin.';
+  }
+  if (detail.includes('row-level security') || detail.includes('permission denied') || error?.code === '42501') {
+    return 'Akun ini tidak memiliki izin menyimpan APBDes. Masuk kembali memakai akun admin yang terdaftar.';
+  }
+  if (detail.includes('duplicate') || error?.code === '23505') {
+    return 'Data untuk tahun tersebut sudah ada. Muat ulang data APBDes, lalu simpan kembali sebagai pembaruan.';
+  }
+  if (detail.includes('constraint') || String(error?.code || '').startsWith('23')) {
+    return 'Data APBDes ditolak karena ada nilai yang tidak sesuai. Pastikan semua nominal nol atau lebih dan total alokasi valid.';
+  }
+  return `Data APBDes gagal disimpan${error?.message ? `: ${error.message}` : '.'}`;
+}
+
 async function simpanApbdes() {
   const id = document.getElementById('apb-id').value;
   const tahun = readFiniteNumber('apb-tahun');
@@ -1568,9 +1585,9 @@ async function simpanApbdes() {
   const legacyExpense = ['penyelenggaraan', 'pelaksanaan', 'pembinaan', 'pemberdayaan'];
   const legacyExpenseBudget = legacyExpense.reduce((sum, key) => sum + lraData.belanja[key].anggaran, 0);
   const legacyPct = legacyExpenseBudget > 0
-    ? legacyExpense.map(key => (lraData.belanja[key].anggaran / legacyExpenseBudget) * 100)
+    ? legacyExpense.map(key => Math.round((lraData.belanja[key].anggaran / legacyExpenseBudget) * 100000000) / 1000000)
     : [25, 25, 25, 25];
-  legacyPct[3] = 100 - legacyPct[0] - legacyPct[1] - legacyPct[2];
+  legacyPct[3] = Math.round((100 - legacyPct[0] - legacyPct[1] - legacyPct[2]) * 1000000) / 1000000;
 
   const btn = document.getElementById('btn-simpan-apb');
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
@@ -1591,18 +1608,34 @@ async function simpanApbdes() {
     realisasi_pct_belanja: belanjaAnggaran ? Math.round(belanjaRealisasi / belanjaAnggaran * 10000) / 100 : 0,
     realisasi_pct_pembangunan: lraData.belanja.pelaksanaan.anggaran ? Math.round(lraData.belanja.pelaksanaan.realisasi / lraData.belanja.pelaksanaan.anggaran * 10000) / 100 : 0,
     realisasi_pct_pemberdayaan: lraData.belanja.pemberdayaan.anggaran ? Math.round(lraData.belanja.pemberdayaan.realisasi / lraData.belanja.pemberdayaan.anggaran * 10000) / 100 : 0,
-    aktif: true, updated_at: new Date().toISOString(),
+    aktif: true,
   };
 
   try {
-    const { error } = id ? await sb.from('apbdes').update(payload).eq('id',id) : await sb.from('apbdes').insert(payload);
+    let targetId = id;
+    if (!targetId) {
+      const { data: existing, error: lookupError } = await sb.from('apbdes')
+        .select('id')
+        .eq('tahun', tahun)
+        .limit(1)
+        .maybeSingle();
+      if (lookupError) throw lookupError;
+      targetId = existing?.id || '';
+    }
+
+    const query = targetId
+      ? sb.from('apbdes').update(payload).eq('id', targetId)
+      : sb.from('apbdes').insert(payload);
+    const { data: saved, error } = await query.select('id,tahun').maybeSingle();
     if (error) throw error;
+    if (!saved?.id) throw new Error('Penyimpanan selesai tanpa baris hasil. Periksa kebijakan akses tabel APBDes.');
+    document.getElementById('apb-id').value = saved.id;
     showToast('Data LRA APBDes berhasil disimpan');
     showLastSaved('APBDes disimpan ' + new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));
     await Promise.all([loadApbdes(), loadDashboard()]);
   } catch (error) {
     console.error('Gagal menyimpan APBDes:', error);
-    showToast('Data APBDes gagal disimpan. Pastikan migrasi SQL sudah dijalankan.', true);
+    showToast(apbdesSaveErrorMessage(error), true);
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-check"></i> Simpan Data APBDes';
