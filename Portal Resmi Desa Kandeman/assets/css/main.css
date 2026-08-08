@@ -2615,15 +2615,19 @@
     /* Donut ringkas */
     /* Isi donut dipusatkan vertikal agar tidak menyisakan
        ruang kosong saat sejajar dgn panel piramida yang lebih tinggi */
-    .donut-wrap { display: flex; align-items: center; justify-content: center;
-                  gap: 24px; flex-wrap: wrap; flex: 1; }
+    .donut-wrap { display: grid; grid-template-columns: 150px minmax(0,1fr);
+                  align-items: center; gap: 24px; flex: 1; }
     .stat-panel:has(.donut-wrap) { display: flex; flex-direction: column; }
     .donut-svg { flex-shrink: 0; }
-    .donut-legend { flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 9px; }
-    .donut-item { display: flex; align-items: center; gap: 9px; font-size: 12.5px; }
+    .donut-legend { min-width: 0; display: flex; flex-direction: column; gap: 7px; }
+    .donut-item { display: flex; align-items: center; gap: 9px; min-width: 0; font-size: 12.5px; }
     .donut-item .dot { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
     .donut-item .nm { color: var(--text-sec); flex: 1; }
     .donut-item .vl { font-family: 'DM Mono', monospace; font-weight: 600; font-size: 12px; }
+    @media (max-width: 520px) {
+      .donut-wrap { grid-template-columns: 1fr; justify-items: center; gap: 20px; }
+      .donut-legend { width: 100%; }
+    }
 
     /* ══════════════════════════════════════
        POLISH DESAIN — micro-interactions
