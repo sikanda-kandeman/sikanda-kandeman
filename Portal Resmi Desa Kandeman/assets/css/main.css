@@ -497,6 +497,7 @@
     }
     .hero-tag:active { transform: scale(0.95); }
     .quick-card:active { transform: translateY(1px) scale(0.99); }
+    .quick-card:hover {
       border-color: var(--emerald);
       box-shadow: 0 6px 24px rgba(28,107,62,.11);
       transform: translateY(-3px);
@@ -2609,16 +2610,30 @@
     /* ══════════════════════════════════════
        STATISTIK PENDUDUK
     ══════════════════════════════════════ */
-    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    @media (max-width: 860px) { .stat-grid { grid-template-columns: 1fr; } }
-    /* Panel ringkasan melebar penuh di baris bawah */
-    .stat-panel.stat-wide { grid-column: 1 / -1; }
+    #statistik,
+    #statistik .section-title,
+    #statistik .section-sub,
+    #statistik .eyebrow,
+    #statistik .stat-panel,
+    #statistik .stat-panel h3 {
+      font-family: 'DM Sans', sans-serif;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(340px, 5fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+    .stat-panel-age,
+    .stat-panel-summary { grid-column: 1; }
+    .stat-panel-education,
+    .stat-panel-growth { grid-column: 2; }
     .ringkasan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    @media (max-width: 860px) { .ringkasan-grid { grid-template-columns: 1fr 1fr; } }
     .stat-panel {
       background: #fff; border: 1px solid var(--border);
       border-radius: var(--r-md); padding: 24px;
       box-shadow: 0 1px 2px rgba(13,43,26,.03), 0 4px 12px rgba(13,43,26,.05);
+      min-width: 0;
     }
     .stat-panel h3 {
       font-size: 15px; font-weight: 600; margin-bottom: 4px;
@@ -2635,7 +2650,7 @@
       font-size: 12.5px; margin-bottom: 6px;
     }
     .hbar-label .nm { color: var(--text-sec); }
-    .hbar-label .vl { font-family: 'DM Mono', monospace; font-weight: 600; color: var(--text); font-size: 12px; }
+    .hbar-label .vl { font-family: 'DM Sans', sans-serif; font-weight: 600; color: var(--text); font-size: 12px; }
     .hbar-track { height: 9px; background: #EDEAE3; border-radius: 5px; overflow: hidden; }
     .hbar-fill {
       height: 100%; border-radius: 5px; width: 0;
@@ -2657,13 +2672,13 @@
       height: 100%; border-radius: 4px; width: 0;
       transition: width 1s cubic-bezier(.22,1,.36,1);
       display: flex; align-items: center; padding: 0 6px;
-      font-size: 10px; font-family: 'DM Mono', monospace; color: #fff;
+      font-size: 10px; font-family: 'DM Sans', sans-serif; color: #fff;
     }
     .pyr-bar.l { background: linear-gradient(90deg, #2E7AB8, #1A5080); justify-content: flex-start; border-radius: 4px 2px 2px 4px; }
     .pyr-bar.p { background: linear-gradient(90deg, #C13584, #E668B0); justify-content: flex-end; border-radius: 2px 4px 4px 2px; }
     .pyr-age {
       text-align: center; font-size: 11px; color: var(--text-muted);
-      font-family: 'DM Mono', monospace;
+      font-family: 'DM Sans', sans-serif;
     }
     .pyr-legend {
       display: flex; gap: 18px; justify-content: center;
@@ -2678,16 +2693,169 @@
        ruang kosong saat sejajar dgn panel piramida yang lebih tinggi */
     .donut-wrap { display: grid; grid-template-columns: 150px minmax(0,1fr);
                   align-items: center; gap: 24px; flex: 1; }
-    .stat-panel:has(.donut-wrap) { display: flex; flex-direction: column; }
+    .stat-panel-education { display: flex; flex-direction: column; }
     .donut-svg { flex-shrink: 0; }
     .donut-legend { min-width: 0; display: flex; flex-direction: column; gap: 7px; }
     .donut-item { display: flex; align-items: center; gap: 9px; min-width: 0; font-size: 12.5px; }
     .donut-item .dot { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
     .donut-item .nm { color: var(--text-sec); flex: 1; }
-    .donut-item .vl { font-family: 'DM Mono', monospace; font-weight: 600; font-size: 12px; }
+    .donut-item .vl { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 12px; }
+
+    /* Cormorant Garamond hanya untuk angka pada Ringkasan Demografi. */
+    .demography-card {
+      padding: 16px;
+      border-radius: 12px;
+      min-width: 0;
+    }
+    .demography-card-population { background: linear-gradient(140deg,#E3F4EC,#F0F9F4); }
+    .demography-card-family { background: linear-gradient(140deg,#F7EDD0,#FCF7EA); }
+    .demography-card-male { background: linear-gradient(140deg,#E3EEF7,#F2F7FC); }
+    .demography-card-female { background: linear-gradient(140deg,#FBEAF3,#FDF5F9); }
+    #statistik .demography-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(25px, 2.4vw, 32px);
+      line-height: 1;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .demography-card-population .demography-value { color: var(--emerald); }
+    .demography-card-family .demography-value { color: var(--gold); }
+    .demography-card-male .demography-value { color: #1A5080; }
+    .demography-card-female .demography-value { color: #C13584; }
+    .demography-label {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      line-height: 1.35;
+    }
+
+    /* Kartu laju pertumbuhan penduduk */
+    .stat-panel-growth { display: flex; flex-direction: column; }
+    .growth-card {
+      flex: 1;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(28,107,62,.15);
+      background: linear-gradient(145deg, #F0F8F3, #E5F2EA);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 190px;
+    }
+    .growth-card[data-state="up"] {
+      border-color: rgba(28,107,62,.22);
+      background: linear-gradient(145deg, #EEF8F2, #DCEFE4);
+    }
+    .growth-card[data-state="down"] {
+      border-color: rgba(154,55,55,.18);
+      background: linear-gradient(145deg, #FFF5F3, #F8E7E3);
+    }
+    .growth-card[data-state="flat"],
+    .growth-card[data-state="empty"] {
+      border-color: rgba(176,125,42,.18);
+      background: linear-gradient(145deg, #FBF7EC, #F4EBD5);
+    }
+    .growth-card-head,
+    .growth-change-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .growth-status {
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--emerald);
+    }
+    .growth-card[data-state="down"] .growth-status,
+    .growth-card[data-state="down"] .growth-icon { color: #9A3737; }
+    .growth-card[data-state="flat"] .growth-status,
+    .growth-card[data-state="empty"] .growth-status,
+    .growth-card[data-state="flat"] .growth-icon,
+    .growth-card[data-state="empty"] .growth-icon { color: #8A6424; }
+    .growth-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.72);
+      color: var(--emerald);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+    #statistik .growth-rate,
+    #statistik .growth-change {
+      font-family: 'DM Sans', sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+    .growth-rate {
+      margin-top: 12px;
+      font-size: clamp(38px, 4vw, 48px);
+      line-height: .95;
+      letter-spacing: -.04em;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .growth-rate-label,
+    .growth-change-label {
+      margin-top: 7px;
+      font-size: 11.5px;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+    .growth-divider {
+      height: 1px;
+      margin: 18px 0;
+      background: rgba(13,43,26,.10);
+    }
+    .growth-change {
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .growth-period {
+      max-width: 145px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: var(--text-sec);
+      text-align: right;
+    }
+    .growth-note {
+      margin-top: 13px;
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+    .growth-note i { color: var(--emerald); margin-right: 4px; }
+
+    @media (max-width: 1040px) {
+      .ringkasan-grid { grid-template-columns: 1fr 1fr; }
+      .donut-wrap { grid-template-columns: 120px minmax(0,1fr); gap: 16px; }
+      .donut-svg { width: 120px; height: 120px; }
+    }
+    @media (max-width: 860px) {
+      .stat-grid { grid-template-columns: 1fr; }
+      .stat-panel-age,
+      .stat-panel-summary,
+      .stat-panel-education,
+      .stat-panel-growth { grid-column: 1; }
+      .donut-wrap { grid-template-columns: 150px minmax(0,1fr); gap: 24px; }
+      .donut-svg { width: 150px; height: 150px; }
+    }
     @media (max-width: 520px) {
       .donut-wrap { grid-template-columns: 1fr; justify-items: center; gap: 20px; }
       .donut-legend { width: 100%; }
+      .stat-panel { padding: 20px 18px; }
+      .ringkasan-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .demography-card { padding: 14px 12px; }
+      #statistik .demography-value { font-size: 26px; }
+      .growth-card { padding: 18px; }
+      .growth-change-row { align-items: flex-end; }
     }
 
     /* ══════════════════════════════════════
