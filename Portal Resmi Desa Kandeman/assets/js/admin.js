@@ -1457,6 +1457,27 @@ const LRA_SECTIONS = {
   ],
 };
 
+// Menjaga form APBDes dari respons pemuatan lama yang selesai setelah admin
+// mulai mengetik atau setelah proses simpan dimulai.
+let _apbdesLoadGeneration = 0;
+let _apbdesFormDirty = false;
+let _apbdesSaving = false;
+
+function markApbdesFormDirty() {
+  if (_apbdesSaving) return;
+  _apbdesFormDirty = true;
+  _apbdesLoadGeneration += 1;
+}
+
+function setApbdesFormBusy(isBusy) {
+  _apbdesSaving = Boolean(isBusy);
+  document.querySelectorAll('#apb-tahun, .apb-input-row input').forEach(input => {
+    input.disabled = Boolean(isBusy);
+  });
+  const button = document.getElementById('btn-simpan-apb');
+  if (button) button.disabled = Boolean(isBusy);
+}
+
 const lraNumber = value => Number.isFinite(Number(value)) ? Number(value) : 0;
 const lraTotal = (data, section, column) => LRA_SECTIONS[section]
   .reduce((sum, [key]) => sum + lraNumber(data[section]?.[key]?.[column]), 0);
@@ -1502,16 +1523,17 @@ function sameLraData(left, right) {
   ));
 }
 
-function renderLraInputs(data = defaultLraData()) {
+function renderLraInputs(data = defaultLraData(), options = {}) {
   Object.entries(LRA_SECTIONS).forEach(([section, rows]) => {
     const el = document.getElementById(`apb-${section}-inputs`);
     if (!el) return;
     el.innerHTML = rows.map(([key, label]) => `<div class="apb-input-row">
       <label for="apb-${section}-${key}-anggaran">${escHtml(label)}</label>
-      <input type="number" min="0" step="1" id="apb-${section}-${key}-anggaran" value="${data[section][key].anggaran}" oninput="updateLraCalculations()" aria-label="Anggaran ${escHtml(label)}" />
-      <input type="number" min="0" step="1" id="apb-${section}-${key}-realisasi" value="${data[section][key].realisasi}" oninput="updateLraCalculations()" aria-label="Realisasi ${escHtml(label)}" />
+      <input type="number" min="0" step="1" id="apb-${section}-${key}-anggaran" value="${data[section][key].anggaran}" oninput="markApbdesFormDirty();updateLraCalculations()" aria-label="Anggaran ${escHtml(label)}" />
+      <input type="number" min="0" step="1" id="apb-${section}-${key}-realisasi" value="${data[section][key].realisasi}" oninput="markApbdesFormDirty();updateLraCalculations()" aria-label="Realisasi ${escHtml(label)}" />
     </div>`).join('');
   });
+  if (options.markClean !== false) _apbdesFormDirty = false;
   updateLraCalculations();
 }
 
@@ -1550,7 +1572,10 @@ function updateLraCalculations() {
   }
 }
 
-async function loadApbdes() {
+async function loadApbdes(options = {}) {
+  const force = options.force === true;
+  if (!force && (_apbdesSaving || _apbdesFormDirty)) return;
+  const loadGeneration = ++_apbdesLoadGeneration;
   try {
     // Urutan kedua membuat hasil stabil apabila database lama sempat memiliki
     // lebih dari satu baris pada tahun yang sama.
@@ -1559,11 +1584,13 @@ async function loadApbdes() {
       .order('id',{ascending:true})
       .limit(1);
     if (error) throw error;
+    if (loadGeneration !== _apbdesLoadGeneration || _apbdesSaving || (!force && _apbdesFormDirty)) return;
     const record = data?.[0] || {};
     document.getElementById('apb-id').value = record.id || '';
     document.getElementById('apb-tahun').value = record.tahun || new Date().getFullYear();
     renderLraInputs(defaultLraData(record));
   } catch (error) {
+    if (loadGeneration !== _apbdesLoadGeneration) return;
     console.error('Gagal memuat APBDes:', error);
     showToast('Data APBDes belum dapat dimuat.', true);
     renderLraInputs();
@@ -1619,7 +1646,12 @@ async function simpanApbdes() {
   legacyPct[3] = roundPercent(100 - legacyPct[0] - legacyPct[1] - legacyPct[2]);
 
   const btn = document.getElementById('btn-simpan-apb');
-  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+  // Batalkan seluruh respons load lama dan kunci input selama payload sedang
+  // disimpan. Dengan demikian nilai pada layar selalu sama dengan snapshot
+  // yang benar-benar dikirim ke database.
+  _apbdesLoadGeneration += 1;
+  setApbdesFormBusy(true);
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
   const payload = {
     tahun, total_anggaran: pendapatanAnggaran, lra_data: lraData,
     pct_pemerintahan: legacyPct[0], pct_pembangunan: legacyPct[1], pct_pembinaan: legacyPct[2], pct_pemberdayaan: legacyPct[3],
@@ -1665,9 +1697,12 @@ async function simpanApbdes() {
     const saved = savedList.find(row => String(row.id) === String(id)) || savedList[0];
     document.getElementById('apb-id').value = saved.id;
     document.getElementById('apb-tahun').value = saved.tahun || tahun;
-    // Gunakan data yang baru diverifikasi, bukan query pemuatan lain yang
-    // berpotensi mengambil salinan tahun lama dari cache/database.
-    renderLraInputs(lraData);
+    // Jangan bangun ulang elemen input setelah simpan. Nilai yang sedang
+    // terlihat adalah snapshot yang sudah diverifikasi dan harus tetap utuh.
+    if (!sameLraData(readLraInputs(), lraData)) {
+      throw new Error('Form APBDes berubah saat proses simpan. Muat ulang panel lalu coba kembali.');
+    }
+    _apbdesFormDirty = false;
     showToast('Data LRA APBDes berhasil disimpan');
     showLastSaved('APBDes disimpan ' + new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));
     await loadDashboard();
@@ -1675,7 +1710,7 @@ async function simpanApbdes() {
     console.error('Gagal menyimpan APBDes:', error);
     showToast(apbdesSaveErrorMessage(error), true);
   } finally {
-    btn.disabled = false;
+    setApbdesFormBusy(false);
     btn.innerHTML = '<i class="fa-solid fa-check"></i> Simpan Data APBDes';
   }
 }
