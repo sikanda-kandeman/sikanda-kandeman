@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   
 
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260807-arsip-keuangan-v4" />
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260808-umkm-galeri-v1" />
 </head>
 <body>
 
@@ -684,8 +684,9 @@
             </div>
             <div class="form-grid">
               <div class="form-group">
-                <label>Alamat usaha <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
-                <input type="text" id="umkm-alamat" placeholder="cth: Dusun Randusari RT 02/RW 01" aria-label="cth: Dusun Randusari RT 02/RW 01" />
+                <label>Lokasi usaha <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
+                <input type="text" id="umkm-lokasi" placeholder="Tempel link Google Maps atau ketik alamat manual" aria-label="Lokasi usaha: link Google Maps atau alamat manual" />
+                <div class="form-hint">Bisa berupa link Google Maps atau alamat lengkap. Di website hanya tampil satu tombol “Lihat Lokasi”.</div>
               </div>
               <div class="form-group">
                 <label>Jam operasional <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
@@ -698,8 +699,9 @@
                 <input type="text" id="umkm-harga" placeholder="cth: Rp 15.000 – Rp 50.000" aria-label="cth: Rp 15.000 – Rp 50.000" />
               </div>
               <div class="form-group">
-                <label>Instagram <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
-                <input type="text" id="umkm-ig" placeholder="cth: @terasikandeman" aria-label="cth: @terasikandeman" />
+                <label>Link media sosial <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
+                <input type="url" id="umkm-sosial" placeholder="https://instagram.com/... atau https://facebook.com/..." aria-label="Link media sosial UMKM" />
+                <div class="form-hint">Bebas memakai Instagram, Facebook, TikTok, YouTube, marketplace, atau platform lainnya.</div>
               </div>
             </div>
             <div class="form-group">
@@ -707,12 +709,10 @@
               <input type="text" id="umkm-emoji" value="🛒" maxlength="4" style="max-width:80px;" aria-label="umkm emoji" />
             </div>
             <div class="form-group">
-              <label>Foto produk (opsional)</label>
-              <input type="file" id="umkm-foto" accept="image/jpeg,image/png,image/webp" aria-label="umkm foto" />
-              <div class="form-hint">Upload foto produk. Kosongkan untuk memakai emoji.</div>
-              <div class="img-preview-wrap" id="umkm-foto-preview-wrap">
-                <img id="umkm-foto-preview" src="" alt="Preview foto UMKM" onerror="this.parentElement.classList.remove('show')" />
-              </div>
+              <label>Galeri foto UMKM <span style="color:var(--text-muted);font-weight:400;">(maksimal 6 foto)</span></label>
+              <input type="file" id="umkm-foto" accept="image/jpeg,image/png,image/webp" multiple aria-label="Galeri foto UMKM" />
+              <div class="form-hint">Pilih beberapa JPG, PNG, atau WebP sekaligus. Maksimal 3 MB per foto; foto portrait paling ideal untuk popup.</div>
+              <div class="umkm-photo-preview-grid" id="umkm-foto-preview-grid" aria-live="polite"></div>
             </div>
             <div class="form-actions">
               <button type="button" class="btn" onclick="resetUmkmForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
@@ -1263,6 +1263,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js?v=20260808-statistik-pendidikan-v1" defer></script>
+<script src="assets/js/admin.js?v=20260808-umkm-galeri-v1" defer></script>
 </body>
 </html>

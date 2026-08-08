@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260808-statistik-pendidikan-v1" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260808-umkm-galeri-v1" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -2275,7 +2275,17 @@
     <div class="um-hero" id="um-hero">
       <button type="button" class="um-close" onclick="closeUmkmModal()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
       <span class="um-cat-badge" id="um-kategori">Kuliner</span>
-      <span id="um-hero-visual">🛒</span>
+      <button type="button" class="um-photo-open" id="um-photo-open" onclick="openUmkmPhotoPopup()" aria-label="Buka foto ukuran penuh">
+        <span id="um-hero-visual">🛒</span>
+      </button>
+      <button type="button" class="um-gallery-nav um-gallery-prev" id="um-gallery-prev" onclick="event.stopPropagation();navUmkmPhoto(-1)" aria-label="Foto sebelumnya">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button type="button" class="um-gallery-nav um-gallery-next" id="um-gallery-next" onclick="event.stopPropagation();navUmkmPhoto(1)" aria-label="Foto berikutnya">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+      <div class="um-gallery-meta" id="um-gallery-meta" aria-live="polite"></div>
+      <div class="um-gallery-dots" id="um-gallery-dots" aria-label="Pilihan foto"></div>
     </div>
     <div class="um-content">
       <h3 class="um-nama" id="um-nama">Nama Usaha</h3>
@@ -2441,6 +2451,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260808-statistik-pendidikan-v1" defer></script>
+  <script src="assets/js/main.js?v=20260808-umkm-galeri-v1" defer></script>
 </body>
 </html>
