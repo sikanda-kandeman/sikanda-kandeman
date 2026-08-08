@@ -722,6 +722,90 @@ function safeUrl(url) {
   return '';   // protokol tidak dikenal -> buang
 }
 
+// ── Helper: render format berita secara aman ──
+const BERITA_ALLOWED_TAGS = new Set([
+  'P','DIV','BR','STRONG','B','EM','I','U','S','STRIKE',
+  'H2','H3','BLOCKQUOTE','UL','OL','LI','A','SPAN','FONT',
+]);
+const BERITA_DROP_TAGS = new Set(['SCRIPT','STYLE','IFRAME','OBJECT','EMBED','SVG','MATH','FORM','INPUT','BUTTON']);
+const BERITA_ALLOWED_FONTS = new Map([
+  ['dm sans', 'DM Sans'],
+  ['dm mono', 'DM Mono'],
+  ['cormorant garamond', 'Cormorant Garamond'],
+  ['georgia', 'Georgia'],
+  ['arial', 'Arial'],
+  ['times new roman', 'Times New Roman'],
+  ['courier new', 'Courier New'],
+]);
+
+function normalizeBeritaFont(value) {
+  const first = String(value || '').split(',')[0].replace(/["']/g, '').trim().toLowerCase();
+  return BERITA_ALLOWED_FONTS.get(first) || '';
+}
+
+function legacyBeritaTextToHtml(value) {
+  const escaped = escHtml(String(value || '').replace(/\r\n?/g, '\n'));
+  if (!escaped) return '';
+  return escaped.split(/\n{2,}/).map(block => `<p>${block.replace(/\n/g, '<br>')}</p>`).join('');
+}
+
+function sanitizeBeritaHtml(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  const hasKnownMarkup = /<\/?(?:p|div|br|strong|b|em|i|u|s|strike|h2|h3|blockquote|ul|ol|li|a|span|font)\b/i.test(raw);
+  const source = hasKnownMarkup ? raw : legacyBeritaTextToHtml(raw);
+  const doc = document.implementation.createHTMLDocument('');
+  const root = doc.createElement('div');
+  root.innerHTML = source;
+
+  Array.from(root.querySelectorAll('*')).forEach(element => {
+    if (BERITA_DROP_TAGS.has(element.tagName)) {
+      element.remove();
+      return;
+    }
+    if (!BERITA_ALLOWED_TAGS.has(element.tagName)) {
+      element.replaceWith(...Array.from(element.childNodes));
+      return;
+    }
+
+    const safeAttrs = {};
+    if (element.tagName === 'A') {
+      const href = String(element.getAttribute('href') || '').trim();
+      if (/^https?:\/\//i.test(href)) {
+        safeAttrs.href = href;
+        safeAttrs.target = '_blank';
+        safeAttrs.rel = 'noopener noreferrer';
+      } else {
+        element.replaceWith(...Array.from(element.childNodes));
+        return;
+      }
+    }
+    if (element.tagName === 'FONT') {
+      const face = normalizeBeritaFont(element.getAttribute('face'));
+      if (face) safeAttrs.face = face;
+    }
+    const align = String(element.getAttribute('align') || element.style.textAlign || '').toLowerCase();
+    if (['left','center','right','justify'].includes(align)) safeAttrs.align = align;
+    const font = normalizeBeritaFont(element.style.fontFamily);
+    if (font && element.tagName !== 'FONT') safeAttrs.style = `font-family: '${font}'`;
+
+    Array.from(element.attributes).forEach(attribute => element.removeAttribute(attribute.name));
+    Object.entries(safeAttrs).forEach(([name, attrValue]) => element.setAttribute(name, attrValue));
+  });
+  return root.innerHTML.trim();
+}
+
+function beritaPlainText(value) {
+  const html = sanitizeBeritaHtml(value);
+  if (!html) return '';
+  const doc = document.implementation.createHTMLDocument('');
+  const root = doc.createElement('div');
+  root.innerHTML = html;
+  root.querySelectorAll('br').forEach(element => element.replaceWith(doc.createTextNode(' ')));
+  root.querySelectorAll('p,div,h2,h3,blockquote,li').forEach(element => element.append(doc.createTextNode(' ')));
+  return String(root.textContent || '').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 // ── Helper: format Rupiah ──
 function fmtRp(n) {
   if (!n && n !== 0) return 'Rp —';
@@ -802,7 +886,8 @@ async function loadBerita() {
     Kesehatan:'tag-sky', Pendidikan:'tag-gold', Lingkungan:'tag-teal',
   };
   el.innerHTML = data.map((b, i) => {
-    const isiPotong = b.isi ? escHtml(b.isi).substring(0, 160) + (b.isi.length > 160 ? '…' : '') : '';
+    const isiTeks = beritaPlainText(b.isi);
+    const isiPotong = isiTeks ? escHtml(isiTeks.substring(0, 160)) + (isiTeks.length > 160 ? '…' : '') : '';
     const gambarHtml = b.gambar_url
       ? `<img src="${safeUrl(b.gambar_url)}" alt="${escHtml(b.judul)}" loading="lazy" decoding="async"
            style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:12px;"
@@ -888,7 +973,7 @@ function _renderBeritaModal() {
   // Meta
   document.getElementById('bm-tanggal').textContent = fmtTgl(b.tanggal);
   document.getElementById('bm-judul').textContent   = b.judul || '';
-  document.getElementById('bm-isi').textContent     = b.isi   || '(Isi berita belum tersedia)';
+  document.getElementById('bm-isi').innerHTML       = sanitizeBeritaHtml(b.isi) || '<p>(Isi berita belum tersedia)</p>';
 
   // Simpan judul untuk share
   document.getElementById('beritaModal').dataset.judul = b.judul || '';
