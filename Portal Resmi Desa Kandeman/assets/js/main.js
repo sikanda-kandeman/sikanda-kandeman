@@ -1674,34 +1674,97 @@ const DUSUN_DEFAULTS = Object.freeze({
   kaliongkek: 'Kaliongkek',
   johosari: 'Johosari',
 });
+let _dusunList = [];
+let _dusunIndex = 0;
 
 function renderBerandaDusun(data) {
   const el = document.getElementById('beranda-dusun-preview');
   if (!el) return;
-  if (!Array.isArray(data) || data.length === 0) {
-    renderDataState(el, 'empty', 'Data dusun belum tersedia.');
-    return;
-  }
+  const source = Array.isArray(data) ? data : [];
+  const bySlug = Object.fromEntries(source.map(item => [String(item.slug || '').toLowerCase(), item]));
+  _dusunList = DUSUN_ORDER.map(slug => {
+    const item = bySlug[slug] || {};
+    return {
+      slug,
+      nama: item.nama || DUSUN_DEFAULTS[slug],
+      deskripsi: String(item.deskripsi || `Informasi mengenai Dusun ${DUSUN_DEFAULTS[slug]} akan segera dilengkapi.`),
+      foto_url: item.foto_url || '',
+    };
+  });
 
-  const bySlug = Object.fromEntries(data.map(item => [String(item.slug || '').toLowerCase(), item]));
-  el.innerHTML = DUSUN_ORDER.map((slug, index) => {
-    const dusun = bySlug[slug] || { slug, nama: DUSUN_DEFAULTS[slug], deskripsi: '', foto_url: '' };
-    const nama = dusun.nama || DUSUN_DEFAULTS[slug];
-    const deskripsi = String(dusun.deskripsi || `Informasi mengenai Dusun ${nama} akan segera dilengkapi.`);
+  el.innerHTML = _dusunList.map((dusun, index) => {
+    const nama = dusun.nama || DUSUN_DEFAULTS[dusun.slug];
     const foto = dusun.foto_url
       ? `<img src="${safeUrl(dusun.foto_url)}" alt="Foto Dusun ${escHtml(nama)}" loading="lazy" decoding="async" onerror="this.remove()" />`
       : `<span>${String(index + 1).padStart(2, '0')}</span>`;
     return `
-      <details class="home-dusun-item">
-        <summary>
-          <span class="home-dusun-thumb">${foto}</span>
-          <span class="home-dusun-name"><small>Dusun</small><strong>${escHtml(nama)}</strong></span>
-          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-        </summary>
-        <p>${escHtml(deskripsi)}</p>
-      </details>`;
+      <button type="button" class="home-dusun-item" onclick="openDusunModal(${index})" aria-label="Buka profil Dusun ${escHtml(nama)}">
+        <span class="home-dusun-thumb">${foto}</span>
+        <span class="home-dusun-name"><small>Dusun</small><strong>${escHtml(nama)}</strong></span>
+        <span class="home-dusun-action">Lihat profil <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+      </button>`;
   }).join('');
 }
+
+function openDusunModal(index) {
+  if (!_dusunList.length) return;
+  _dusunIndex = Math.max(0, Math.min(Number(index) || 0, _dusunList.length - 1));
+  renderDusunModal();
+  const modal = document.getElementById('dusunModal');
+  modal?.classList.add('open');
+  activateDialog(modal, modal?.querySelector('.dm-close'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDusunModal() {
+  const modal = document.getElementById('dusunModal');
+  modal?.classList.remove('open');
+  document.body.style.overflow = '';
+  deactivateDialog(modal);
+}
+
+function navDusun(direction) {
+  if (!_dusunList.length) return;
+  _dusunIndex = (_dusunIndex + direction + _dusunList.length) % _dusunList.length;
+  renderDusunModal();
+}
+
+function renderDusunModal() {
+  const dusun = _dusunList[_dusunIndex];
+  if (!dusun) return;
+  const number = String(_dusunIndex + 1).padStart(2, '0');
+  const image = document.getElementById('dm-image');
+  const placeholder = document.getElementById('dm-image-placeholder');
+
+  document.getElementById('dm-counter').textContent = `${number} / ${String(_dusunList.length).padStart(2, '0')}`;
+  document.getElementById('dm-title').textContent = `Dusun ${dusun.nama}`;
+  document.getElementById('dm-description').textContent = dusun.deskripsi;
+  placeholder.textContent = number;
+
+  if (dusun.foto_url) {
+    image.src = safeUrl(dusun.foto_url);
+    image.alt = `Foto Dusun ${dusun.nama}`;
+    image.hidden = false;
+    placeholder.hidden = true;
+    image.onerror = () => {
+      image.hidden = true;
+      placeholder.hidden = false;
+    };
+  } else {
+    image.removeAttribute('src');
+    image.alt = '';
+    image.hidden = true;
+    placeholder.hidden = false;
+  }
+}
+
+document.addEventListener('keydown', event => {
+  const modal = document.getElementById('dusunModal');
+  if (!modal?.classList.contains('open')) return;
+  if (event.key === 'Escape') closeDusunModal();
+  if (event.key === 'ArrowLeft') navDusun(-1);
+  if (event.key === 'ArrowRight') navDusun(1);
+});
 
 async function loadDusun() {
   const el = document.getElementById('beranda-dusun-preview');
