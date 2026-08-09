@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260809-jelajah-dusun-v9" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260809-sekilas-kandeman-v10" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -375,11 +375,29 @@
       <div>
         <div class="eyebrow">Kabar &amp; Jelajah Kandeman</div>
         <h2 class="section-title" id="home-preview-title">Sekilas dari Desa Kandeman</h2>
-        <p class="section-sub">Informasi terbaru dan pengenalan lima dusun yang dapat langsung diketahui sejak membuka halaman utama.</p>
+        <p class="section-sub">Temukan kabar terbaru sekaligus kenali lima dusun yang membentuk Desa Kandeman melalui informasi ringkas untuk memahami wilayah, kehidupan masyarakat, dan perkembangan desa.</p>
       </div>
     </div>
 
     <div class="home-preview-grid">
+      <aside class="home-dusun-panel" aria-labelledby="home-dusun-title">
+        <div class="home-panel-header">
+          <div>
+            <span class="home-panel-kicker">Kenali wilayah desa</span>
+            <h3 id="home-dusun-title">Jelajah Dusun</h3>
+          </div>
+        </div>
+        <p class="home-dusun-intro">Jelajahi Randusari, Kandeman, Gandok, Kaliongkek, dan Johosari. Pilih salah satu dusun untuk mengenal gambaran wilayah, karakter, dan informasi lokalnya.</p>
+        <div class="home-dusun-preview" id="beranda-dusun-preview" aria-live="polite">
+          <div class="home-preview-skeleton"></div>
+          <div class="home-preview-skeleton"></div>
+          <div class="home-preview-skeleton"></div>
+          <div class="home-preview-skeleton"></div>
+          <div class="home-preview-skeleton"></div>
+        </div>
+        <div class="home-dusun-note"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> 5 dusun · Desa Kandeman</div>
+      </aside>
+
       <article class="home-news-panel" aria-labelledby="home-news-title">
         <div class="home-panel-header">
           <div>
@@ -394,24 +412,6 @@
           <div class="home-preview-skeleton"></div>
         </div>
       </article>
-
-      <aside class="home-dusun-panel" aria-labelledby="home-dusun-title">
-        <div class="home-panel-header">
-          <div>
-            <span class="home-panel-kicker">Kenali wilayah desa</span>
-            <h3 id="home-dusun-title">Jelajah Dusun</h3>
-          </div>
-        </div>
-        <p class="home-dusun-intro">Kenali lima dusun yang menjadi bagian dari Desa Kandeman. Pilih nama dusun untuk membaca keterangannya.</p>
-        <div class="home-dusun-preview" id="beranda-dusun-preview" aria-live="polite">
-          <div class="home-preview-skeleton"></div>
-          <div class="home-preview-skeleton"></div>
-          <div class="home-preview-skeleton"></div>
-          <div class="home-preview-skeleton"></div>
-          <div class="home-preview-skeleton"></div>
-        </div>
-        <div class="home-dusun-note"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> 5 dusun · Desa Kandeman</div>
-      </aside>
     </div>
   </div>
 </section>
@@ -2379,6 +2379,40 @@
      LIGHTBOX GALERI
 ═══════════════════ -->
 <!-- ═══════════════════
+     MODAL PROFIL DUSUN
+═══════════════════ -->
+<div class="dusun-modal" id="dusunModal" role="dialog" aria-modal="true" aria-labelledby="dm-title" aria-describedby="dm-description" aria-hidden="true">
+  <div class="dusun-modal-overlay" onclick="closeDusunModal()"></div>
+  <div class="dusun-modal-box">
+    <button type="button" class="dm-close" onclick="closeDusunModal()" aria-label="Tutup profil dusun">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+    <div class="dm-visual">
+      <img id="dm-image" alt="" />
+      <div class="dm-image-placeholder" id="dm-image-placeholder" aria-hidden="true">01</div>
+      <div class="dm-visual-meta">
+        <span id="dm-counter">01 / 05</span>
+        <span>Wilayah Desa Kandeman</span>
+      </div>
+    </div>
+    <div class="dm-content">
+      <span class="dm-kicker">Profil Dusun</span>
+      <h2 id="dm-title">Dusun Randusari</h2>
+      <p id="dm-description">Informasi dusun sedang disiapkan.</p>
+      <div class="dm-location"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Bagian dari Desa Kandeman, Kecamatan Kandeman</div>
+      <div class="dm-navigation" aria-label="Navigasi profil dusun">
+        <button type="button" class="dm-nav-btn" id="dm-prev" onclick="navDusun(-1)">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Dusun sebelumnya</span>
+        </button>
+        <button type="button" class="dm-nav-btn dm-nav-next" id="dm-next" onclick="navDusun(1)">
+          <span>Dusun berikutnya</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════
      MODAL DETAIL UMKM
 ═══════════════════ -->
 <div class="umkm-modal" id="umkmModal" role="dialog" aria-modal="true" aria-labelledby="um-nama" aria-hidden="true">
@@ -2563,6 +2597,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260809-jelajah-dusun-v9" defer></script>
+  <script src="assets/js/main.js?v=20260809-sekilas-kandeman-v10" defer></script>
 </body>
 </html>
