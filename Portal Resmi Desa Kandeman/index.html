@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260809-sekilas-kandeman-v10" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260809-jelajah-kartu-v11" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -387,15 +387,10 @@
             <h3 id="home-dusun-title">Jelajah Dusun</h3>
           </div>
         </div>
-        <p class="home-dusun-intro">Jelajahi Randusari, Kandeman, Gandok, Kaliongkek, dan Johosari. Pilih salah satu dusun untuk mengenal gambaran wilayah, karakter, dan informasi lokalnya.</p>
         <div class="home-dusun-preview" id="beranda-dusun-preview" aria-live="polite">
-          <div class="home-preview-skeleton"></div>
-          <div class="home-preview-skeleton"></div>
-          <div class="home-preview-skeleton"></div>
-          <div class="home-preview-skeleton"></div>
-          <div class="home-preview-skeleton"></div>
+          <div class="home-dusun-tabs-skeleton" aria-hidden="true"></div>
+          <div class="home-dusun-card-skeleton" aria-hidden="true"></div>
         </div>
-        <div class="home-dusun-note"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> 5 dusun · Desa Kandeman</div>
       </aside>
 
       <article class="home-news-panel" aria-labelledby="home-news-title">
@@ -2399,7 +2394,7 @@
       <span class="dm-kicker">Profil Dusun</span>
       <h2 id="dm-title">Dusun Randusari</h2>
       <p id="dm-description">Informasi dusun sedang disiapkan.</p>
-      <div class="dm-location"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Bagian dari Desa Kandeman, Kecamatan Kandeman</div>
+      <div class="dm-location"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span id="dm-location-text">Desa Kandeman, Kecamatan Kandeman</span></div>
       <div class="dm-navigation" aria-label="Navigasi profil dusun">
         <button type="button" class="dm-nav-btn" id="dm-prev" onclick="navDusun(-1)">
           <i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Dusun sebelumnya</span>
@@ -2597,6 +2592,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260809-sekilas-kandeman-v10" defer></script>
+  <script src="assets/js/main.js?v=20260809-jelajah-kartu-v11" defer></script>
 </body>
 </html>
