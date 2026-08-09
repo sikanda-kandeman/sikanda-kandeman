@@ -775,3 +775,85 @@
 @media (max-width: 560px) {
   .umkm-photo-preview-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+/* Jelajah Dusun */
+.dusun-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.dusun-admin-grid > .loading,
+.dusun-admin-grid > .empty { grid-column: 1 / -1; }
+.dusun-admin-item {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--cream-light, #faf8f3);
+}
+.dusun-admin-photo {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 54px;
+  overflow: hidden;
+  border-radius: 9px;
+  color: var(--forest);
+  background: var(--mint, #d6efe3);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+.dusun-admin-photo img { width: 100%; height: 100%; object-fit: cover; }
+.dusun-admin-copy { min-width: 0; }
+.dusun-admin-copy small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.dusun-admin-copy strong {
+  display: block;
+  margin: 2px 0 4px;
+  color: var(--forest);
+  font-size: 14px;
+}
+.dusun-admin-copy span {
+  display: block;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 10.5px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dusun-editor-card { scroll-margin-top: 82px; }
+.dusun-photo-preview.show { display: flex; }
+.dusun-photo-preview img {
+  width: min(100%, 460px);
+  max-height: 240px;
+  object-fit: cover;
+}
+.dusun-remove-photo {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-top: 10px;
+  color: var(--danger);
+  font-size: 12px;
+  cursor: pointer;
+}
+.dusun-remove-photo input { width: auto; }
+@media (max-width: 760px) {
+  .dusun-admin-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .dusun-admin-item { grid-template-columns: 54px minmax(0, 1fr); }
+  .dusun-admin-photo { width: 54px; height: 50px; }
+  .dusun-admin-item .btn { grid-column: 1 / -1; justify-content: center; }
+}
