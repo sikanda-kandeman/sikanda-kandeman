@@ -1688,22 +1688,61 @@ function renderBerandaDusun(data) {
       slug,
       nama: item.nama || DUSUN_DEFAULTS[slug],
       deskripsi: String(item.deskripsi || `Informasi mengenai Dusun ${DUSUN_DEFAULTS[slug]} akan segera dilengkapi.`),
+      lokasi: String(item.lokasi || `Dusun ${DUSUN_DEFAULTS[slug]}, Desa Kandeman, Kecamatan Kandeman`),
       foto_url: item.foto_url || '',
     };
   });
 
-  el.innerHTML = _dusunList.map((dusun, index) => {
-    const nama = dusun.nama || DUSUN_DEFAULTS[dusun.slug];
-    const foto = dusun.foto_url
-      ? `<img src="${safeUrl(dusun.foto_url)}" alt="Foto Dusun ${escHtml(nama)}" loading="lazy" decoding="async" onerror="this.remove()" />`
-      : `<span>${String(index + 1).padStart(2, '0')}</span>`;
-    return `
-      <button type="button" class="home-dusun-item" onclick="openDusunModal(${index})" aria-label="Buka profil Dusun ${escHtml(nama)}">
-        <span class="home-dusun-thumb">${foto}</span>
-        <span class="home-dusun-name"><small>Dusun</small><strong>${escHtml(nama)}</strong></span>
-        <span class="home-dusun-action">Lihat profil <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
-      </button>`;
-  }).join('');
+  _dusunIndex = Math.max(0, Math.min(_dusunIndex, _dusunList.length - 1));
+  el.innerHTML = `
+    <div class="home-dusun-tabs" aria-label="Pilih dusun yang ingin ditampilkan">
+      ${_dusunList.map((dusun, index) => `
+        <button type="button" class="home-dusun-tab" data-dusun-index="${index}"
+          aria-pressed="${index === _dusunIndex ? 'true' : 'false'}"
+          onclick="selectBerandaDusun(${index})"
+          onkeydown="handleBerandaDusunKey(event, ${index})">${escHtml(dusun.nama)}</button>`).join('')}
+    </div>
+    <div id="beranda-dusun-card"></div>`;
+  renderBerandaDusunCard();
+}
+
+function renderBerandaDusunCard() {
+  const host = document.getElementById('beranda-dusun-card');
+  const dusun = _dusunList[_dusunIndex];
+  if (!host || !dusun) return;
+  const number = String(_dusunIndex + 1).padStart(2, '0');
+  const image = dusun.foto_url
+    ? `<img src="${safeUrl(dusun.foto_url)}" alt="Foto Dusun ${escHtml(dusun.nama)}" loading="lazy" decoding="async" onerror="this.remove()" />`
+    : '';
+  host.innerHTML = `
+    <button type="button" class="home-dusun-stage" onclick="openDusunModal(${_dusunIndex})" aria-label="Buka detail Dusun ${escHtml(dusun.nama)}">
+      <span class="home-dusun-stage-placeholder" aria-hidden="true">${number}</span>
+      ${image}
+      <span class="home-dusun-card-action" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+      <span class="home-dusun-card-copy"><small>Dusun ${number}</small><strong>${escHtml(dusun.nama)}</strong></span>
+    </button>`;
+}
+
+function selectBerandaDusun(index) {
+  if (!_dusunList.length) return;
+  _dusunIndex = Math.max(0, Math.min(Number(index) || 0, _dusunList.length - 1));
+  document.querySelectorAll('.home-dusun-tab').forEach((button, buttonIndex) => {
+    button.setAttribute('aria-pressed', String(buttonIndex === _dusunIndex));
+  });
+  renderBerandaDusunCard();
+}
+
+function handleBerandaDusunKey(event, index) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const lastIndex = _dusunList.length - 1;
+  const nextIndex = event.key === 'Home'
+    ? 0
+    : event.key === 'End'
+      ? lastIndex
+      : (index + (event.key === 'ArrowRight' ? 1 : -1) + _dusunList.length) % _dusunList.length;
+  selectBerandaDusun(nextIndex);
+  document.querySelector(`.home-dusun-tab[data-dusun-index="${nextIndex}"]`)?.focus();
 }
 
 function openDusunModal(index) {
@@ -1739,6 +1778,7 @@ function renderDusunModal() {
   document.getElementById('dm-counter').textContent = `${number} / ${String(_dusunList.length).padStart(2, '0')}`;
   document.getElementById('dm-title').textContent = `Dusun ${dusun.nama}`;
   document.getElementById('dm-description').textContent = dusun.deskripsi;
+  document.getElementById('dm-location-text').textContent = dusun.lokasi;
   placeholder.textContent = number;
 
   if (dusun.foto_url) {
@@ -1770,7 +1810,7 @@ async function loadDusun() {
   const el = document.getElementById('beranda-dusun-preview');
   if (!el) return;
   const { data, error } = await sb.from('dusun')
-    .select('slug,nama,deskripsi,foto_url,urutan,aktif')
+    .select('slug,nama,deskripsi,lokasi,foto_url,urutan,aktif')
     .eq('aktif', true)
     .order('urutan', { ascending: true });
 

@@ -2165,6 +2165,7 @@ async function loadDusunAdmin() {
       ? `<img src="${escHtml(item.foto_url)}" alt="Foto Dusun ${escHtml(base.nama)}" />`
       : `<span>${String(index + 1).padStart(2, '0')}</span>`;
     const detailStatus = item.deskripsi?.trim() ? 'Detail terisi' : 'Detail belum diisi';
+    const locationStatus = item.lokasi?.trim() ? 'Lokasi terisi' : 'Lokasi belum diisi';
     const photoStatus = item.foto_url ? 'Foto terisi' : 'Foto belum diisi';
     return `
       <article class="dusun-admin-item">
@@ -2172,7 +2173,7 @@ async function loadDusunAdmin() {
         <div class="dusun-admin-copy">
           <small>Dusun</small>
           <strong>${escHtml(base.nama)}</strong>
-          <span>${escHtml(detailStatus)} · ${escHtml(photoStatus)}</span>
+          <span>${escHtml(detailStatus)} · ${escHtml(locationStatus)} · ${escHtml(photoStatus)}</span>
         </div>
         <button type="button" class="btn btn-sm" onclick="editDusun('${base.slug}')"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
       </article>`;
@@ -2185,6 +2186,7 @@ function editDusun(slug) {
   const item = _dusunMap[slug] || base;
   document.getElementById('dus-slug').value = slug;
   document.getElementById('dus-nama').value = base.nama;
+  document.getElementById('dus-lokasi').value = item.lokasi || '';
   document.getElementById('dus-deskripsi').value = item.deskripsi || '';
   document.getElementById('dus-foto').value = '';
   document.getElementById('dus-hapus-foto').checked = false;
@@ -2207,8 +2209,10 @@ async function simpanDusun() {
   const slug = document.getElementById('dus-slug').value;
   const base = DUSUN_ADMIN_ITEMS.find(item => item.slug === slug);
   if (!base) { showToast('Pilih dusun yang ingin diedit.', true); return; }
+  const lokasi = document.getElementById('dus-lokasi').value.trim();
   const deskripsi = document.getElementById('dus-deskripsi').value.trim();
   if (!deskripsi) { showToast('Detail dusun wajib diisi.', true); return; }
+  if (lokasi.length > 300) { showToast('Lokasi dusun maksimal 300 karakter.', true); return; }
   if (deskripsi.length > 3000) { showToast('Detail dusun maksimal 3.000 karakter.', true); return; }
 
   const btn = document.getElementById('btn-simpan-dusun');
@@ -2232,6 +2236,7 @@ async function simpanDusun() {
     const payload = {
       slug:base.slug,
       nama:base.nama,
+      lokasi,
       deskripsi,
       foto_url:fotoUrl,
       urutan:base.urutan,
@@ -2240,7 +2245,7 @@ async function simpanDusun() {
     };
     const { data:saved, error } = await sb.from('dusun')
       .upsert(payload, { onConflict:'slug' })
-      .select('id,slug,nama,deskripsi,foto_url,urutan,aktif')
+      .select('id,slug,nama,lokasi,deskripsi,foto_url,urutan,aktif')
       .single();
     if (error) throw error;
     if (!saved?.slug) throw new Error('Data dusun tidak terverifikasi setelah disimpan.');
@@ -2264,6 +2269,7 @@ async function simpanDusun() {
 function resetDusunForm() {
   document.getElementById('dus-slug').value = '';
   document.getElementById('dus-nama').value = '';
+  document.getElementById('dus-lokasi').value = '';
   document.getElementById('dus-deskripsi').value = '';
   document.getElementById('dus-foto').value = '';
   document.getElementById('dus-hapus-foto').checked = false;
