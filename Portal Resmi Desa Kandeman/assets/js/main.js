@@ -595,7 +595,7 @@ function resetOrgChart() {
 
 function prepareDynamicLoadingStates() {
   [
-    'berita-grid','galeri-grid','potensi-grid','umkm-grid','agenda-mendatang',
+    'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-pesona-preview','umkm-grid','agenda-mendatang',
     'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
     'perdes-list','poster-edukasi-list',
   ].forEach(id => renderDataState(id, 'loading'));
@@ -859,6 +859,38 @@ function potensiClass(kat) {
 // ════════════════════
 // LOAD BERITA
 // ════════════════════
+function renderBerandaBerita(data) {
+  const el = document.getElementById('beranda-berita-preview');
+  if (!el) return;
+  if (!Array.isArray(data) || data.length === 0) {
+    renderDataState(el, 'empty', 'Belum ada berita atau pengumuman terbaru.');
+    return;
+  }
+
+  el.innerHTML = data.slice(0, 3).map((b, i) => {
+    const featured = i === 0;
+    const isiTeks = beritaPlainText(b.isi);
+    const ringkasan = isiTeks.length > 125 ? isiTeks.substring(0, 125) + '…' : isiTeks;
+    const gambar = b.gambar_url
+      ? `<img src="${safeUrl(b.gambar_url)}" alt="${escHtml(b.judul)}" loading="lazy" decoding="async" onerror="this.remove()" />`
+      : '';
+    return `
+      <button type="button" class="home-news-item ${featured ? 'home-news-item-featured' : 'home-news-item-compact'}"
+        onclick="openBeritaModal(${i})" aria-label="Baca berita: ${escHtml(b.judul)}">
+        <span class="home-news-thumb">
+          <span class="home-news-placeholder" aria-hidden="true"><i class="fa-regular fa-newspaper"></i></span>
+          ${gambar}
+        </span>
+        <span class="home-news-copy">
+          <span class="home-news-category">${escHtml(b.kategori || 'Berita')}</span>
+          <h4>${escHtml(b.judul)}</h4>
+          ${featured && ringkasan ? `<p>${escHtml(ringkasan)}</p>` : ''}
+          <span class="home-news-date"><i class="fa-regular fa-calendar" aria-hidden="true"></i>${fmtTgl(b.tanggal)}</span>
+        </span>
+      </button>`;
+  }).join('');
+}
+
 async function loadBerita() {
   const el = document.getElementById('berita-grid');
   if (!el) return;
@@ -871,16 +903,19 @@ async function loadBerita() {
   if (error) {
     console.error('Gagal memuat berita:', error);
     renderDataState(el, 'error', 'Berita belum dapat dimuat.');
+    renderDataState('beranda-berita-preview', 'error', 'Berita belum dapat dimuat.');
     return;
   }
   if (!data || data.length === 0) {
     _beritaList = [];
     renderDataState(el, 'empty', 'Belum ada berita yang dipublikasikan.');
+    renderBerandaBerita([]);
     return;
   }
 
   // Simpan data global untuk navigasi modal
   _beritaList = data;
+  renderBerandaBerita(data);
 
   const BADGE_MAP = {
     Pemerintahan:'tag-green', Pengumuman:'tag-sky', Kegiatan:'tag-teal',
@@ -1631,6 +1666,33 @@ document.addEventListener('keydown', event => {
 // ════════════════════
 // LOAD POTENSI
 // ════════════════════
+function renderBerandaPesona(data) {
+  const el = document.getElementById('beranda-pesona-preview');
+  if (!el) return;
+  if (!Array.isArray(data) || data.length === 0) {
+    renderDataState(el, 'empty', 'Belum ada pesona desa yang dipublikasikan.');
+    return;
+  }
+
+  el.innerHTML = data.slice(0, 3).map(p => {
+    const foto = p.foto_url
+      ? `<img src="${safeUrl(p.foto_url)}" alt="${escHtml(p.nama)}" loading="lazy" decoding="async" onerror="this.remove()" />`
+      : '';
+    const deskripsi = String(p.deskripsi || 'Potensi lokal Desa Kandeman.');
+    const ringkasan = deskripsi.length > 92 ? deskripsi.substring(0, 92) + '…' : deskripsi;
+    return `
+      <a class="home-pesona-item" href="#potensi" aria-label="Lihat potensi: ${escHtml(p.nama)}">
+        <span class="home-pesona-thumb ${potensiClass(p.kategori)}" aria-hidden="true">
+          <span>${escHtml(p.emoji || '🌾')}</span>${foto}
+        </span>
+        <span class="home-pesona-copy">
+          <h4>${escHtml(p.nama)}</h4>
+          <p>${escHtml(ringkasan)}</p>
+        </span>
+      </a>`;
+  }).join('');
+}
+
 async function loadPotensi() {
   const el = document.getElementById('potensi-grid');
   if (!el) return;
@@ -1642,13 +1704,16 @@ async function loadPotensi() {
   if (error) {
     console.error('Gagal memuat potensi desa:', error);
     renderDataState(el, 'error', 'Data potensi desa belum dapat dimuat.');
+    renderDataState('beranda-pesona-preview', 'error', 'Pesona desa belum dapat dimuat.');
     return;
   }
   if (!data || data.length === 0) {
     renderDataState(el, 'empty', 'Belum ada data potensi desa yang dipublikasikan.');
+    renderBerandaPesona([]);
     return;
   }
 
+  renderBerandaPesona(data);
   el.innerHTML = data.map(p => {
     const thumb = p.foto_url
       ? `<img src="${safeUrl(p.foto_url)}" alt="${escHtml(p.nama)}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='${escHtml(p.emoji||'🌾')}'" />`
@@ -2723,7 +2788,7 @@ function _initDataLoad() {
   if (!sb) {
     console.error('Supabase client belum tersedia.');
     [
-      'berita-grid','galeri-grid','potensi-grid','umkm-grid','agenda-mendatang',
+      'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-pesona-preview','umkm-grid','agenda-mendatang',
       'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
       'perdes-list','poster-edukasi-list',
     ].forEach(id => renderDataState(id, 'error'));
