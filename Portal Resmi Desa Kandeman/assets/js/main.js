@@ -227,7 +227,8 @@
     { keys: ['perdes','peraturan desa','produk hukum','hukum','edukasi','poster','literasi'], anchor: '#hukum-edukasi' },
 
     // ── Transparency Hub ──
-    { keys: ['unduh data','dataset','dokumen anggaran','transparansi','arsip dokumen'], anchor: '#transparency-hub' },
+    { keys: ['unduh data','dataset','data statistik','statistik kependudukan'], anchor: '#statistik' },
+    { keys: ['dokumen anggaran','transparansi','arsip dokumen'], anchor: '#transparency-hub' },
 
     // ── Transparansi APBDes ──
     { keys: ['apbdes','apb des','anggaran desa','total anggaran','alokasi','dana desa','apbn','add','pendapatan desa'], anchor: '#apbdes' },
