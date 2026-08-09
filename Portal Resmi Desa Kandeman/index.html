@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260809-apbdes-periode-v6" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260809-kesehatan-statistik-v7" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -1106,18 +1106,6 @@
         </div>
       </div>
 
-      <!-- Akses data publik -->
-      <div>
-        <div class="data-cta">
-          <div class="data-cta-text">
-            <h3><i class="fa-solid fa-database" style="margin-right:8px;"></i>Unduh Data Statistik Desa</h3>
-            <p>Database kependudukan lengkap: jumlah penduduk per dusun, kelompok usia, mata pencaharian, dan pendidikan.</p>
-          </div>
-          <a href="#" class="dl-btn" id="btn-statistik" download onclick="return unduhStatistik(event)">
-            <i class="fa-solid fa-file-excel"></i> Unduh Spreadsheet
-          </a>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1144,7 +1132,7 @@
     <div class="sehat-stats">
       <div class="sehat-stat">
         <div class="ss-ico"><i class="fa-solid fa-baby"></i></div>
-        <div class="ss-num">6</div>
+        <div class="ss-num">5</div>
         <div class="ss-lbl">Posyandu &amp; Posbindu aktif tiap bulan</div>
       </div>
       <div class="sehat-stat">
@@ -1956,8 +1944,19 @@
         </div>
         <p class="demography-note">
           <i class="fa-solid fa-circle-info"></i>
-          Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh pada Transparency Hub.
+          Data bersifat estimasi berdasarkan pendataan terakhir. Data rinci dapat diunduh melalui tombol di bawah.
         </p>
+      </div>
+
+      <!-- Unduh data statistik -->
+      <div class="data-cta stat-download-cta">
+        <div class="data-cta-text">
+          <h3><i class="fa-solid fa-database" style="margin-right:8px;"></i>Unduh Data Statistik Desa</h3>
+          <p>Database kependudukan lengkap: jumlah penduduk per dusun, kelompok usia, mata pencaharian, dan pendidikan.</p>
+        </div>
+        <a href="#" class="dl-btn" id="btn-statistik" download onclick="return unduhStatistik(event)">
+          <i class="fa-solid fa-file-excel"></i> Unduh Spreadsheet
+        </a>
       </div>
       </div>
 
@@ -2513,6 +2512,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260809-apbdes-periode-v6" defer></script>
+  <script src="assets/js/main.js?v=20260809-kesehatan-statistik-v7" defer></script>
 </body>
 </html>
