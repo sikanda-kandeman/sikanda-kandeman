@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   
 
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260809-apbdes-periode-v6" />
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260809-jelajah-dusun-v9" />
 </head>
 <body>
 
@@ -84,6 +84,9 @@
       </div>
       <div class="sb-item" onclick="switchPanel('potensi',this)" id="nav-potensi">
         <i class="fa-solid fa-seedling"></i> Potensi Desa
+      </div>
+      <div class="sb-item" onclick="switchPanel('dusun',this)" id="nav-dusun">
+        <i class="fa-solid fa-map-location-dot"></i> Jelajah Dusun
       </div>
       <div class="sb-item" onclick="switchPanel('umkm',this)" id="nav-umkm">
         <i class="fa-solid fa-store"></i> UMKM Desa
@@ -710,6 +713,56 @@
               <span style="font-size:11px;color:var(--text-muted);"><i class="fa-solid fa-grip-vertical"></i> Seret untuk urutkan</span>
             </div>
             <div id="potensi-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
+          </div>
+        </div>
+
+        <!-- ── JELAJAH DUSUN ── -->
+        <div class="panel" id="panel-dusun">
+          <div class="panel-intro">
+            <div class="panel-intro-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div>
+              <div class="panel-intro-title">Jelajah Dusun</div>
+              <div class="panel-intro-sub">Kelola foto dan detail lima dusun yang tampil pada Beranda</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Lima dusun Desa Kandeman</div>
+            <div class="form-hint" style="margin-bottom:14px;">Nama dan urutan dusun sudah ditetapkan. Pilih Edit untuk melengkapi foto dan keterangannya.</div>
+            <div class="dusun-admin-grid" id="dusun-list">
+              <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat data dusun...</div>
+            </div>
+          </div>
+
+          <div class="card dusun-editor-card" id="dusun-editor-card">
+            <div class="card-title" id="dusun-form-title">Pilih dusun yang ingin diedit</div>
+            <input type="hidden" id="dus-slug" />
+            <div class="form-group">
+              <label>Nama dusun</label>
+              <input type="text" id="dus-nama" readonly placeholder="Pilih Edit pada daftar dusun di atas" />
+            </div>
+            <div class="form-group">
+              <label>Detail dusun</label>
+              <textarea id="dus-deskripsi" maxlength="3000" placeholder="Tuliskan pengenalan singkat, ciri wilayah, kegiatan warga, atau informasi lain tentang dusun ini..."></textarea>
+              <div class="form-hint">Maksimal 3.000 karakter. Detail dapat dibuka pembaca dari kartu dusun di Beranda.</div>
+            </div>
+            <div class="form-group">
+              <label>Foto dusun</label>
+              <input type="file" id="dus-foto" accept="image/jpeg,image/png,image/webp" />
+              <div class="form-hint">JPG, PNG, atau WebP; maksimal 3 MB. Kosongkan jika tidak ingin mengganti foto.</div>
+              <div class="img-preview-wrap dusun-photo-preview" id="dus-foto-preview-wrap">
+                <img id="dus-foto-preview" src="" alt="Preview foto dusun" />
+              </div>
+              <label class="dusun-remove-photo" id="dus-hapus-foto-wrap">
+                <input type="checkbox" id="dus-hapus-foto" /> Hapus foto yang tersimpan
+              </label>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn" onclick="resetDusunForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
+              <button type="button" class="btn btn-primary" id="btn-simpan-dusun" onclick="simpanDusun()" disabled>
+                <i class="fa-solid fa-floppy-disk"></i> Simpan detail dusun
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1356,6 +1409,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js?v=20260809-apbdes-periode-v6" defer></script>
+<script src="assets/js/admin.js?v=20260809-jelajah-dusun-v9" defer></script>
 </body>
 </html>
