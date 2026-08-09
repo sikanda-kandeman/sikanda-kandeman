@@ -595,7 +595,7 @@ function resetOrgChart() {
 
 function prepareDynamicLoadingStates() {
   [
-    'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-pesona-preview','umkm-grid','agenda-mendatang',
+    'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-dusun-preview','umkm-grid','agenda-mendatang',
     'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
     'perdes-list','poster-edukasi-list',
   ].forEach(id => renderDataState(id, 'loading'));
@@ -1666,31 +1666,57 @@ document.addEventListener('keydown', event => {
 // ════════════════════
 // LOAD POTENSI
 // ════════════════════
-function renderBerandaPesona(data) {
-  const el = document.getElementById('beranda-pesona-preview');
+const DUSUN_ORDER = Object.freeze(['randusari', 'kandeman', 'gandok', 'kaliongkek', 'johosari']);
+const DUSUN_DEFAULTS = Object.freeze({
+  randusari: 'Randusari',
+  kandeman: 'Kandeman',
+  gandok: 'Gandok',
+  kaliongkek: 'Kaliongkek',
+  johosari: 'Johosari',
+});
+
+function renderBerandaDusun(data) {
+  const el = document.getElementById('beranda-dusun-preview');
   if (!el) return;
   if (!Array.isArray(data) || data.length === 0) {
-    renderDataState(el, 'empty', 'Belum ada pesona desa yang dipublikasikan.');
+    renderDataState(el, 'empty', 'Data dusun belum tersedia.');
     return;
   }
 
-  el.innerHTML = data.slice(0, 3).map(p => {
-    const foto = p.foto_url
-      ? `<img src="${safeUrl(p.foto_url)}" alt="${escHtml(p.nama)}" loading="lazy" decoding="async" onerror="this.remove()" />`
-      : '';
-    const deskripsi = String(p.deskripsi || 'Potensi lokal Desa Kandeman.');
-    const ringkasan = deskripsi.length > 92 ? deskripsi.substring(0, 92) + '…' : deskripsi;
+  const bySlug = Object.fromEntries(data.map(item => [String(item.slug || '').toLowerCase(), item]));
+  el.innerHTML = DUSUN_ORDER.map((slug, index) => {
+    const dusun = bySlug[slug] || { slug, nama: DUSUN_DEFAULTS[slug], deskripsi: '', foto_url: '' };
+    const nama = dusun.nama || DUSUN_DEFAULTS[slug];
+    const deskripsi = String(dusun.deskripsi || `Informasi mengenai Dusun ${nama} akan segera dilengkapi.`);
+    const foto = dusun.foto_url
+      ? `<img src="${safeUrl(dusun.foto_url)}" alt="Foto Dusun ${escHtml(nama)}" loading="lazy" decoding="async" onerror="this.remove()" />`
+      : `<span>${String(index + 1).padStart(2, '0')}</span>`;
     return `
-      <a class="home-pesona-item" href="#potensi" aria-label="Lihat potensi: ${escHtml(p.nama)}">
-        <span class="home-pesona-thumb ${potensiClass(p.kategori)}" aria-hidden="true">
-          <span>${escHtml(p.emoji || '🌾')}</span>${foto}
-        </span>
-        <span class="home-pesona-copy">
-          <h4>${escHtml(p.nama)}</h4>
-          <p>${escHtml(ringkasan)}</p>
-        </span>
-      </a>`;
+      <details class="home-dusun-item">
+        <summary>
+          <span class="home-dusun-thumb">${foto}</span>
+          <span class="home-dusun-name"><small>Dusun</small><strong>${escHtml(nama)}</strong></span>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </summary>
+        <p>${escHtml(deskripsi)}</p>
+      </details>`;
   }).join('');
+}
+
+async function loadDusun() {
+  const el = document.getElementById('beranda-dusun-preview');
+  if (!el) return;
+  const { data, error } = await sb.from('dusun')
+    .select('slug,nama,deskripsi,foto_url,urutan,aktif')
+    .eq('aktif', true)
+    .order('urutan', { ascending: true });
+
+  if (error) {
+    console.error('Gagal memuat data dusun:', error);
+    renderDataState(el, 'error', 'Data dusun belum dapat dimuat.');
+    return;
+  }
+  renderBerandaDusun(data || []);
 }
 
 async function loadPotensi() {
@@ -1704,16 +1730,13 @@ async function loadPotensi() {
   if (error) {
     console.error('Gagal memuat potensi desa:', error);
     renderDataState(el, 'error', 'Data potensi desa belum dapat dimuat.');
-    renderDataState('beranda-pesona-preview', 'error', 'Pesona desa belum dapat dimuat.');
     return;
   }
   if (!data || data.length === 0) {
     renderDataState(el, 'empty', 'Belum ada data potensi desa yang dipublikasikan.');
-    renderBerandaPesona([]);
     return;
   }
 
-  renderBerandaPesona(data);
   el.innerHTML = data.map(p => {
     const thumb = p.foto_url
       ? `<img src="${safeUrl(p.foto_url)}" alt="${escHtml(p.nama)}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='${escHtml(p.emoji||'🌾')}'" />`
@@ -2788,7 +2811,7 @@ function _initDataLoad() {
   if (!sb) {
     console.error('Supabase client belum tersedia.');
     [
-      'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-pesona-preview','umkm-grid','agenda-mendatang',
+      'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-dusun-preview','umkm-grid','agenda-mendatang',
       'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
       'perdes-list','poster-edukasi-list',
     ].forEach(id => renderDataState(id, 'error'));
@@ -2807,6 +2830,7 @@ function _initDataLoad() {
       ['perangkat', loadPerangkat],
       ['APBDes', loadApbdes],
       ['potensi', loadPotensi],
+      ['dusun', loadDusun],
       ['UMKM', loadUmkm],
       ['dokumen', loadDokumen],
       ['prestasi', loadPrestasi],

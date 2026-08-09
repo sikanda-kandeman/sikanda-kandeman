@@ -247,7 +247,7 @@ function closeSidebar() { document.getElementById('sidebar').classList.remove('o
 const panelTitles = {
   dashboard:'Beranda Admin', berita:'Berita & Pengumuman',
   galeri:'Galeri Foto', perangkat:'Perangkat Desa',
-  apbdes:'APBDes & Anggaran', potensi:'Potensi Desa', umkm:'UMKM Desa',
+  apbdes:'APBDes & Anggaran', potensi:'Potensi Desa', dusun:'Jelajah Dusun', umkm:'UMKM Desa',
   prestasi:'Prestasi Desa', dokumen:'Dokumen & Arsip',
   agenda:'Agenda Desa', aspirasi:'Aspirasi Warga',
   statistik:'Statistik Warga', kesehatan:'Layanan Kesehatan',
@@ -265,6 +265,7 @@ function switchPanel(id, el) {
   if (id==='perangkat') loadPerangkat();
   if (id==='apbdes')    { loadApbdes(); loadFinanceDocuments(); }
   if (id==='potensi')   loadPotensi();
+  if (id==='dusun')     loadDusunAdmin();
   if (id==='umkm')      loadUmkm();
   if (id==='prestasi')  loadPrestasi();
   if (id==='dokumen')   loadDokumen();
@@ -2132,6 +2133,166 @@ function resetPotensiForm() {
   if (potWrap) potWrap.classList.remove('show');
   document.getElementById('potensi-form-title').textContent = 'Tambah / edit potensi desa';
 }
+
+// ═══════════════════════════════════════════════
+// JELAJAH DUSUN — lima wilayah tetap
+// ═══════════════════════════════════════════════
+const DUSUN_ADMIN_ITEMS = Object.freeze([
+  { slug:'randusari', nama:'Randusari', urutan:1 },
+  { slug:'kandeman', nama:'Kandeman', urutan:2 },
+  { slug:'gandok', nama:'Gandok', urutan:3 },
+  { slug:'kaliongkek', nama:'Kaliongkek', urutan:4 },
+  { slug:'johosari', nama:'Johosari', urutan:5 },
+]);
+const _dusunMap = {};
+
+async function loadDusunAdmin() {
+  const el = document.getElementById('dusun-list');
+  if (!el) return;
+  el.innerHTML = '<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat data dusun...</div>';
+  const { data, error } = await sb.from('dusun').select('*').order('urutan', { ascending:true });
+  if (error) {
+    console.error('Gagal memuat data dusun:', error);
+    el.innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i>Data dusun belum dapat dimuat. Jalankan SQL Jelajah Dusun terlebih dahulu.</div>';
+    return;
+  }
+
+  Object.keys(_dusunMap).forEach(key => delete _dusunMap[key]);
+  (data || []).forEach(item => { _dusunMap[item.slug] = item; });
+  el.innerHTML = DUSUN_ADMIN_ITEMS.map((base, index) => {
+    const item = _dusunMap[base.slug] || base;
+    const photo = item.foto_url && isValidHttpUrl(item.foto_url)
+      ? `<img src="${escHtml(item.foto_url)}" alt="Foto Dusun ${escHtml(base.nama)}" />`
+      : `<span>${String(index + 1).padStart(2, '0')}</span>`;
+    const detailStatus = item.deskripsi?.trim() ? 'Detail terisi' : 'Detail belum diisi';
+    const photoStatus = item.foto_url ? 'Foto terisi' : 'Foto belum diisi';
+    return `
+      <article class="dusun-admin-item">
+        <div class="dusun-admin-photo">${photo}</div>
+        <div class="dusun-admin-copy">
+          <small>Dusun</small>
+          <strong>${escHtml(base.nama)}</strong>
+          <span>${escHtml(detailStatus)} · ${escHtml(photoStatus)}</span>
+        </div>
+        <button type="button" class="btn btn-sm" onclick="editDusun('${base.slug}')"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+      </article>`;
+  }).join('');
+}
+
+function editDusun(slug) {
+  const base = DUSUN_ADMIN_ITEMS.find(item => item.slug === slug);
+  if (!base) { showToast('Dusun tidak ditemukan.', true); return; }
+  const item = _dusunMap[slug] || base;
+  document.getElementById('dus-slug').value = slug;
+  document.getElementById('dus-nama').value = base.nama;
+  document.getElementById('dus-deskripsi').value = item.deskripsi || '';
+  document.getElementById('dus-foto').value = '';
+  document.getElementById('dus-hapus-foto').checked = false;
+  document.getElementById('dus-hapus-foto-wrap').style.display = item.foto_url ? 'inline-flex' : 'none';
+  const previewWrap = document.getElementById('dus-foto-preview-wrap');
+  const preview = document.getElementById('dus-foto-preview');
+  if (item.foto_url && isValidHttpUrl(item.foto_url)) {
+    preview.src = item.foto_url;
+    previewWrap.classList.add('show');
+  } else {
+    preview.removeAttribute('src');
+    previewWrap.classList.remove('show');
+  }
+  document.getElementById('dusun-form-title').textContent = `Edit Dusun ${base.nama}`;
+  document.getElementById('btn-simpan-dusun').disabled = false;
+  document.getElementById('dusun-editor-card').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+async function simpanDusun() {
+  const slug = document.getElementById('dus-slug').value;
+  const base = DUSUN_ADMIN_ITEMS.find(item => item.slug === slug);
+  if (!base) { showToast('Pilih dusun yang ingin diedit.', true); return; }
+  const deskripsi = document.getElementById('dus-deskripsi').value.trim();
+  if (!deskripsi) { showToast('Detail dusun wajib diisi.', true); return; }
+  if (deskripsi.length > 3000) { showToast('Detail dusun maksimal 3.000 karakter.', true); return; }
+
+  const btn = document.getElementById('btn-simpan-dusun');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+  const existing = _dusunMap[slug] || {};
+  const file = document.getElementById('dus-foto').files[0];
+  const removePhoto = document.getElementById('dus-hapus-foto').checked;
+  let fotoUrl = removePhoto ? null : (existing.foto_url || null);
+  let uploadedPath = '';
+
+  try {
+    if (file) {
+      const uploaded = await uploadValidatedFile(file, {
+        kind:'image', folder:`dusun/${slug}`, maxBytes:3 * 1024 * 1024,
+      });
+      uploadedPath = uploaded.storagePath;
+      fotoUrl = uploaded.publicUrl;
+    }
+
+    const payload = {
+      slug:base.slug,
+      nama:base.nama,
+      deskripsi,
+      foto_url:fotoUrl,
+      urutan:base.urutan,
+      aktif:true,
+      updated_at:new Date().toISOString(),
+    };
+    const { data:saved, error } = await sb.from('dusun')
+      .upsert(payload, { onConflict:'slug' })
+      .select('id,slug,nama,deskripsi,foto_url,urutan,aktif')
+      .single();
+    if (error) throw error;
+    if (!saved?.slug) throw new Error('Data dusun tidak terverifikasi setelah disimpan.');
+
+    const oldPath = storagePathFromPublicUrl(existing.foto_url || '');
+    if ((file || removePhoto) && oldPath && oldPath !== uploadedPath) await rollbackUploadedFile(oldPath);
+    _dusunMap[slug] = saved;
+    showToast(`Dusun ${base.nama} disimpan`);
+    resetDusunForm();
+    await loadDusunAdmin();
+  } catch (error) {
+    if (uploadedPath) await rollbackUploadedFile(uploadedPath);
+    console.error('Gagal menyimpan data dusun:', error);
+    showToast(error instanceof UploadValidationError ? error.message : 'Data dusun gagal disimpan. Periksa SQL dan izin Supabase.', true);
+  } finally {
+    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan detail dusun';
+    btn.disabled = !document.getElementById('dus-slug').value;
+  }
+}
+
+function resetDusunForm() {
+  document.getElementById('dus-slug').value = '';
+  document.getElementById('dus-nama').value = '';
+  document.getElementById('dus-deskripsi').value = '';
+  document.getElementById('dus-foto').value = '';
+  document.getElementById('dus-hapus-foto').checked = false;
+  document.getElementById('dus-hapus-foto-wrap').style.display = 'none';
+  document.getElementById('dus-foto-preview').removeAttribute('src');
+  document.getElementById('dus-foto-preview-wrap').classList.remove('show');
+  document.getElementById('dusun-form-title').textContent = 'Pilih dusun yang ingin diedit';
+  document.getElementById('btn-simpan-dusun').disabled = true;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dus-foto')?.addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const validation = validateUploadFile(file, 'image', 3 * 1024 * 1024);
+    if (!validation.ok) {
+      showToast(validation.message, true);
+      this.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = event => {
+      document.getElementById('dus-foto-preview').src = event.target.result;
+      document.getElementById('dus-foto-preview-wrap').classList.add('show');
+      document.getElementById('dus-hapus-foto').checked = false;
+    };
+    reader.readAsDataURL(file);
+  });
+});
 
 // ═══════════════════════════════════════════════
 // UMKM
