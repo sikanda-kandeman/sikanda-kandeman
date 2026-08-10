@@ -226,11 +226,10 @@
     // ── Hukum & Edukasi ──
     { keys: ['perdes','peraturan desa','produk hukum','hukum','edukasi','poster','literasi'], anchor: '#hukum-edukasi' },
 
-    // ── Transparency Hub ──
     { keys: ['unduh data','dataset','data statistik','statistik kependudukan'], anchor: '#statistik' },
-    { keys: ['dokumen anggaran','transparansi','arsip dokumen'], anchor: '#transparency-hub' },
 
     // ── Transparansi APBDes ──
+    { keys: ['dokumen anggaran','transparansi','arsip dokumen'], anchor: '#transparansi' },
     { keys: ['apbdes','apb des','anggaran desa','total anggaran','alokasi','dana desa','apbn','add','pendapatan desa'], anchor: '#apbdes' },
     { keys: ['realisasi','realisasi anggaran','belanja desa','pembangunan','capaian anggaran','persen realisasi'], anchor: '#realisasi' },
 
@@ -375,8 +374,8 @@
           '.news-card, .layanan-card, .lembaga-card, .potensi-card, .prestasi-card, ' +
           '.info-card, .galeri-item, .budget-item, .quick-card, .sehat-stat, ' +
           '.darurat-card, .umkm-card, .poster-card, .agenda-card, .geo-card, ' +
-          '.kontak-card, .realisasi-overview, .realisasi-stat, .realisasi-row, .transp-info-card, .perdes-item, .arsip-item, ' +
-          '.surat-item, .maklumat-item, .faq-item, .literasi-item, .jadwal-table tbody tr'
+          '.kontak-card, .realisasi-overview, .realisasi-stat, .realisasi-row, .perdes-item, .arsip-item, ' +
+          '.surat-item, .maklumat-item, .faq-item, .jadwal-table tbody tr'
         );
         kids.forEach((k, i) => {
           k.classList.add('reveal-item');
