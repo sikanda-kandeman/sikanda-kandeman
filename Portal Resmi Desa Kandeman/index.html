@@ -1119,332 +1119,6 @@
 
 
 <!-- ═══════════════════
-     PUSAT LAYANAN KESEHATAN
-═══════════════════ -->
-<section class="section section-white reveal" id="kesehatan">
-  <div class="container">
-    <div class="section-header">
-      <div class="eyebrow">Kesehatan</div>
-      <h2 class="section-title">Pusat Layanan Kesehatan Desa</h2>
-      <p class="section-sub">Jadwal Posyandu, kontak darurat, dan lokasi fasilitas kesehatan Desa Kandeman.</p>
-    </div>
-
-    <!-- Ringkasan layanan -->
-    <div class="sehat-stats">
-      <div class="sehat-stat">
-        <div class="ss-ico"><i class="fa-solid fa-baby"></i></div>
-        <div class="ss-num">5</div>
-        <div class="ss-lbl">Posyandu &amp; Posbindu aktif tiap bulan</div>
-      </div>
-      <div class="sehat-stat">
-        <div class="ss-ico"><i class="fa-solid fa-house-medical"></i></div>
-        <div class="ss-num">1</div>
-        <div class="ss-lbl">Rumah sakit rujukan terdekat</div>
-      </div>
-      <div class="sehat-stat">
-        <div class="ss-ico"><i class="fa-solid fa-hospital"></i></div>
-        <div class="ss-num">1</div>
-        <div class="ss-lbl">Puskesmas induk di Kandeman</div>
-      </div>
-      <div class="sehat-stat">
-        <div class="ss-ico"><i class="fa-solid fa-user-nurse"></i></div>
-        <div class="ss-num">1</div>
-        <div class="ss-lbl">Bidan desa pelayanan KIA</div>
-      </div>
-    </div>
-
-    <div class="sehat-grid">
-      <!-- Jadwal -->
-      <div class="sehat-panel m-left m-d1">
-        <div class="sehat-panel-head">
-          <div class="ph-ico"><i class="fa-solid fa-calendar-check"></i></div>
-          <div class="ph-txt">
-            <h3>Jadwal Posyandu &amp; Posbindu</h3>
-            <p>Posyandu &amp; Posbindu rutin di setiap dusun</p>
-          </div>
-        </div>
-        <div class="sehat-panel-body">
-          <div style="overflow-x:auto;">
-            <table class="jadwal-table">
-              <thead>
-                <tr><th>Dusun</th><th>Lokasi</th><th>Tanggal</th><th>Jam Pelayanan</th></tr>
-              </thead>
-              <tbody id="jadwal-kesehatan-body">
-                <tr><td>Randusari</td><td>Balai Dusun Randusari</td><td>05/03/2026</td><td>09.00 - selesai</td></tr>
-                <tr><td>Kandeman</td><td>Balai Dusun Kandeman</td><td>08/03/2026</td><td>09.00 - selesai</td></tr>
-                <tr><td>Gandok</td><td>Balai Dusun Gandok</td><td>12/03/2026</td><td>09.00 - selesai</td></tr>
-                <tr><td>Kaliongkek</td><td>Balai Dusun Kaliongkek</td><td>15/03/2026</td><td>09.00 - selesai</td></tr>
-                <tr><td>Johosari</td><td>Balai Dusun Johosari</td><td>18/03/2026</td><td>09.00 - selesai</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p class="jadwal-note">
-            <i class="fa-solid fa-circle-info"></i>
-            Jadwal dapat berubah pada hari libur nasional. Konfirmasi ke kader posyandu setempat.
-          </p>
-        </div>
-      </div>
-
-      <!-- Kontak Darurat + Fasilitas -->
-      <div class="sehat-panel m-right m-d2">
-        <div class="sehat-panel-head alt">
-          <div class="ph-ico"><i class="fa-solid fa-phone-volume"></i></div>
-          <div class="ph-txt">
-            <h3>Kontak Darurat &amp; Kesehatan</h3>
-            <p>Hubungi cepat saat keadaan darurat</p>
-          </div>
-        </div>
-        <div class="sehat-panel-body">
-          <div class="kontak-darurat-list" id="kontak-kesehatan-list">
-            <div class="darurat-card">
-              <div class="darurat-icon bidan"><i class="fa-solid fa-user-nurse"></i></div>
-              <div class="darurat-info">
-                <h4>Bidan Desa</h4>
-                <span>Pelayanan KIA &amp; persalinan</span>
-              </div>
-              <!-- TODO: Isi nomor telepon resmi Bidan Desa. -->
-              <a href="tel:0" class="darurat-call" aria-label="Telepon Bidan Desa"><i class="fa-solid fa-phone"></i></a>
-            </div>
-            <div class="darurat-card">
-              <div class="darurat-icon pusk"><i class="fa-solid fa-hospital"></i></div>
-              <div class="darurat-info">
-                <h4>Puskesmas Kandeman</h4>
-                <span>Jl. Raya Kandeman</span>
-              </div>
-              <!-- TODO: Isi nomor telepon resmi Puskesmas Kandeman. -->
-              <a href="tel:0" class="darurat-call" aria-label="Telepon Puskesmas Kandeman"><i class="fa-solid fa-phone"></i></a>
-            </div>
-            <div class="darurat-card">
-              <div class="darurat-icon pusk"><i class="fa-solid fa-house-medical"></i></div>
-              <div class="darurat-info">
-                <h4>Rumah Sakit Rujukan</h4>
-                <span>Rujukan lanjutan dari Puskesmas</span>
-              </div>
-              <!-- TODO: Isi nomor telepon resmi rumah sakit rujukan. -->
-              <a href="tel:0" class="darurat-call" aria-label="Telepon Rumah Sakit Rujukan"><i class="fa-solid fa-phone"></i></a>
-            </div>
-            <div class="darurat-card">
-              <div class="darurat-icon emergency"><i class="fa-solid fa-kit-medical"></i></div>
-              <div class="darurat-info">
-                <h4>PSC 119 Kab. Batang</h4>
-                <span>Pusat panggilan darurat medis</span>
-              </div>
-              <a href="tel:119" class="darurat-call" aria-label="Telepon PSC 119 Kabupaten Batang"><i class="fa-solid fa-phone"></i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="wave-divider" aria-hidden="true">
-    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
-    </svg>
-  </div>
-</section>
-
-
-<!-- ═══════════════════
-     PROFIL DIGITAL UMKM
-═══════════════════ -->
-<section class="section section-cream reveal" id="umkm">
-  <div class="container">
-    <div class="section-header">
-      <div class="eyebrow">Ekonomi Lokal</div>
-      <h2 class="section-title">Profil Digital UMKM Desa</h2>
-      <p class="section-sub">Direktori usaha mikro, kecil, dan menengah warga Desa Kandeman. Dukung produk lokal!</p>
-    </div>
-
-    <div class="umkm-grid" id="umkm-grid">
-      <div class="umkm-card">
-        <div class="umkm-thumb"><span class="umkm-cat">Kuliner</span>🦐</div>
-        <div class="umkm-body">
-          <h3>Terasi Udang Kandeman</h3>
-          <p>Terasi udang khas pesisir, diolah tradisional tanpa pengawet. Tersedia kemasan 100g &amp; 250g.</p>
-          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
-          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20produk%20Terasi%20Udang" target="_blank" rel="noopener noreferrer" class="umkm-wa">
-            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
-          </a>
-        </div>
-      </div>
-      <div class="umkm-card">
-        <div class="umkm-thumb"><span class="umkm-cat">Kuliner</span>🍤</div>
-        <div class="umkm-body">
-          <h3>Kerupuk Ikan Bu Tarni</h3>
-          <p>Kerupuk ikan segar hasil tangkapan nelayan lokal. Renyah, gurih, dan tanpa bahan kimia berbahaya.</p>
-          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
-          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20Kerupuk%20Ikan" target="_blank" rel="noopener noreferrer" class="umkm-wa">
-            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
-          </a>
-        </div>
-      </div>
-      <div class="umkm-card">
-        <div class="umkm-thumb"><span class="umkm-cat">Kerajinan</span>🧺</div>
-        <div class="umkm-body">
-          <h3>Anyaman Bambu Pak Slamet</h3>
-          <p>Kerajinan anyaman bambu: besek, tampah, dan wadah serbaguna. Menerima pesanan partai besar.</p>
-          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
-          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20Anyaman%20Bambu" target="_blank" rel="noopener noreferrer" class="umkm-wa">
-            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
-          </a>
-        </div>
-      </div>
-      <div class="umkm-card">
-        <div class="umkm-thumb"><span class="umkm-cat">Pertanian</span>🌾</div>
-        <div class="umkm-body">
-          <h3>Beras Organik Tani Makmur</h3>
-          <p>Beras organik hasil panen kelompok tani Kandeman. Pulen, sehat, bebas pestisida kimia.</p>
-          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
-          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20Beras%20Organik" target="_blank" rel="noopener noreferrer" class="umkm-wa">
-            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <p style="text-align:center; font-size:12.5px; color:var(--text-muted); margin-top:24px;">
-      <i class="fa-solid fa-store" style="color:var(--emerald);"></i>
-      Punya usaha dan ingin didaftarkan? Hubungi Balai Desa untuk mendaftarkan UMKM Anda.
-    </p>
-  </div>
-
-  <div class="wave-divider" aria-hidden="true">
-    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#fff" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
-    </svg>
-  </div>
-</section>
-
-
-<!-- ═══════════════════
-     PUSAT PEMBUKUAN & KEUANGAN UMKM
-═══════════════════ -->
-<section class="section section-white reveal umkm-finance-preview" id="keuangan-umkm" aria-labelledby="keuangan-umkm-title">
-  <div class="container">
-    <div class="section-header">
-      <div class="eyebrow">Pemberdayaan UMKM</div>
-      <h2 class="section-title" id="keuangan-umkm-title">Pusat Pembukuan &amp; Keuangan UMKM</h2>
-      <p class="section-sub">Kelola keuangan usaha dengan lebih mudah melalui alat bantu pembukuan dan perencanaan keuangan sederhana untuk UMKM Kandeman.</p>
-    </div>
-
-    <div class="umkm-finance-grid" aria-label="Fitur Pusat Pembukuan dan Keuangan UMKM">
-      <article class="umkm-finance-card">
-        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-book-open"></i></div>
-        <h3>Pembukuan Sederhana</h3>
-        <p>Catat pemasukan dan pengeluaran usaha.</p>
-      </article>
-      <article class="umkm-finance-card">
-        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-boxes-stacked"></i></div>
-        <h3>Kalkulator HPP</h3>
-        <p>Hitung biaya produksi per produk.</p>
-      </article>
-      <article class="umkm-finance-card">
-        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-tags"></i></div>
-        <h3>Kalkulator Harga Jual</h3>
-        <p>Tentukan harga jual berdasarkan HPP dan target keuntungan.</p>
-      </article>
-      <article class="umkm-finance-card">
-        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-scale-balanced"></i></div>
-        <h3>Kalkulator BEP</h3>
-        <p>Hitung titik impas usaha.</p>
-      </article>
-      <article class="umkm-finance-card">
-        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-bullseye"></i></div>
-        <h3>Target Laba</h3>
-        <p>Hitung jumlah penjualan yang diperlukan untuk mencapai target keuntungan.</p>
-      </article>
-      <article class="umkm-finance-card">
-        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-chart-column"></i></div>
-        <h3>Laporan Usaha</h3>
-        <p>Lihat ringkasan pemasukan, pengeluaran, saldo, dan laba-rugi.</p>
-      </article>
-    </div>
-
-    <div class="umkm-finance-cta">
-      <div>
-        <span class="umkm-finance-cta-label">Alat bantu usaha SIKANDA</span>
-        <h3>Mulai Kelola Keuangan Usaha</h3>
-        <p>Gunakan alat bantu keuangan sederhana SIKANDA untuk membantu pengelolaan usaha Anda.</p>
-      </div>
-      <a class="umkm-finance-button" href="keuangan-umkm/">
-        Buka Pusat Keuangan UMKM <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-      </a>
-    </div>
-  </div>
-</section>
-
-
-<!-- ═══════════════════
-     PUSAT HUKUM & EDUKASI
-═══════════════════ -->
-<section class="section section-white reveal" id="hukum-edukasi">
-  <div class="container">
-    <div class="section-header">
-      <div class="eyebrow">Hukum & Edukasi</div>
-      <h2 class="section-title">Pusat Hukum & Edukasi Warga</h2>
-      <p class="section-sub">Peraturan Desa dan edukasi perlindungan masyarakat dari kejahatan digital.</p>
-    </div>
-
-    <div class="edukasi-grid">
-      <!-- Peraturan Desa -->
-      <div>
-        <h3 style="font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-gavel" style="color:var(--emerald);"></i> Peraturan Desa (Perdes)
-        </h3>
-        <div class="perdes-list" id="perdes-list">
-          <p class="daftar-kosong"><i class="fa-solid fa-circle-info"></i> Belum ada peraturan desa yang diunggah.</p>
-        </div>
-      </div>
-
-      <!-- Poster Edukasi -->
-      <div>
-        <h3 style="font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-          <i class="fa-solid fa-shield-halved" style="color:var(--emerald);"></i> Waspada Kejahatan Digital
-        </h3>
-        <div class="edukasi-poster-scroll" id="poster-edukasi-list">
-          <div class="poster-card">
-            <div class="poster-thumb warn">
-              <i class="fa-solid fa-hand-holding-dollar"></i>
-              <h4>Bahaya Pinjol Ilegal</h4>
-              <p>Kenali ciri pinjaman online ilegal dan lindungi data pribadimu</p>
-            </div>
-            <div class="poster-label">Pinjaman Online Ilegal</div>
-          </div>
-          <div class="poster-card">
-            <div class="poster-thumb judi">
-              <i class="fa-solid fa-dice"></i>
-              <h4>Stop Judi Online</h4>
-              <p>Judi online merusak ekonomi keluarga dan melanggar hukum</p>
-            </div>
-            <div class="poster-label">Judi Online</div>
-          </div>
-          <div class="poster-card">
-            <div class="poster-thumb tipu">
-              <i class="fa-solid fa-user-secret"></i>
-              <h4>Awas Penipuan Digital</h4>
-              <p>Jangan bagikan OTP, PIN, atau data pribadi ke siapapun</p>
-            </div>
-            <div class="poster-label">Penipuan Online</div>
-          </div>
-        </div>
-        <p style="font-size:11.5px; color:var(--text-muted); margin-top:12px; line-height:1.5;">
-          <i class="fa-solid fa-circle-info" style="color:var(--emerald);"></i>
-          Geser untuk melihat poster lainnya. Laporkan penipuan ke perangkat desa atau hubungi 110.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <div class="wave-divider" aria-hidden="true">
-    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
-    </svg>
-  </div>
-</section>
-
-
-<!-- ═══════════════════
      LAYANAN DESA
 ═══════════════════ -->
 <section class="section section-cream reveal" id="layanan">
@@ -1806,6 +1480,332 @@
   <div class="wave-divider" aria-hidden="true">
     <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path fill="#FFFFFF" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PUSAT LAYANAN KESEHATAN
+═══════════════════ -->
+<section class="section section-white reveal" id="kesehatan">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Kesehatan</div>
+      <h2 class="section-title">Pusat Layanan Kesehatan Desa</h2>
+      <p class="section-sub">Jadwal Posyandu, kontak darurat, dan lokasi fasilitas kesehatan Desa Kandeman.</p>
+    </div>
+
+    <!-- Ringkasan layanan -->
+    <div class="sehat-stats">
+      <div class="sehat-stat">
+        <div class="ss-ico"><i class="fa-solid fa-baby"></i></div>
+        <div class="ss-num">5</div>
+        <div class="ss-lbl">Posyandu &amp; Posbindu aktif tiap bulan</div>
+      </div>
+      <div class="sehat-stat">
+        <div class="ss-ico"><i class="fa-solid fa-house-medical"></i></div>
+        <div class="ss-num">1</div>
+        <div class="ss-lbl">Rumah sakit rujukan terdekat</div>
+      </div>
+      <div class="sehat-stat">
+        <div class="ss-ico"><i class="fa-solid fa-hospital"></i></div>
+        <div class="ss-num">1</div>
+        <div class="ss-lbl">Puskesmas induk di Kandeman</div>
+      </div>
+      <div class="sehat-stat">
+        <div class="ss-ico"><i class="fa-solid fa-user-nurse"></i></div>
+        <div class="ss-num">1</div>
+        <div class="ss-lbl">Bidan desa pelayanan KIA</div>
+      </div>
+    </div>
+
+    <div class="sehat-grid">
+      <!-- Jadwal -->
+      <div class="sehat-panel m-left m-d1">
+        <div class="sehat-panel-head">
+          <div class="ph-ico"><i class="fa-solid fa-calendar-check"></i></div>
+          <div class="ph-txt">
+            <h3>Jadwal Posyandu &amp; Posbindu</h3>
+            <p>Posyandu &amp; Posbindu rutin di setiap dusun</p>
+          </div>
+        </div>
+        <div class="sehat-panel-body">
+          <div style="overflow-x:auto;">
+            <table class="jadwal-table">
+              <thead>
+                <tr><th>Dusun</th><th>Lokasi</th><th>Tanggal</th><th>Jam Pelayanan</th></tr>
+              </thead>
+              <tbody id="jadwal-kesehatan-body">
+                <tr><td>Randusari</td><td>Balai Dusun Randusari</td><td>05/03/2026</td><td>09.00 - selesai</td></tr>
+                <tr><td>Kandeman</td><td>Balai Dusun Kandeman</td><td>08/03/2026</td><td>09.00 - selesai</td></tr>
+                <tr><td>Gandok</td><td>Balai Dusun Gandok</td><td>12/03/2026</td><td>09.00 - selesai</td></tr>
+                <tr><td>Kaliongkek</td><td>Balai Dusun Kaliongkek</td><td>15/03/2026</td><td>09.00 - selesai</td></tr>
+                <tr><td>Johosari</td><td>Balai Dusun Johosari</td><td>18/03/2026</td><td>09.00 - selesai</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="jadwal-note">
+            <i class="fa-solid fa-circle-info"></i>
+            Jadwal dapat berubah pada hari libur nasional. Konfirmasi ke kader posyandu setempat.
+          </p>
+        </div>
+      </div>
+
+      <!-- Kontak Darurat + Fasilitas -->
+      <div class="sehat-panel m-right m-d2">
+        <div class="sehat-panel-head alt">
+          <div class="ph-ico"><i class="fa-solid fa-phone-volume"></i></div>
+          <div class="ph-txt">
+            <h3>Kontak Darurat &amp; Kesehatan</h3>
+            <p>Hubungi cepat saat keadaan darurat</p>
+          </div>
+        </div>
+        <div class="sehat-panel-body">
+          <div class="kontak-darurat-list" id="kontak-kesehatan-list">
+            <div class="darurat-card">
+              <div class="darurat-icon bidan"><i class="fa-solid fa-user-nurse"></i></div>
+              <div class="darurat-info">
+                <h4>Bidan Desa</h4>
+                <span>Pelayanan KIA &amp; persalinan</span>
+              </div>
+              <!-- TODO: Isi nomor telepon resmi Bidan Desa. -->
+              <a href="tel:0" class="darurat-call" aria-label="Telepon Bidan Desa"><i class="fa-solid fa-phone"></i></a>
+            </div>
+            <div class="darurat-card">
+              <div class="darurat-icon pusk"><i class="fa-solid fa-hospital"></i></div>
+              <div class="darurat-info">
+                <h4>Puskesmas Kandeman</h4>
+                <span>Jl. Raya Kandeman</span>
+              </div>
+              <!-- TODO: Isi nomor telepon resmi Puskesmas Kandeman. -->
+              <a href="tel:0" class="darurat-call" aria-label="Telepon Puskesmas Kandeman"><i class="fa-solid fa-phone"></i></a>
+            </div>
+            <div class="darurat-card">
+              <div class="darurat-icon pusk"><i class="fa-solid fa-house-medical"></i></div>
+              <div class="darurat-info">
+                <h4>Rumah Sakit Rujukan</h4>
+                <span>Rujukan lanjutan dari Puskesmas</span>
+              </div>
+              <!-- TODO: Isi nomor telepon resmi rumah sakit rujukan. -->
+              <a href="tel:0" class="darurat-call" aria-label="Telepon Rumah Sakit Rujukan"><i class="fa-solid fa-phone"></i></a>
+            </div>
+            <div class="darurat-card">
+              <div class="darurat-icon emergency"><i class="fa-solid fa-kit-medical"></i></div>
+              <div class="darurat-info">
+                <h4>PSC 119 Kab. Batang</h4>
+                <span>Pusat panggilan darurat medis</span>
+              </div>
+              <a href="tel:119" class="darurat-call" aria-label="Telepon PSC 119 Kabupaten Batang"><i class="fa-solid fa-phone"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PROFIL DIGITAL UMKM
+═══════════════════ -->
+<section class="section section-cream reveal" id="umkm">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Ekonomi Lokal</div>
+      <h2 class="section-title">Profil Digital UMKM Desa</h2>
+      <p class="section-sub">Direktori usaha mikro, kecil, dan menengah warga Desa Kandeman. Dukung produk lokal!</p>
+    </div>
+
+    <div class="umkm-grid" id="umkm-grid">
+      <div class="umkm-card">
+        <div class="umkm-thumb"><span class="umkm-cat">Kuliner</span>🦐</div>
+        <div class="umkm-body">
+          <h3>Terasi Udang Kandeman</h3>
+          <p>Terasi udang khas pesisir, diolah tradisional tanpa pengawet. Tersedia kemasan 100g &amp; 250g.</p>
+          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
+          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20produk%20Terasi%20Udang" target="_blank" rel="noopener noreferrer" class="umkm-wa">
+            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
+          </a>
+        </div>
+      </div>
+      <div class="umkm-card">
+        <div class="umkm-thumb"><span class="umkm-cat">Kuliner</span>🍤</div>
+        <div class="umkm-body">
+          <h3>Kerupuk Ikan Bu Tarni</h3>
+          <p>Kerupuk ikan segar hasil tangkapan nelayan lokal. Renyah, gurih, dan tanpa bahan kimia berbahaya.</p>
+          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
+          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20Kerupuk%20Ikan" target="_blank" rel="noopener noreferrer" class="umkm-wa">
+            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
+          </a>
+        </div>
+      </div>
+      <div class="umkm-card">
+        <div class="umkm-thumb"><span class="umkm-cat">Kerajinan</span>🧺</div>
+        <div class="umkm-body">
+          <h3>Anyaman Bambu Pak Slamet</h3>
+          <p>Kerajinan anyaman bambu: besek, tampah, dan wadah serbaguna. Menerima pesanan partai besar.</p>
+          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
+          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20Anyaman%20Bambu" target="_blank" rel="noopener noreferrer" class="umkm-wa">
+            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
+          </a>
+        </div>
+      </div>
+      <div class="umkm-card">
+        <div class="umkm-thumb"><span class="umkm-cat">Pertanian</span>🌾</div>
+        <div class="umkm-body">
+          <h3>Beras Organik Tani Makmur</h3>
+          <p>Beras organik hasil panen kelompok tani Kandeman. Pulen, sehat, bebas pestisida kimia.</p>
+          <!-- TODO: Isi nomor WhatsApp resmi pelaku UMKM. -->
+          <a href="https://wa.me/62?text=Halo,%20saya%20tertarik%20dengan%20Beras%20Organik" target="_blank" rel="noopener noreferrer" class="umkm-wa">
+            <i class="fa-brands fa-whatsapp"></i> Hubungi Penjual
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; font-size:12.5px; color:var(--text-muted); margin-top:24px;">
+      <i class="fa-solid fa-store" style="color:var(--emerald);"></i>
+      Punya usaha dan ingin didaftarkan? Hubungi Balai Desa untuk mendaftarkan UMKM Anda.
+    </p>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#fff" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PUSAT PEMBUKUAN & KEUANGAN UMKM
+═══════════════════ -->
+<section class="section section-white reveal umkm-finance-preview" id="keuangan-umkm" aria-labelledby="keuangan-umkm-title">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Pemberdayaan UMKM</div>
+      <h2 class="section-title" id="keuangan-umkm-title">Pusat Pembukuan &amp; Keuangan UMKM</h2>
+      <p class="section-sub">Kelola keuangan usaha dengan lebih mudah melalui alat bantu pembukuan dan perencanaan keuangan sederhana untuk UMKM Kandeman.</p>
+    </div>
+
+    <div class="umkm-finance-grid" aria-label="Fitur Pusat Pembukuan dan Keuangan UMKM">
+      <article class="umkm-finance-card">
+        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-book-open"></i></div>
+        <h3>Pembukuan Sederhana</h3>
+        <p>Catat pemasukan dan pengeluaran usaha.</p>
+      </article>
+      <article class="umkm-finance-card">
+        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-boxes-stacked"></i></div>
+        <h3>Kalkulator HPP</h3>
+        <p>Hitung biaya produksi per produk.</p>
+      </article>
+      <article class="umkm-finance-card">
+        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-tags"></i></div>
+        <h3>Kalkulator Harga Jual</h3>
+        <p>Tentukan harga jual berdasarkan HPP dan target keuntungan.</p>
+      </article>
+      <article class="umkm-finance-card">
+        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-scale-balanced"></i></div>
+        <h3>Kalkulator BEP</h3>
+        <p>Hitung titik impas usaha.</p>
+      </article>
+      <article class="umkm-finance-card">
+        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-bullseye"></i></div>
+        <h3>Target Laba</h3>
+        <p>Hitung jumlah penjualan yang diperlukan untuk mencapai target keuntungan.</p>
+      </article>
+      <article class="umkm-finance-card">
+        <div class="umkm-finance-icon" aria-hidden="true"><i class="fa-solid fa-chart-column"></i></div>
+        <h3>Laporan Usaha</h3>
+        <p>Lihat ringkasan pemasukan, pengeluaran, saldo, dan laba-rugi.</p>
+      </article>
+    </div>
+
+    <div class="umkm-finance-cta">
+      <div>
+        <span class="umkm-finance-cta-label">Alat bantu usaha SIKANDA</span>
+        <h3>Mulai Kelola Keuangan Usaha</h3>
+        <p>Gunakan alat bantu keuangan sederhana SIKANDA untuk membantu pengelolaan usaha Anda.</p>
+      </div>
+      <a class="umkm-finance-button" href="keuangan-umkm/">
+        Buka Pusat Keuangan UMKM <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
+     PUSAT HUKUM & EDUKASI
+═══════════════════ -->
+<section class="section section-white reveal" id="hukum-edukasi">
+  <div class="container">
+    <div class="section-header">
+      <div class="eyebrow">Hukum & Edukasi</div>
+      <h2 class="section-title">Pusat Hukum & Edukasi Warga</h2>
+      <p class="section-sub">Peraturan Desa dan edukasi perlindungan masyarakat dari kejahatan digital.</p>
+    </div>
+
+    <div class="edukasi-grid">
+      <!-- Peraturan Desa -->
+      <div>
+        <h3 style="font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-gavel" style="color:var(--emerald);"></i> Peraturan Desa (Perdes)
+        </h3>
+        <div class="perdes-list" id="perdes-list">
+          <p class="daftar-kosong"><i class="fa-solid fa-circle-info"></i> Belum ada peraturan desa yang diunggah.</p>
+        </div>
+      </div>
+
+      <!-- Poster Edukasi -->
+      <div>
+        <h3 style="font-size:16px; font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-shield-halved" style="color:var(--emerald);"></i> Waspada Kejahatan Digital
+        </h3>
+        <div class="edukasi-poster-scroll" id="poster-edukasi-list">
+          <div class="poster-card">
+            <div class="poster-thumb warn">
+              <i class="fa-solid fa-hand-holding-dollar"></i>
+              <h4>Bahaya Pinjol Ilegal</h4>
+              <p>Kenali ciri pinjaman online ilegal dan lindungi data pribadimu</p>
+            </div>
+            <div class="poster-label">Pinjaman Online Ilegal</div>
+          </div>
+          <div class="poster-card">
+            <div class="poster-thumb judi">
+              <i class="fa-solid fa-dice"></i>
+              <h4>Stop Judi Online</h4>
+              <p>Judi online merusak ekonomi keluarga dan melanggar hukum</p>
+            </div>
+            <div class="poster-label">Judi Online</div>
+          </div>
+          <div class="poster-card">
+            <div class="poster-thumb tipu">
+              <i class="fa-solid fa-user-secret"></i>
+              <h4>Awas Penipuan Digital</h4>
+              <p>Jangan bagikan OTP, PIN, atau data pribadi ke siapapun</p>
+            </div>
+            <div class="poster-label">Penipuan Online</div>
+          </div>
+        </div>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:12px; line-height:1.5;">
+          <i class="fa-solid fa-circle-info" style="color:var(--emerald);"></i>
+          Geser untuk melihat poster lainnya. Laporkan penipuan ke perangkat desa atau hubungi 110.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#F5F1EA" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
     </svg>
   </div>
 </section>
