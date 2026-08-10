@@ -358,19 +358,6 @@ function handleTarget(event) {
   showMessage('target-message', 'Perhitungan selesai.', 'success');
 }
 
-function downloadTemplate() {
-  const csv = '\uFEFFTanggal,Jenis Transaksi,Kategori,Keterangan,Nominal\r\n';
-  const file = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(file);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'template-pembukuan-umkm-sikanda.csv';
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
 function setDefaultDate() {
   const input = byId('transaction-date');
   if (!input || input.value) return;
@@ -417,7 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
   byId('selling-form')?.addEventListener('submit', handleSelling);
   byId('bep-form')?.addEventListener('submit', handleBep);
   byId('target-form')?.addEventListener('submit', handleTarget);
-  byId('download-template')?.addEventListener('click', downloadTemplate);
 });
 
 window.addEventListener('storage', event => {
