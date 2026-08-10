@@ -3076,6 +3076,133 @@
     }
 
     /* ══════════════════════════════════════
+       PREVIEW PEMBUKUAN & KEUANGAN UMKM
+       Terisolasi dari transparansi APBDes.
+    ══════════════════════════════════════ */
+    .umkm-finance-preview {
+      border-bottom: 1px solid rgba(221,216,207,.72);
+    }
+    .umkm-finance-preview .section-header { max-width: 760px; }
+    .umkm-finance-preview .section-sub { max-width: 720px; }
+    .umkm-finance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .umkm-finance-card {
+      min-width: 0;
+      min-height: 190px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      transition: transform .24s cubic-bezier(.22,1,.36,1), border-color .24s ease, background .24s ease;
+    }
+    .umkm-finance-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(28,107,62,.36);
+      background: #FFFEFB;
+    }
+    .umkm-finance-card:focus-within { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .umkm-finance-icon {
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+      border-radius: 11px;
+      background: var(--teal-pale);
+      color: var(--emerald);
+      font-size: 17px;
+      transition: transform .24s cubic-bezier(.22,1,.36,1);
+    }
+    .umkm-finance-card:hover .umkm-finance-icon { transform: translateY(-2px); }
+    .umkm-finance-card h3 {
+      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 650;
+      line-height: 1.35;
+      color: var(--text);
+      text-wrap: balance;
+    }
+    .umkm-finance-card p {
+      max-width: 34ch;
+      color: var(--text-sec);
+      font-size: 13.5px;
+      line-height: 1.65;
+      text-wrap: pretty;
+    }
+    .umkm-finance-cta {
+      margin-top: 28px;
+      padding: 30px 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 32px;
+      background: var(--forest);
+      border-radius: var(--r-lg);
+      color: #fff;
+    }
+    .umkm-finance-cta-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--mint);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .umkm-finance-cta h3 {
+      margin-bottom: 6px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(27px, 3vw, 34px);
+      line-height: 1.12;
+    }
+    .umkm-finance-cta p {
+      max-width: 660px;
+      color: rgba(255,255,255,.68);
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+    .umkm-finance-button {
+      min-height: 48px;
+      padding: 12px 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--forest);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.25;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform .2s ease, background .2s ease;
+    }
+    .umkm-finance-button:hover { transform: translateY(-2px); background: var(--gold-pale); }
+    .umkm-finance-button:active { transform: translateY(0) scale(.98); }
+    .umkm-finance-button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+    @media (max-width: 900px) {
+      .umkm-finance-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .umkm-finance-cta { grid-template-columns: 1fr; gap: 22px; }
+      .umkm-finance-button { justify-self: start; }
+    }
+    @media (max-width: 640px) {
+      .umkm-finance-grid { grid-template-columns: 1fr; gap: 14px; }
+      .umkm-finance-card { min-height: 0; padding: 22px; }
+      .umkm-finance-icon { margin-bottom: 18px; }
+      .umkm-finance-cta { margin-top: 20px; padding: 25px 22px; border-radius: 16px; }
+      .umkm-finance-button { width: 100%; white-space: normal; }
+    }
+
+    /* ══════════════════════════════════════
        MODAL DETAIL UMKM
     ══════════════════════════════════════ */
     .umkm-modal {
