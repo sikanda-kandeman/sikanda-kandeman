@@ -1821,6 +1821,25 @@ async function loadDusun() {
   renderBerandaDusun(data || []);
 }
 
+let _potensiPhotoList = [];
+
+function openPotensiLightbox(index) {
+  openLightbox(index, _potensiPhotoList);
+}
+
+function handlePotensiImageError(image) {
+  const trigger = image.closest('.potensi-thumb');
+  if (!trigger) return;
+  const fallback = document.createElement('span');
+  fallback.textContent = trigger.dataset.fallback || '🌾';
+  fallback.setAttribute('aria-hidden', 'true');
+  image.replaceWith(fallback);
+  trigger.removeAttribute('onclick');
+  trigger.removeAttribute('aria-label');
+  trigger.querySelector('.potensi-photo-action')?.remove();
+  if (trigger.tagName === 'BUTTON') trigger.disabled = true;
+}
+
 async function loadPotensi() {
   const el = document.getElementById('potensi-grid');
   if (!el) return;
@@ -1835,19 +1854,42 @@ async function loadPotensi() {
     return;
   }
   if (!data || data.length === 0) {
+    _potensiPhotoList = [];
     renderDataState(el, 'empty', 'Belum ada data potensi desa yang dipublikasikan.');
     return;
   }
 
-  el.innerHTML = data.map(p => {
-    const thumb = p.foto_url
-      ? `<img src="${safeUrl(p.foto_url)}" alt="${escHtml(p.nama)}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='${escHtml(p.emoji||'🌾')}'" />`
-      : escHtml(p.emoji || '🌾');
+  const photoIndexByItem = new Map();
+  _potensiPhotoList = [];
+  data.forEach((p, itemIndex) => {
+    const rawPhoto = String(p.foto_url || '').trim();
+    if (!/^(https?:|\/|data:image\/)/i.test(rawPhoto)) return;
+    photoIndexByItem.set(itemIndex, _potensiPhotoList.length);
+    _potensiPhotoList.push({ src: rawPhoto, judul: p.nama || '' });
+  });
+
+  el.innerHTML = data.map((p, itemIndex) => {
+    const photoIndex = photoIndexByItem.get(itemIndex);
+    const hasPhoto = Number.isInteger(photoIndex);
+    const title = escHtml(p.nama);
+    const fallback = escHtml(p.emoji || '🌾');
+    const visual = hasPhoto
+      ? `<button type="button" class="potensi-thumb ${potensiClass(p.kategori)}"
+          data-fallback="${fallback}" aria-label="Buka foto: ${title}"
+          onclick="openPotensiLightbox(${photoIndex})">
+          <img src="${safeUrl(p.foto_url)}" alt="Foto potensi ${title}" loading="lazy" decoding="async"
+            onerror="handlePotensiImageError(this)" />
+          <span class="potensi-photo-action" aria-hidden="true"><i class="fa-solid fa-expand"></i></span>
+          <h3 class="potensi-photo-title">${title}</h3>
+        </button>`
+      : `<div class="potensi-thumb ${potensiClass(p.kategori)}">
+          <span aria-hidden="true">${fallback}</span>
+          <h3 class="potensi-photo-title">${title}</h3>
+        </div>`;
     return `
     <div class="potensi-card">
-      <div class="potensi-thumb ${potensiClass(p.kategori)}" style="font-size:32px;display:flex;align-items:center;justify-content:center;">${thumb}</div>
+      ${visual}
       <div class="potensi-body">
-        <h3>${escHtml(p.nama)}</h3>
         <p>${escHtml(p.deskripsi)}</p>
       </div>
     </div>`;
