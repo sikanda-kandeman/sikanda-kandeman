@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self';
+             script-src 'self';
+             style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+             font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+             img-src 'self' data:;" />
+  <title>Pusat Pembukuan &amp; Keuangan UMKM — SIKANDA</title>
+  <meta name="description" content="Alat bantu pembukuan dan perencanaan keuangan sederhana bagi pelaku UMKM Desa Kandeman." />
+  <meta name="theme-color" content="#0D2B1A" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2096%2096'%3E%3Ccircle%20cx='48'%20cy='48'%20r='46'%20fill='%230D2B1A'/%3E%3Crect%20x='45'%20y='38'%20width='6'%20height='26'%20rx='2'%20fill='%236B4423'/%3E%3Ccircle%20cx='48'%20cy='30'%20r='18'%20fill='%233D8B54'/%3E%3Ccircle%20cx='35'%20cy='38'%20r='11'%20fill='%234A9C61'/%3E%3Ccircle%20cx='61'%20cy='38'%20r='11'%20fill='%234A9C61'/%3E%3Cpath%20d='M14,66%20Q28,58%2048,64%20Q68,70%2082,60%20L82,90%20L14,90%20Z'%20fill='%231E5C94'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=DM+Sans:wght@400;500;600;700&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/css/keuangan-umkm.css?v=20260810-keuangan-umkm-v12" />
+</head>
+<body>
+  <a class="skip-link" href="#konten-utama">Lewati ke konten utama</a>
+
+  <header class="finance-header">
+    <div class="finance-container finance-header-inner">
+      <a class="finance-brand" href="../index.html#keuangan-umkm" aria-label="Kembali ke SIKANDA">
+        <span class="finance-logo"><img src="../assets/images/logo-desa.png" alt="Logo Desa Kandeman" /></span>
+        <span>
+          <strong>SIKANDA</strong>
+          <small>Desa Kandeman</small>
+        </span>
+      </a>
+      <a class="back-link" href="../index.html#keuangan-umkm">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kembali ke website
+      </a>
+    </div>
+  </header>
+
+  <main id="konten-utama">
+    <section class="finance-hero" aria-labelledby="page-title">
+      <div class="finance-container finance-hero-grid">
+        <div>
+          <span class="finance-eyebrow">Pemberdayaan UMKM Kandeman</span>
+          <h1 id="page-title">Pusat Pembukuan &amp;<br />Keuangan UMKM</h1>
+          <p>Catat transaksi, hitung biaya produksi, tentukan harga jual, dan susun target usaha dengan langkah yang mudah dipahami.</p>
+        </div>
+        <aside class="privacy-note" aria-label="Informasi penyimpanan data">
+          <span class="privacy-note-icon" aria-hidden="true"><i class="fa-solid fa-mobile-screen-button"></i></span>
+          <div>
+            <strong>Data tersimpan di perangkat ini</strong>
+            <p>Catatan usaha tidak masuk ke data APBDes dan hanya tersimpan pada browser yang sedang digunakan.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <nav class="finance-nav" aria-label="Navigasi Pusat Keuangan UMKM">
+      <div class="finance-container finance-nav-scroll">
+        <a href="#ringkasan" class="finance-nav-link active"><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> Ringkasan</a>
+        <a href="#pembukuan" class="finance-nav-link"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Pembukuan</a>
+        <a href="#kalkulator" class="finance-nav-link"><i class="fa-solid fa-calculator" aria-hidden="true"></i> Kalkulator</a>
+        <a href="#laporan" class="finance-nav-link"><i class="fa-solid fa-chart-column" aria-hidden="true"></i> Laporan</a>
+        <a href="#template" class="finance-nav-link"><i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i> Template</a>
+      </div>
+    </nav>
+
+    <section class="finance-section" id="ringkasan" aria-labelledby="ringkasan-title">
+      <div class="finance-container">
+        <div class="finance-section-heading">
+          <span>Ringkasan usaha</span>
+          <h2 id="ringkasan-title">Kondisi keuangan dalam satu pandangan</h2>
+          <p>Nilai berikut dihitung otomatis dari transaksi yang Anda catat pada pembukuan.</p>
+        </div>
+        <div class="summary-grid" aria-live="polite">
+          <article class="summary-card income">
+            <span class="summary-icon" aria-hidden="true"><i class="fa-solid fa-arrow-trend-up"></i></span>
+            <p>Total Pemasukan</p>
+            <strong id="summary-income">Rp0</strong>
+          </article>
+          <article class="summary-card expense">
+            <span class="summary-icon" aria-hidden="true"><i class="fa-solid fa-arrow-trend-down"></i></span>
+            <p>Total Pengeluaran</p>
+            <strong id="summary-expense">Rp0</strong>
+          </article>
+          <article class="summary-card balance">
+            <span class="summary-icon" aria-hidden="true"><i class="fa-solid fa-wallet"></i></span>
+            <p>Saldo</p>
+            <strong id="summary-balance">Rp0</strong>
+          </article>
+          <article class="summary-card profit">
+            <span class="summary-icon" aria-hidden="true"><i class="fa-solid fa-scale-balanced"></i></span>
+            <p>Estimasi Laba/Rugi</p>
+            <strong id="summary-profit">Rp0</strong>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="finance-section finance-section-alt" id="pembukuan" aria-labelledby="pembukuan-title">
+      <div class="finance-container">
+        <div class="finance-section-heading">
+          <span>Pembukuan sederhana</span>
+          <h2 id="pembukuan-title">Catat pemasukan dan pengeluaran</h2>
+          <p>Masukkan setiap transaksi usaha secara rutin agar ringkasan keuangan tetap mudah dipantau.</p>
+        </div>
+
+        <div class="bookkeeping-layout">
+          <form class="finance-panel transaction-form" id="transaction-form" novalidate>
+            <div class="panel-heading">
+              <span class="panel-heading-icon" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
+              <div>
+                <h3>Tambah transaksi</h3>
+                <p>Isi seluruh data transaksi dengan benar.</p>
+              </div>
+            </div>
+            <div class="form-grid two-columns">
+              <div class="field-group">
+                <label for="transaction-date">Tanggal</label>
+                <input id="transaction-date" name="date" type="date" required />
+              </div>
+              <div class="field-group">
+                <label for="transaction-type">Jenis transaksi</label>
+                <select id="transaction-type" name="type" required>
+                  <option value="">Pilih jenis</option>
+                  <option value="pemasukan">Pemasukan</option>
+                  <option value="pengeluaran">Pengeluaran</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="transaction-category">Kategori</label>
+                <select id="transaction-category" name="category" required>
+                  <option value="">Pilih kategori</option>
+                  <option value="Penjualan">Penjualan</option>
+                  <option value="Modal">Modal</option>
+                  <option value="Bahan baku">Bahan baku</option>
+                  <option value="Operasional">Operasional</option>
+                  <option value="Transportasi">Transportasi</option>
+                  <option value="Kemasan">Kemasan</option>
+                  <option value="Upah">Upah</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="transaction-amount">Nominal</label>
+                <div class="input-prefix"><span>Rp</span><input id="transaction-amount" name="amount" type="number" min="0" step="1000" inputmode="numeric" placeholder="0" required /></div>
+              </div>
+              <div class="field-group full-width">
+                <label for="transaction-description">Keterangan</label>
+                <input id="transaction-description" name="description" type="text" maxlength="100" placeholder="Contoh: Penjualan keripik 20 bungkus" required />
+              </div>
+            </div>
+            <p class="form-message" id="transaction-message" role="alert"></p>
+            <button class="primary-button" type="submit"><i class="fa-solid fa-plus" aria-hidden="true"></i> Tambahkan Transaksi</button>
+          </form>
+
+          <div class="finance-panel transaction-list-panel">
+            <div class="panel-heading panel-heading-row">
+              <div class="panel-heading-group">
+                <span class="panel-heading-icon" aria-hidden="true"><i class="fa-solid fa-receipt"></i></span>
+                <div>
+                  <h3>Daftar transaksi</h3>
+                  <p id="transaction-count">0 transaksi tercatat</p>
+                </div>
+              </div>
+            </div>
+            <div class="empty-state" id="transaction-empty">
+              <span aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
+              <p><strong>Belum ada transaksi.</strong> Tambahkan transaksi pertama untuk mulai membuat pembukuan usaha.</p>
+            </div>
+            <div class="table-scroll" id="transaction-table-wrap" hidden>
+              <table class="transaction-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Tanggal</th>
+                    <th scope="col">Jenis</th>
+                    <th scope="col">Kategori</th>
+                    <th scope="col">Keterangan</th>
+                    <th scope="col">Nominal</th>
+                    <th scope="col"><span class="sr-only">Aksi</span></th>
+                  </tr>
+                </thead>
+                <tbody id="transaction-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="finance-section" id="kalkulator" aria-labelledby="kalkulator-title">
+      <div class="finance-container">
+        <div class="finance-section-heading">
+          <span>Perencanaan usaha</span>
+          <h2 id="kalkulator-title">Kalkulator keuangan UMKM</h2>
+          <p>Gunakan alat hitung sesuai kebutuhan. Masukkan angka tanpa tanda titik atau simbol Rupiah.</p>
+        </div>
+
+        <div class="calculator-stack">
+          <article class="calculator-panel" id="kalkulator-hpp">
+            <div class="calculator-copy">
+              <span class="calculator-number">01</span>
+              <div>
+                <h3>Kalkulator HPP</h3>
+                <p>HPP adalah biaya rata-rata untuk menghasilkan satu produk.</p>
+              </div>
+            </div>
+            <form class="calculator-form" id="hpp-form" novalidate>
+              <div class="form-grid two-columns">
+                <div class="field-group"><label for="hpp-material">Biaya bahan baku</label><div class="input-prefix"><span>Rp</span><input id="hpp-material" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="hpp-labor">Tenaga kerja</label><div class="input-prefix"><span>Rp</span><input id="hpp-labor" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="hpp-operational">Biaya operasional</label><div class="input-prefix"><span>Rp</span><input id="hpp-operational" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="hpp-packaging">Kemasan</label><div class="input-prefix"><span>Rp</span><input id="hpp-packaging" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="hpp-other">Biaya lainnya</label><div class="input-prefix"><span>Rp</span><input id="hpp-other" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="hpp-quantity">Jumlah produk</label><input id="hpp-quantity" type="number" min="0" step="1" placeholder="0" required /></div>
+              </div>
+              <p class="form-message" id="hpp-message" role="alert"></p>
+              <button class="secondary-button" type="submit">Hitung HPP</button>
+            </form>
+            <div class="calculator-results" aria-live="polite">
+              <div><span>Total Biaya Produksi</span><strong id="hpp-total">Rp0</strong></div>
+              <div><span>HPP per Produk</span><strong id="hpp-unit">Rp0</strong></div>
+            </div>
+          </article>
+
+          <article class="calculator-panel" id="kalkulator-harga-jual">
+            <div class="calculator-copy">
+              <span class="calculator-number">02</span>
+              <div>
+                <h3>Kalkulator Harga Jual</h3>
+                <p>Tambahkan target keuntungan terhadap HPP untuk memperoleh rekomendasi harga jual.</p>
+              </div>
+            </div>
+            <form class="calculator-form" id="selling-form" novalidate>
+              <div class="form-grid two-columns">
+                <div class="field-group"><label for="selling-hpp">HPP per produk</label><div class="input-prefix"><span>Rp</span><input id="selling-hpp" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="selling-margin">Target keuntungan</label><div class="input-suffix"><input id="selling-margin" type="number" min="0" step="0.1" placeholder="0" required /><span>%</span></div></div>
+              </div>
+              <p class="form-message" id="selling-message" role="alert"></p>
+              <button class="secondary-button" type="submit">Hitung Harga Jual</button>
+            </form>
+            <div class="calculator-results single" aria-live="polite">
+              <div><span>Rekomendasi Harga Jual</span><strong id="selling-result">Rp0</strong></div>
+            </div>
+          </article>
+
+          <article class="calculator-panel" id="kalkulator-bep">
+            <div class="calculator-copy">
+              <span class="calculator-number">03</span>
+              <div>
+                <h3>Kalkulator BEP</h3>
+                <p>BEP adalah jumlah penjualan minimum agar pendapatan dapat menutup seluruh biaya.</p>
+              </div>
+            </div>
+            <form class="calculator-form" id="bep-form" novalidate>
+              <div class="form-grid three-columns">
+                <div class="field-group"><label for="bep-fixed">Biaya tetap</label><div class="input-prefix"><span>Rp</span><input id="bep-fixed" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="bep-price">Harga jual per unit</label><div class="input-prefix"><span>Rp</span><input id="bep-price" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="bep-variable">Biaya variabel per unit</label><div class="input-prefix"><span>Rp</span><input id="bep-variable" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+              </div>
+              <p class="form-message" id="bep-message" role="alert"></p>
+              <button class="secondary-button" type="submit">Hitung BEP</button>
+            </form>
+            <div class="calculator-results" aria-live="polite">
+              <div><span>BEP Unit</span><strong id="bep-unit">0 unit</strong></div>
+              <div><span>BEP Rupiah</span><strong id="bep-rupiah">Rp0</strong></div>
+            </div>
+          </article>
+
+          <article class="calculator-panel" id="kalkulator-target">
+            <div class="calculator-copy">
+              <span class="calculator-number">04</span>
+              <div>
+                <h3>Target Laba</h3>
+                <p>Perkirakan jumlah produk yang perlu dijual untuk mencapai target keuntungan bulanan.</p>
+              </div>
+            </div>
+            <form class="calculator-form" id="target-form" novalidate>
+              <div class="form-grid three-columns">
+                <div class="field-group"><label for="target-profit">Target laba</label><div class="input-prefix"><span>Rp</span><input id="target-profit" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="target-price">Harga jual</label><div class="input-prefix"><span>Rp</span><input id="target-price" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+                <div class="field-group"><label for="target-cost">Biaya per produk</label><div class="input-prefix"><span>Rp</span><input id="target-cost" type="number" min="0" step="1000" placeholder="0" required /></div></div>
+              </div>
+              <p class="form-message" id="target-message" role="alert"></p>
+              <button class="secondary-button" type="submit">Hitung Target Penjualan</button>
+            </form>
+            <div class="calculator-results" aria-live="polite">
+              <div><span>Target Penjualan per Bulan</span><strong id="target-month">0 produk</strong></div>
+              <div><span>Estimasi Penjualan per Hari</span><strong id="target-day">0 produk</strong></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="finance-section finance-section-alt" id="laporan" aria-labelledby="laporan-title">
+      <div class="finance-container">
+        <div class="finance-section-heading">
+          <span>Laporan usaha</span>
+          <h2 id="laporan-title">Ringkasan hasil pencatatan</h2>
+          <p>Laporan sederhana ini diperbarui otomatis setiap kali transaksi ditambahkan atau dihapus.</p>
+        </div>
+        <div class="report-panel">
+          <div class="report-row"><span>Pemasukan</span><strong id="report-income">Rp0</strong></div>
+          <div class="report-row"><span>Pengeluaran</span><strong id="report-expense">Rp0</strong></div>
+          <div class="report-row report-total"><span>Saldo</span><strong id="report-balance">Rp0</strong></div>
+          <div class="report-row report-result"><span>Laba/Rugi</span><strong id="report-profit">Rp0</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="finance-section" id="template" aria-labelledby="template-title">
+      <div class="finance-container">
+        <div class="template-panel">
+          <div class="template-icon" aria-hidden="true"><i class="fa-solid fa-file-csv"></i></div>
+          <div>
+            <span class="template-label">Template pembukuan</span>
+            <h2 id="template-title">Catat transaksi menggunakan lembar sederhana</h2>
+            <p>Unduh template berformat CSV dengan kolom tanggal, jenis transaksi, kategori, keterangan, dan nominal.</p>
+          </div>
+          <button class="outline-button" id="download-template" type="button"><i class="fa-solid fa-download" aria-hidden="true"></i> Unduh Template</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="finance-footer">
+    <div class="finance-container">
+      <p>© 2026 <strong>SIKANDA</strong> — Sistem Informasi Kandeman Digital</p>
+      <a href="../index.html#keuangan-umkm">Kembali ke Pusat Keuangan UMKM</a>
+    </div>
+  </footer>
+
+  <script src="../assets/js/keuangan-umkm.js?v=20260810-keuangan-umkm-v12" defer></script>
+</body>
+</html>
