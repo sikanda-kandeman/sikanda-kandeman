@@ -227,7 +227,6 @@
         <a href="#galeri"><i class="fa-solid fa-images"></i> Galeri</a>
         <a href="#agenda"><i class="fa-solid fa-calendar-days"></i> Agenda Desa</a>
         <a href="#statistik"><i class="fa-solid fa-chart-pie"></i> Statistik Warga</a>
-        <a href="#aspirasi"><i class="fa-solid fa-comment-dots"></i> Kirim Aspirasi</a>
       </div>
     </li>
 
@@ -242,7 +241,13 @@
     </li>
 
     <li class="nav-item">
-      <a href="#kontak">Hubungi Kami</a>
+      <a href="#kontak" onclick="handleDropdownClick(event, this)">
+        Hubungi Kami <i class="fa-solid fa-chevron-down caret"></i>
+      </a>
+      <div class="dropdown">
+        <a href="#aspirasi"><i class="fa-solid fa-comment-dots"></i> Kirim Aspirasi</a>
+        <a href="#kontak"><i class="fa-solid fa-address-book"></i> Kontak &amp; Lokasi</a>
+      </div>
     </li>
 
   </ul>
@@ -1857,48 +1862,6 @@
 
 
 <!-- ═══════════════════
-     PRESTASI
-═══════════════════ -->
-<section class="section section-cream reveal" id="prestasi">
-  <div class="container">
-    <div class="section-header" id="penghargaan">
-      <div class="eyebrow">Capaian</div>
-      <h2 class="section-title">Prestasi Desa Kandeman</h2>
-      <p class="section-sub">Penghargaan dan capaian yang diraih Desa Kandeman dalam berbagai bidang.</p>
-    </div>
-    <div id="capaian" style="scroll-margin-top:90px;"></div>
-    <div class="prestasi-grid" id="prestasi-grid">
-      <div class="prestasi-card">
-        <div class="prestasi-medal medal-gold">🥇</div>
-        <div>
-          <h4>Desa Terbaik Tingkat Kecamatan</h4>
-          <p>Meraih penghargaan desa terbaik dalam evaluasi kinerja pemerintahan desa tingkat Kecamatan Kandeman.</p>
-          <div class="prestasi-year">2024 · Kecamatan Kandeman</div>
-        </div>
-      </div>
-      <div class="prestasi-card">
-        <div class="prestasi-medal medal-gold">🏆</div>
-        <div>
-          <h4>Juara Lomba Kebersihan Lingkungan</h4>
-          <p>Berhasil meraih juara dalam lomba kebersihan dan penghijauan lingkungan tingkat Kabupaten Batang.</p>
-          <div class="prestasi-year">2023 · Kabupaten Batang</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="wave-divider" aria-hidden="true">
-    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#FFFFFF" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
-    </svg>
-  </div>
-</section>
-
-
-<!-- ═══════════════════
-     FAQ
-═══════════════════ -->
-<!-- ═══════════════════
      KALENDER AGENDA DESA
 ═══════════════════ -->
 <section class="section section-cream reveal" id="agenda">
@@ -2098,6 +2061,45 @@
 
 
 <!-- ═══════════════════
+     PRESTASI
+═══════════════════ -->
+<section class="section section-cream reveal" id="prestasi">
+  <div class="container">
+    <div class="section-header" id="penghargaan">
+      <div class="eyebrow">Capaian</div>
+      <h2 class="section-title">Prestasi Desa Kandeman</h2>
+      <p class="section-sub">Penghargaan dan capaian yang diraih Desa Kandeman dalam berbagai bidang.</p>
+    </div>
+    <div id="capaian" style="scroll-margin-top:90px;"></div>
+    <div class="prestasi-grid" id="prestasi-grid">
+      <div class="prestasi-card">
+        <div class="prestasi-medal medal-gold">🥇</div>
+        <div>
+          <h4>Desa Terbaik Tingkat Kecamatan</h4>
+          <p>Meraih penghargaan desa terbaik dalam evaluasi kinerja pemerintahan desa tingkat Kecamatan Kandeman.</p>
+          <div class="prestasi-year">2024 · Kecamatan Kandeman</div>
+        </div>
+      </div>
+      <div class="prestasi-card">
+        <div class="prestasi-medal medal-gold">🏆</div>
+        <div>
+          <h4>Juara Lomba Kebersihan Lingkungan</h4>
+          <p>Berhasil meraih juara dalam lomba kebersihan dan penghijauan lingkungan tingkat Kabupaten Batang.</p>
+          <div class="prestasi-year">2023 · Kabupaten Batang</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#FFFFFF" d="M0,22 C150,6 350,36 600,22 C850,8 1050,36 1200,20 L1200,40 L0,40 Z"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- ═══════════════════
      ASPIRASI WARGA
 ═══════════════════ -->
 <section class="section section-cream reveal" id="aspirasi">
@@ -2231,6 +2233,9 @@
 </section>
 
 
+<!-- ═══════════════════
+     FAQ
+═══════════════════ -->
 <section class="section section-white reveal" id="faq">
   <div class="container">
     <div class="section-header center">
