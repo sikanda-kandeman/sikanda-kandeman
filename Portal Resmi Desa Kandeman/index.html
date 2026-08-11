@@ -97,7 +97,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260810-sikanda-v13" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260811-beranda-navbar-peta-v21" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -640,34 +640,34 @@
         <div>
           <span class="geo-map-kicker">Peta Administratif</span>
           <h3><i class="fa-solid fa-map-location-dot"></i> Peta Wilayah Desa Kandeman</h3>
-          <p>Area peta diperbesar untuk menampilkan batas wilayah dan detail hasil pemetaan QGIS dengan lebih jelas.</p>
+          <p>Peta resmi administrasi dan fasilitas umum Desa Kandeman hasil pengolahan QGIS.</p>
         </div>
-        <div class="geo-map-coordinate"><i class="fa-solid fa-location-crosshairs"></i> 6.952° LS · 109.762° BT</div>
+        <div class="geo-map-coordinate"><i class="fa-solid fa-ruler-combined"></i> Skala 1:12.000 · UTM Zona 49S</div>
       </div>
 
       <div class="geo-map-layout">
-        <div class="peta-embed geo-map-frame">
-          <!-- Ganti sumber iframe ini dengan hasil publikasi QGIS saat peta resmi tersedia. -->
-          <iframe id="peta-iframe"
-            src="https://www.google.com/maps?q=-6.952%2C109.762&amp;z=14&amp;output=embed"
+        <div class="peta-embed geo-map-frame geo-map-static">
+          <img
+            src="assets/images/peta-wilayah-kandeman-qgis.png"
+            alt="Peta administrasi dan fasilitas umum Desa Kandeman hasil QGIS"
+            width="2048"
+            height="1448"
             loading="lazy"
-            allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade"
-            title="Peta Wilayah Desa Kandeman">
-          </iframe>
+            decoding="async" />
         </div>
 
         <aside class="geo-map-aside" aria-label="Keterangan peta wilayah">
           <div class="geo-map-aside-icon"><i class="fa-solid fa-layer-group"></i></div>
           <h4>Keterangan Peta</h4>
-          <p>Panel ini disiapkan untuk peta resmi hasil QGIS. Komposisi yang lebih lebar menjaga nama wilayah, batas desa, dan simbol fasilitas tetap mudah dibaca.</p>
+          <p>Peta menampilkan pembagian lima wilayah dusun, batas administrasi, penggunaan lahan, fasilitas umum, serta jaringan jalan Desa Kandeman.</p>
           <div class="peta-legend">
-            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#1C6B3E;"></span> Batas Desa</div>
-            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#C0392B;"></span> Kantor Desa</div>
-            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#1A5080;"></span> Fasilitas Umum</div>
-            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#B07D2A;"></span> Jalan Utama</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#C339D0;"></span> Wilayah 5 Dusun</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#C7252D;"></span> Batas Dusun &amp; Desa</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#C83A3A;"></span> Lahan Pertanian</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#2D74FF;"></span> Jaringan Jalan</div>
+            <div class="peta-legend-item"><span class="peta-legend-dot" style="background:#27C7C7;"></span> Fasilitas Umum</div>
           </div>
-          <div class="geo-map-note"><i class="fa-solid fa-circle-info"></i> Ganti sumber peta ketika berkas QGIS resmi sudah siap dipublikasikan.</div>
+          <div class="geo-map-note"><i class="fa-solid fa-circle-info"></i> Proyeksi UTM · Grid Zona 49S · Datum WGS 1984 · Dibuat Agustus 2026.</div>
         </aside>
       </div>
     </div>
@@ -2610,6 +2610,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260811-navbar-anchor-v20" defer></script>
+  <script src="assets/js/main.js?v=20260811-beranda-navbar-peta-v21" defer></script>
 </body>
 </html>

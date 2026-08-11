@@ -1321,6 +1321,16 @@
       box-shadow: 0 12px 34px rgba(13,43,26,.08);
     }
     .geo-map-frame iframe { min-height: 540px; }
+    .peta-embed.geo-map-frame.geo-map-static {
+      min-height: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    .geo-map-static img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
     .geo-map-aside {
       display: flex;
       flex-direction: column;

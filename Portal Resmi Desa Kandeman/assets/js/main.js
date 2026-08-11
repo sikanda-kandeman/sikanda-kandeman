@@ -59,24 +59,41 @@
     }
   }
 
-  /* ── Intercept SEMUA klik anchor internal ── */
-  // Tangkap di document level agar mencakup nav, hero-tags, quick-cards, dan semua link #hash
-  document.addEventListener('click', function(e) {
+  /* ── Navigasi utama: satu handler untuk setiap target section ── */
+  const navLinks = document.getElementById('navLinks');
+  navLinks?.addEventListener('click', function(e) {
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
     const hash = a.getAttribute('href');
     if (!hash || hash === '#') return;
-    // Pada mobile, klik pertama pada kategori dipakai untuk membuka dropdown.
-    // Di desktop, semua kategori tetap memakai scrollToAnchor agar target presisi.
-    if (e.defaultPrevented) return;
+
+    const item = a.closest('.nav-item');
+    const isCategory = a.parentElement === item && Boolean(item?.querySelector(':scope > .dropdown'));
+    if (window.innerWidth <= 1239 && isCategory) {
+      e.preventDefault();
+      e.stopPropagation();
+      const willOpen = !item.classList.contains('open');
+      navLinks.querySelectorAll('.nav-item.open').forEach(openItem => openItem.classList.remove('open'));
+      item.classList.toggle('open', willOpen);
+      return;
+    }
+
     e.preventDefault();
+    e.stopPropagation();
     closeNav();
-    // Tunggu menu tertutup dulu (reflow selesai) baru scroll
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        scrollToAnchor(hash);
-      });
+      scrollToAnchor(hash);
     });
+  }, true);
+
+  /* Anchor internal di luar navbar tetap memakai fungsi scroll yang sama. */
+  document.addEventListener('click', function(e) {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || a.closest('#navLinks')) return;
+    const hash = a.getAttribute('href');
+    if (!hash || hash === '#') return;
+    e.preventDefault();
+    scrollToAnchor(hash);
   });
 
   /* ── Navbar muncul setelah pengunjung mulai menggulir ── */
@@ -302,14 +319,19 @@
   }
 
   function scrollToAnchor(anchor) {
-    const target = document.querySelector(anchor);
+    const id = String(anchor || '').replace(/^#/, '');
+    const target = document.getElementById(id);
     if (!target) return;
-    const NAVBAR  = 64;  // tinggi navbar px — sama dengan CSS height: 64px
-    const MARGIN  = 20;  // ruang napas di atas konten
-    // getBoundingClientRect relatif ke viewport saat ini
-    const rect = target.getBoundingClientRect();
-    const absTop = rect.top + window.scrollY;
-    window.scrollTo({ top: absTop - NAVBAR - MARGIN, behavior: 'smooth' });
+    const navbar = document.getElementById('mainNav');
+    const navbarStyle = navbar ? getComputedStyle(navbar) : null;
+    const navbarTop = navbarStyle ? Number.parseFloat(navbarStyle.top) || 0 : 0;
+    const offset = navbarTop + (navbar?.offsetHeight || 64) + 20;
+    const previousMargin = target.style.scrollMarginTop;
+    target.style.scrollMarginTop = `${offset}px`;
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.setTimeout(() => {
+      target.style.scrollMarginTop = previousMargin;
+    }, 1200);
   }
 
   function showSearchFeedback(q, found) {
@@ -594,7 +616,7 @@ function resetOrgChart() {
 
 function prepareDynamicLoadingStates() {
   [
-    'berita-grid','galeri-grid','potensi-grid','umkm-grid','agenda-mendatang',
+    'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-dusun-preview','umkm-grid','agenda-mendatang',
     'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
     'perdes-list','poster-edukasi-list',
   ].forEach(id => renderDataState(id, 'loading'));
@@ -858,6 +880,38 @@ function potensiClass(kat) {
 // ════════════════════
 // LOAD BERITA
 // ════════════════════
+function renderBerandaBerita(data) {
+  const el = document.getElementById('beranda-berita-preview');
+  if (!el) return;
+  if (!Array.isArray(data) || data.length === 0) {
+    renderDataState(el, 'empty', 'Belum ada berita atau pengumuman terbaru.');
+    return;
+  }
+
+  el.innerHTML = data.slice(0, 3).map((b, i) => {
+    const featured = i === 0;
+    const isiTeks = beritaPlainText(b.isi);
+    const ringkasan = isiTeks.length > 125 ? isiTeks.substring(0, 125) + '…' : isiTeks;
+    const gambar = b.gambar_url
+      ? `<img src="${safeUrl(b.gambar_url)}" alt="${escHtml(b.judul)}" loading="lazy" decoding="async" onerror="this.remove()" />`
+      : '';
+    return `
+      <button type="button" class="home-news-item ${featured ? 'home-news-item-featured' : 'home-news-item-compact'}"
+        onclick="openBeritaModal(${i})" aria-label="Baca berita: ${escHtml(b.judul)}">
+        <span class="home-news-thumb">
+          <span class="home-news-placeholder" aria-hidden="true"><i class="fa-regular fa-newspaper"></i></span>
+          ${gambar}
+        </span>
+        <span class="home-news-copy">
+          <span class="home-news-category">${escHtml(b.kategori || 'Berita')}</span>
+          <h4>${escHtml(b.judul)}</h4>
+          ${featured && ringkasan ? `<p>${escHtml(ringkasan)}</p>` : ''}
+          <span class="home-news-date"><i class="fa-regular fa-calendar" aria-hidden="true"></i>${fmtTgl(b.tanggal)}</span>
+        </span>
+      </button>`;
+  }).join('');
+}
+
 async function loadBerita() {
   const el = document.getElementById('berita-grid');
   if (!el) return;
@@ -870,16 +924,19 @@ async function loadBerita() {
   if (error) {
     console.error('Gagal memuat berita:', error);
     renderDataState(el, 'error', 'Berita belum dapat dimuat.');
+    renderDataState('beranda-berita-preview', 'error', 'Berita belum dapat dimuat.');
     return;
   }
   if (!data || data.length === 0) {
     _beritaList = [];
     renderDataState(el, 'empty', 'Belum ada berita yang dipublikasikan.');
+    renderBerandaBerita([]);
     return;
   }
 
   // Simpan data global untuk navigasi modal
   _beritaList = data;
+  renderBerandaBerita(data);
 
   const BADGE_MAP = {
     Pemerintahan:'tag-green', Pengumuman:'tag-sky', Kegiatan:'tag-teal',
@@ -1630,6 +1687,162 @@ document.addEventListener('keydown', event => {
 // ════════════════════
 // LOAD POTENSI
 // ════════════════════
+const DUSUN_ORDER = Object.freeze(['randusari', 'kandeman', 'gandok', 'kaliongkek', 'johosari']);
+const DUSUN_DEFAULTS = Object.freeze({
+  randusari: 'Randusari',
+  kandeman: 'Kandeman',
+  gandok: 'Gandok',
+  kaliongkek: 'Kaliongkek',
+  johosari: 'Johosari',
+});
+let _dusunList = [];
+let _dusunIndex = 0;
+
+function renderBerandaDusun(data) {
+  const el = document.getElementById('beranda-dusun-preview');
+  if (!el) return;
+  const source = Array.isArray(data) ? data : [];
+  const bySlug = Object.fromEntries(source.map(item => [String(item.slug || '').toLowerCase(), item]));
+  _dusunList = DUSUN_ORDER.map(slug => {
+    const item = bySlug[slug] || {};
+    return {
+      slug,
+      nama: item.nama || DUSUN_DEFAULTS[slug],
+      deskripsi: String(item.deskripsi || `Informasi mengenai Dusun ${DUSUN_DEFAULTS[slug]} akan segera dilengkapi.`),
+      lokasi: String(item.lokasi || `Dusun ${DUSUN_DEFAULTS[slug]}, Desa Kandeman, Kecamatan Kandeman`),
+      foto_url: item.foto_url || '',
+    };
+  });
+
+  _dusunIndex = Math.max(0, Math.min(_dusunIndex, _dusunList.length - 1));
+  el.innerHTML = `
+    <div class="home-dusun-tabs" aria-label="Pilih dusun yang ingin ditampilkan">
+      ${_dusunList.map((dusun, index) => `
+        <button type="button" class="home-dusun-tab" data-dusun-index="${index}"
+          aria-selected="${index === _dusunIndex ? 'true' : 'false'}"
+          onclick="selectBerandaDusun(${index})"
+          onkeydown="handleBerandaDusunKey(event, ${index})">${escHtml(dusun.nama)}</button>`).join('')}
+    </div>
+    <div id="beranda-dusun-card"></div>`;
+  renderBerandaDusunCard();
+}
+
+function renderBerandaDusunCard() {
+  const host = document.getElementById('beranda-dusun-card');
+  const dusun = _dusunList[_dusunIndex];
+  if (!host || !dusun) return;
+  const number = String(_dusunIndex + 1).padStart(2, '0');
+  const image = dusun.foto_url
+    ? `<img src="${safeUrl(dusun.foto_url)}" alt="Foto Dusun ${escHtml(dusun.nama)}" loading="lazy" decoding="async" onerror="this.remove()" />`
+    : '';
+  host.innerHTML = `
+    <button type="button" class="home-dusun-stage" onclick="openDusunModal(${_dusunIndex})" aria-label="Buka detail Dusun ${escHtml(dusun.nama)}">
+      <span class="home-dusun-stage-placeholder" aria-hidden="true">${number}</span>
+      ${image}
+      <span class="home-dusun-card-action" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+      <span class="home-dusun-card-copy"><small>Dusun ${number}</small><strong>${escHtml(dusun.nama)}</strong></span>
+    </button>`;
+}
+
+function selectBerandaDusun(index) {
+  if (!_dusunList.length) return;
+  _dusunIndex = Math.max(0, Math.min(Number(index) || 0, _dusunList.length - 1));
+  document.querySelectorAll('.home-dusun-tab').forEach((button, buttonIndex) => {
+    button.setAttribute('aria-selected', String(buttonIndex === _dusunIndex));
+  });
+  renderBerandaDusunCard();
+}
+
+function handleBerandaDusunKey(event, index) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const lastIndex = _dusunList.length - 1;
+  const nextIndex = event.key === 'Home'
+    ? 0
+    : event.key === 'End'
+      ? lastIndex
+      : (index + (event.key === 'ArrowRight' ? 1 : -1) + _dusunList.length) % _dusunList.length;
+  selectBerandaDusun(nextIndex);
+  document.querySelector(`.home-dusun-tab[data-dusun-index="${nextIndex}"]`)?.focus();
+}
+
+function openDusunModal(index) {
+  if (!_dusunList.length) return;
+  _dusunIndex = Math.max(0, Math.min(Number(index) || 0, _dusunList.length - 1));
+  renderDusunModal();
+  const modal = document.getElementById('dusunModal');
+  modal?.classList.add('open');
+  activateDialog(modal, modal?.querySelector('.dm-close'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDusunModal() {
+  const modal = document.getElementById('dusunModal');
+  modal?.classList.remove('open');
+  document.body.style.overflow = '';
+  deactivateDialog(modal);
+}
+
+function navDusun(direction) {
+  if (!_dusunList.length) return;
+  _dusunIndex = (_dusunIndex + direction + _dusunList.length) % _dusunList.length;
+  renderDusunModal();
+}
+
+function renderDusunModal() {
+  const dusun = _dusunList[_dusunIndex];
+  if (!dusun) return;
+  const number = String(_dusunIndex + 1).padStart(2, '0');
+  const image = document.getElementById('dm-image');
+  const placeholder = document.getElementById('dm-image-placeholder');
+
+  document.getElementById('dm-counter').textContent = `${number} / ${String(_dusunList.length).padStart(2, '0')}`;
+  document.getElementById('dm-title').textContent = `Dusun ${dusun.nama}`;
+  document.getElementById('dm-description').textContent = dusun.deskripsi;
+  document.getElementById('dm-location-text').textContent = dusun.lokasi;
+  placeholder.textContent = number;
+
+  if (dusun.foto_url) {
+    image.src = safeUrl(dusun.foto_url);
+    image.alt = `Foto Dusun ${dusun.nama}`;
+    image.hidden = false;
+    placeholder.hidden = true;
+    image.onerror = () => {
+      image.hidden = true;
+      placeholder.hidden = false;
+    };
+  } else {
+    image.removeAttribute('src');
+    image.alt = '';
+    image.hidden = true;
+    placeholder.hidden = false;
+  }
+}
+
+document.addEventListener('keydown', event => {
+  const modal = document.getElementById('dusunModal');
+  if (!modal?.classList.contains('open')) return;
+  if (event.key === 'Escape') closeDusunModal();
+  if (event.key === 'ArrowLeft') navDusun(-1);
+  if (event.key === 'ArrowRight') navDusun(1);
+});
+
+async function loadDusun() {
+  const el = document.getElementById('beranda-dusun-preview');
+  if (!el) return;
+  const { data, error } = await sb.from('dusun')
+    .select('slug,nama,deskripsi,lokasi,foto_url,urutan,aktif')
+    .eq('aktif', true)
+    .order('urutan', { ascending: true });
+
+  if (error) {
+    console.error('Gagal memuat data dusun:', error);
+    renderDataState(el, 'error', 'Data dusun belum dapat dimuat.');
+    return;
+  }
+  renderBerandaDusun(data || []);
+}
+
 async function loadPotensi() {
   const el = document.getElementById('potensi-grid');
   if (!el) return;
@@ -2722,7 +2935,7 @@ function _initDataLoad() {
   if (!sb) {
     console.error('Supabase client belum tersedia.');
     [
-      'berita-grid','galeri-grid','potensi-grid','umkm-grid','agenda-mendatang',
+      'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-dusun-preview','umkm-grid','agenda-mendatang',
       'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
       'perdes-list','poster-edukasi-list',
     ].forEach(id => renderDataState(id, 'error'));
@@ -2741,6 +2954,7 @@ function _initDataLoad() {
       ['perangkat', loadPerangkat],
       ['APBDes', loadApbdes],
       ['potensi', loadPotensi],
+      ['dusun', loadDusun],
       ['UMKM', loadUmkm],
       ['dokumen', loadDokumen],
       ['prestasi', loadPrestasi],
