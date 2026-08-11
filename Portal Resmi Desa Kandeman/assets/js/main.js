@@ -41,35 +41,52 @@
   })();
 
   /* ── Navbar ── */
+  const COMPACT_NAV_MAX_WIDTH = 1239;
+  let anchorScrollRun = 0;
+  let anchorSettleTimers = [];
+
   function toggleNav() {
     const links = document.getElementById('navLinks');
-    links.classList.toggle('open');
+    const hamburger = document.getElementById('hamburger');
+    const isOpen = links.classList.toggle('open');
+    hamburger?.setAttribute('aria-expanded', String(isOpen));
   }
+
   function closeNav() {
-    document.getElementById('navLinks').classList.remove('open');
+    const links = document.getElementById('navLinks');
+    links?.classList.remove('open');
+    links?.querySelectorAll('.nav-item.open').forEach(item => item.classList.remove('open'));
+    document.getElementById('hamburger')?.setAttribute('aria-expanded', 'false');
   }
 
-  /* Dropdown click on mobile */
-  function handleDropdownClick(e, el) {
-    /* Ambang harus sama dengan media query menu hamburger (1239px),
-       jika tidak dropdown tak bisa dibuka di laptop kecil. */
-    if (window.innerWidth <= 1239) {
-      e.preventDefault();
-      el.closest('.nav-item').classList.toggle('open');
-    }
+  function clearAnchorSettle() {
+    anchorScrollRun += 1;
+    anchorSettleTimers.forEach(timer => window.clearTimeout(timer));
+    anchorSettleTimers = [];
   }
 
-  /* ── Navigasi utama: satu handler untuk setiap target section ── */
+  /* ── Navigasi utama: satu-satunya handler untuk semua target navbar ── */
   const navLinks = document.getElementById('navLinks');
   navLinks?.addEventListener('click', function(e) {
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
     const hash = a.getAttribute('href');
-    if (!hash || hash === '#') return;
+    const target = hash && hash !== '#'
+      ? document.getElementById(hash.slice(1))
+      : null;
+    if (!target) return;
 
     const item = a.closest('.nav-item');
-    const isCategory = a.parentElement === item && Boolean(item?.querySelector(':scope > .dropdown'));
-    if (window.innerWidth <= 1239 && isCategory) {
+    const isCategory = a.parentElement === item && Array.from(item?.children || [])
+      .some(child => child.classList.contains('dropdown'));
+    const isCompactNav = window.innerWidth <= COMPACT_NAV_MAX_WIDTH;
+    const linkRect = a.getBoundingClientRect();
+    const clickedDropdownControl = Boolean(e.target.closest('.caret')) ||
+      (e.clientX > 0 && e.clientX >= linkRect.right - 56);
+
+    /* Pada menu hamburger, area panah kanan khusus membuka submenu.
+       Klik teks kategori selalu menuju section kategori tersebut. */
+    if (isCompactNav && isCategory && clickedDropdownControl) {
       e.preventDefault();
       e.stopPropagation();
       const willOpen = !item.classList.contains('open');
@@ -94,6 +111,18 @@
     if (!hash || hash === '#') return;
     e.preventDefault();
     scrollToAnchor(hash);
+  });
+
+  /* Hentikan koreksi posisi bila pengguna mulai menggulir/berinteraksi sendiri. */
+  window.addEventListener('wheel', clearAnchorSettle, { passive: true });
+  window.addEventListener('touchstart', clearAnchorSettle, { passive: true });
+  window.addEventListener('pointerdown', e => {
+    if (!e.target.closest('#navLinks')) clearAnchorSettle();
+  }, { passive: true });
+  window.addEventListener('keydown', e => {
+    if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(e.key)) {
+      clearAnchorSettle();
+    }
   });
 
   /* ── Navbar muncul setelah pengunjung mulai menggulir ── */
@@ -318,20 +347,48 @@
     }
   }
 
+  function getNavbarAnchorOffset() {
+    const navbar = document.getElementById('mainNav');
+    if (!navbar) return 84;
+    const navbarTop = Number.parseFloat(getComputedStyle(navbar).top) || 0;
+    return navbarTop + navbar.offsetHeight + 20;
+  }
+
+  function getAnchorScrollTop(target) {
+    return Math.max(0, Math.round(
+      window.scrollY + target.getBoundingClientRect().top - getNavbarAnchorOffset()
+    ));
+  }
+
+  function forceScrollTop(top) {
+    window.scrollTo({ top, left: 0, behavior: 'instant' });
+  }
+
   function scrollToAnchor(anchor) {
     const id = String(anchor || '').replace(/^#/, '');
     const target = document.getElementById(id);
     if (!target) return;
-    const navbar = document.getElementById('mainNav');
-    const navbarStyle = navbar ? getComputedStyle(navbar) : null;
-    const navbarTop = navbarStyle ? Number.parseFloat(navbarStyle.top) || 0 : 0;
-    const offset = navbarTop + (navbar?.offsetHeight || 64) + 20;
-    const previousMargin = target.style.scrollMarginTop;
-    target.style.scrollMarginTop = `${offset}px`;
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    window.setTimeout(() => {
-      target.style.scrollMarginTop = previousMargin;
-    }, 1200);
+
+    clearAnchorSettle();
+    const run = anchorScrollRun;
+    const top = getAnchorScrollTop(target);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
+
+    if (window.location.hash !== '#' + id) {
+      window.history.pushState(null, '', '#' + id);
+    }
+
+    /* Konten Supabase dan gambar dapat mengubah tinggi section di atas target
+       setelah klik. Kunci ulang target beberapa kali setelah animasi selesai. */
+    [700, 1400, 2400].forEach(delay => {
+      const timer = window.setTimeout(() => {
+        if (run !== anchorScrollRun) return;
+        const settledTop = getAnchorScrollTop(target);
+        if (Math.abs(window.scrollY - settledTop) > 2) forceScrollTop(settledTop);
+      }, delay);
+      anchorSettleTimers.push(timer);
+    });
   }
 
   function showSearchFeedback(q, found) {
