@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   
 
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260813-struktur-foto-v29" />
+  <link rel="stylesheet" href="assets/css/admin-auth.8a543c03f19f.css" />
 </head>
 <body>
 
@@ -35,23 +35,33 @@
     </div>
     <h1>Panel Admin SIKANDA</h1>
     <p>Masuk untuk mengelola konten website Desa Kandeman</p>
-    <div class="field">
-      <label>Email</label>
-      <input type="email" id="login-email" placeholder="admin@kandeman.desa.id" autocomplete="email" aria-label="admin@kandeman.desa.id" />
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"
-             onkeydown="if(event.key==='Enter')doLogin()" aria-label="••••••••" />
-    </div>
-    <button type="button" class="btn-login" onclick="doLogin()" id="login-btn">
-      <i class="fa-solid fa-arrow-right-to-bracket" style="margin-right:6px;"></i>
-      Masuk ke Panel Admin
-    </button>
-    <div class="login-error" id="login-error"></div>
+    <form id="login-form">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="nama@domain.id" autocomplete="email"
+               inputmode="email" required aria-describedby="login-error" />
+      </div>
+      <div class="field">
+        <label for="login-pass">Password</label>
+        <div class="password-field">
+          <input type="password" id="login-pass" placeholder="Masukkan password" autocomplete="current-password"
+                 required aria-describedby="login-error" />
+          <button type="button" class="password-toggle" data-password-toggle="login-pass"
+                  aria-label="Tampilkan password" aria-pressed="false">
+            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn-login" id="login-btn">
+        <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i>
+        <span>Masuk ke Panel Admin</span>
+      </button>
+      <div class="login-error" id="login-error" role="alert" aria-live="polite"></div>
+    </form>
   </div>
 </div>
 
+<template id="admin-template">
 <!-- ═══ ADMIN SHELL ═══ -->
 <div id="admin-shell">
   <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
@@ -66,55 +76,55 @@
         </div>
       </div>
       <div class="sb-section">Konten</div>
-      <div class="sb-item active" onclick="switchPanel('dashboard',this)">
+      <button type="button" class="sb-item active" onclick="switchPanel('dashboard',this)" id="nav-dashboard" aria-current="page">
         <i class="fa-solid fa-gauge-high"></i> Beranda
-      </div>
-      <div class="sb-item" onclick="switchPanel('berita',this)" id="nav-berita">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('berita',this)" id="nav-berita">
         <i class="fa-solid fa-newspaper"></i> Berita & Pengumuman
-      </div>
-      <div class="sb-item" onclick="switchPanel('galeri',this)" id="nav-galeri">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('galeri',this)" id="nav-galeri">
         <i class="fa-solid fa-images"></i> Galeri Foto
-      </div>
+      </button>
       <div class="sb-section">Desa</div>
-      <div class="sb-item" onclick="switchPanel('perangkat',this)" id="nav-perangkat">
+      <button type="button" class="sb-item" onclick="switchPanel('perangkat',this)" id="nav-perangkat">
         <i class="fa-solid fa-user-tie"></i> Perangkat Desa
-      </div>
-      <div class="sb-item" onclick="switchPanel('apbdes',this)" id="nav-apbdes">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('apbdes',this)" id="nav-apbdes">
         <i class="fa-solid fa-coins"></i> APBDes & Anggaran
-      </div>
-      <div class="sb-item" onclick="switchPanel('potensi',this)" id="nav-potensi">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('potensi',this)" id="nav-potensi">
         <i class="fa-solid fa-seedling"></i> Potensi Desa
-      </div>
-      <div class="sb-item" onclick="switchPanel('umkm',this)" id="nav-umkm">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('umkm',this)" id="nav-umkm">
         <i class="fa-solid fa-store"></i> UMKM Desa
-      </div>
-      <div class="sb-item" onclick="switchPanel('prestasi',this)" id="nav-prestasi">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('prestasi',this)" id="nav-prestasi">
         <i class="fa-solid fa-trophy"></i> Prestasi Desa
-      </div>
-      <div class="sb-item" onclick="switchPanel('dokumen',this)" id="nav-dokumen">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('dokumen',this)" id="nav-dokumen">
         <i class="fa-solid fa-folder-open"></i> Dokumen &amp; Arsip
-      </div>
-      <div class="sb-item" onclick="switchPanel('agenda',this)" id="nav-agenda">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('agenda',this)" id="nav-agenda">
         <i class="fa-solid fa-calendar-days"></i> Agenda Desa
-      </div>
-      <div class="sb-item" onclick="switchPanel('statistik',this)" id="nav-statistik">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('statistik',this)" id="nav-statistik">
         <i class="fa-solid fa-chart-pie"></i> Statistik Warga
-      </div>
-      <div class="sb-item" onclick="switchPanel('kesehatan',this)" id="nav-kesehatan">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('kesehatan',this)" id="nav-kesehatan">
         <i class="fa-solid fa-heart-pulse"></i> Layanan Kesehatan
-      </div>
-      <div class="sb-item" onclick="switchPanel('aspirasi',this)" id="nav-aspirasi">
+      </button>
+      <button type="button" class="sb-item" onclick="switchPanel('aspirasi',this)" id="nav-aspirasi">
         <i class="fa-solid fa-comment-dots"></i> Aspirasi Warga
         <span id="asp-badge" style="margin-left:auto;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:none;">0</span>
-      </div>
+      </button>
       <div class="sb-spacer"></div>
       <div class="sb-user">
         <div class="sb-avatar" id="sb-avatar">AD</div>
         <span id="sb-email" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:11px;"></span>
-        <button type="button" class="sb-logout" onclick="ubahPassword()" title="Ganti kata sandi">
+        <button type="button" class="sb-logout" onclick="ubahPassword()" title="Ganti password" aria-label="Ganti password">
           <i class="fa-solid fa-key"></i>
         </button>
-        <button type="button" class="sb-logout" onclick="doLogout()" title="Keluar">
+        <button type="button" class="sb-logout" onclick="doLogout()" title="Keluar" aria-label="Keluar dari panel admin">
           <i class="fa-solid fa-right-from-bracket"></i>
         </button>
       </div>
@@ -124,10 +134,11 @@
     <div class="main">
       <div class="topbar">
         <div style="display:flex;align-items:center;gap:10px;">
-          <button type="button" class="hamburger" onclick="openSidebar()">
+          <button type="button" class="hamburger" onclick="openSidebar()" aria-label="Buka menu admin"
+                  aria-controls="sidebar" aria-expanded="false">
             <i class="fa-solid fa-bars"></i>
           </button>
-          <h2 id="page-title">Beranda Admin</h2>
+          <h2 id="page-title" tabindex="-1">Beranda Admin</h2>
         </div>
         <div class="topbar-right">
           <span class="last-saved" id="last-saved-indicator" style="display:none;">
@@ -199,38 +210,38 @@
             <div>
               <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px;">Aksi cepat</div>
               <div class="quick-grid">
-                <div class="quick-card" onclick="switchPanel('berita',document.getElementById('nav-berita'))">
+                <button type="button" class="quick-card" onclick="switchPanel('berita',document.getElementById('nav-berita'))">
                   <div class="quick-icon" style="background:#E3F4EC;color:var(--emerald);"><i class="fa-solid fa-plus"></i></div>
                   <div>
                     <div class="quick-title">Tambah berita</div>
                     <div class="quick-desc">Publikasikan pengumuman desa</div>
                   </div>
                   <i class="fa-solid fa-chevron-right quick-arrow"></i>
-                </div>
-                <div class="quick-card" onclick="switchPanel('apbdes',document.getElementById('nav-apbdes'))">
+                </button>
+                <button type="button" class="quick-card" onclick="switchPanel('apbdes',document.getElementById('nav-apbdes'))">
                   <div class="quick-icon" style="background:#F7EDD0;color:var(--gold);"><i class="fa-solid fa-pen-to-square"></i></div>
                   <div>
                     <div class="quick-title">Update APBDes</div>
                     <div class="quick-desc">Perbarui anggaran &amp; realisasi</div>
                   </div>
                   <i class="fa-solid fa-chevron-right quick-arrow"></i>
-                </div>
-                <div class="quick-card" onclick="switchPanel('perangkat',document.getElementById('nav-perangkat'))">
+                </button>
+                <button type="button" class="quick-card" onclick="switchPanel('perangkat',document.getElementById('nav-perangkat'))">
                   <div class="quick-icon" style="background:#E3EEF7;color:#1A5080;"><i class="fa-solid fa-user-tie"></i></div>
                   <div>
                     <div class="quick-title">Edit perangkat</div>
                     <div class="quick-desc">Ubah nama &amp; jabatan</div>
                   </div>
                   <i class="fa-solid fa-chevron-right quick-arrow"></i>
-                </div>
-                <div class="quick-card" onclick="switchPanel('galeri',document.getElementById('nav-galeri'))">
+                </button>
+                <button type="button" class="quick-card" onclick="switchPanel('galeri',document.getElementById('nav-galeri'))">
                   <div class="quick-icon" style="background:#DDF0EB;color:#0F6455;"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                   <div>
                     <div class="quick-title">Upload foto</div>
                     <div class="quick-desc">Tambah dokumentasi kegiatan</div>
                   </div>
                   <i class="fa-solid fa-chevron-right quick-arrow"></i>
-                </div>
+                </button>
               </div>
             </div>
             <div>
@@ -1323,7 +1334,7 @@
 
 <!-- Preview Berita Modal -->
 <div class="preview-modal" id="preview-modal" onclick="closePreview(event)" role="dialog" aria-modal="true" aria-labelledby="preview-title" aria-hidden="true">
-  <div class="preview-box">
+  <div class="preview-box" tabindex="-1">
     <div class="preview-header">
       <span id="preview-title">Preview tampilan berita di website</span>
       <button type="button" class="icon-btn" onclick="closePreview()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
@@ -1334,7 +1345,7 @@
 
 <!-- Confirm Modal -->
 <div class="modal-overlay" id="confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc" aria-hidden="true">
-  <div class="modal-box">
+  <div class="modal-box" tabindex="-1">
     <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
     <div class="modal-title" id="confirm-title">Hapus data?</div>
     <div class="modal-desc" id="confirm-desc">Tindakan ini tidak dapat dibatalkan.</div>
@@ -1347,11 +1358,63 @@
   </div>
 </div>
 
+<!-- Ganti Password Modal -->
+<div class="modal-overlay" id="password-modal" role="dialog" aria-modal="true"
+     aria-labelledby="password-title" aria-describedby="password-desc" aria-hidden="true">
+  <div class="modal-box password-modal-box" tabindex="-1">
+    <div class="modal-icon password-modal-icon"><i class="fa-solid fa-key" aria-hidden="true"></i></div>
+    <div class="modal-title" id="password-title">Ganti password admin</div>
+    <div class="modal-desc" id="password-desc">Verifikasi ulang menggunakan password saat ini.</div>
+    <form id="password-form">
+      <div class="field">
+        <label for="password-current">Password saat ini</label>
+        <div class="password-field">
+          <input type="password" id="password-current" autocomplete="current-password" required />
+          <button type="button" class="password-toggle" data-password-toggle="password-current"
+                  aria-label="Tampilkan password saat ini" aria-pressed="false">
+            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="password-new">Password baru</label>
+        <div class="password-field">
+          <input type="password" id="password-new" autocomplete="new-password" minlength="8" required />
+          <button type="button" class="password-toggle" data-password-toggle="password-new"
+                  aria-label="Tampilkan password baru" aria-pressed="false">
+            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="password-confirm">Konfirmasi password baru</label>
+        <div class="password-field">
+          <input type="password" id="password-confirm" autocomplete="new-password" minlength="8" required />
+          <button type="button" class="password-toggle" data-password-toggle="password-confirm"
+                  aria-label="Tampilkan konfirmasi password" aria-pressed="false">
+            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="login-error password-error" id="password-error" role="alert" aria-live="polite"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="password-cancel-btn" onclick="closePasswordModal()">Batal</button>
+        <button type="submit" class="btn btn-primary" id="password-save-btn">
+          <i class="fa-solid fa-key" aria-hidden="true"></i> Simpan password
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- Toast -->
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+</template>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js?v=20260813-transparansi-v32" defer></script>
+<script src="assets/js/admin-auth.24aac615c236.js"
+        data-app-src="assets/js/admin-app.6dbe5352d0f1.js"
+        data-app-css="assets/css/admin-app.6a3645d9a436.css" defer></script>
 </body>
 </html>
