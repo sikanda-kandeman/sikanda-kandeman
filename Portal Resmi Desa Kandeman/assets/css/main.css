@@ -1403,14 +1403,99 @@
        PEMERINTAHAN
     ══════════════════════════════════════ */
     /* ══════════════════════════════════════
-       STRUKTUR ORGANISASI — kartu foto per kelompok
+       STRUKTUR ORGANISASI — bagan kiri, kartu foto kanan
     ══════════════════════════════════════ */
+    .org-layout {
+      display: grid;
+      grid-template-columns: minmax(350px, .78fr) minmax(0, 1.42fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .org-chart-panel,
     .org-showcase {
       padding: clamp(22px, 3vw, 34px);
       border: 1px solid var(--border);
       border-radius: 18px;
       background: rgba(255,255,255,.72);
     }
+    .org-chart-panel {
+      background: var(--cream);
+      overflow: hidden;
+    }
+    .org-chart-heading { margin-bottom: 24px; }
+    .org-chart-kicker {
+      margin-bottom: 6px;
+      color: var(--emerald); font-size: 10px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+    }
+    .org-chart-heading h3 {
+      margin: 0; color: var(--forest);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(24px, 2.4vw, 32px); line-height: 1.05;
+    }
+    .org-tree {
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%;
+    }
+    .org-tree-line {
+      width: 1px; height: 22px; flex: 0 0 22px;
+      background: rgba(28,107,62,.42);
+    }
+    .org-tree-node {
+      width: 100%; min-width: 0; padding: 10px 11px;
+      border: 1px solid rgba(13,43,26,.13); border-radius: 10px;
+      background: #fff; text-align: center;
+    }
+    .org-tree > .org-tree-node { width: min(100%, 230px); }
+    .org-tree-node span {
+      display: block; margin-bottom: 3px;
+      color: var(--emerald); font-size: 8.5px; line-height: 1.25;
+      font-weight: 700; letter-spacing: .075em; text-transform: uppercase;
+    }
+    .org-tree-node strong {
+      display: block; overflow-wrap: anywhere;
+      color: var(--text); font-size: 11px; line-height: 1.3; font-weight: 700;
+    }
+    .org-tree-node-primary {
+      padding-block: 13px; border-color: var(--forest); background: var(--forest);
+      box-shadow: 0 9px 22px rgba(13,43,26,.15);
+    }
+    .org-tree-node-primary span { color: var(--mint); }
+    .org-tree-node-primary strong { color: #fff; font-size: 13px; }
+    .org-tree-node-secondary { border-color: rgba(28,107,62,.36); background: #eef6f1; }
+    .org-tree-branches {
+      position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px; width: 100%; padding-top: 14px;
+    }
+    .org-tree-branches::before {
+      content: ''; position: absolute; top: 0; left: 25%; right: 25%;
+      height: 1px; background: rgba(28,107,62,.42);
+    }
+    .org-tree-group {
+      position: relative; padding: 13px 10px 10px;
+      border: 1px solid rgba(13,43,26,.1); border-radius: 12px;
+      background: rgba(255,255,255,.68);
+    }
+    .org-tree-branches .org-tree-group::before {
+      content: ''; position: absolute; top: -14px; left: 50%;
+      width: 1px; height: 14px; background: rgba(28,107,62,.42);
+    }
+    .org-tree-group h4 {
+      margin: 0 0 9px; color: var(--forest); text-align: center;
+      font-size: 9px; line-height: 1.25; font-weight: 700;
+      letter-spacing: .085em; text-transform: uppercase;
+    }
+    .org-tree-group .org-tree-node {
+      padding: 8px 7px; border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(13,43,26,.04);
+    }
+    .org-tree-group .org-tree-node + .org-tree-node { margin-top: 7px; }
+    .org-tree-kadus { width: 100%; padding: 13px 10px 10px; }
+    .org-tree-kadus-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px;
+    }
+    .org-tree-kadus-grid .org-tree-node + .org-tree-node { margin-top: 0; }
+    .org-tree-kadus-grid .org-tree-node:last-child { grid-column: 1 / -1; }
     .org-tabs {
       display: flex; flex-wrap: wrap; gap: 9px;
       margin-bottom: 26px;
@@ -1440,7 +1525,7 @@
     .org-card-grid { display: grid; gap: clamp(14px, 2vw, 22px); align-items: stretch; }
     .org-grid-leaders { grid-template-columns: repeat(2, minmax(0, 280px)); justify-content: center; }
     .org-grid-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .org-grid-kadus { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .org-grid-kadus { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .org-subgroup + .org-subgroup { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--border); }
     .org-subgroup-title {
       margin-bottom: 14px; color: var(--forest);
@@ -1482,20 +1567,30 @@
       text-wrap: balance;
     }
     .org-card-leader .org-card-caption { background: linear-gradient(135deg, var(--forest), var(--emerald)); }
-    @media (max-width: 980px) {
-      .org-grid-kadus { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 1080px) {
+      .org-layout { grid-template-columns: 1fr; }
+      .org-tree { max-width: 680px; margin-inline: auto; }
+      .org-tree-kadus-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .org-tree-kadus-grid .org-tree-node:last-child { grid-column: auto; }
     }
     @media (max-width: 720px) {
-      .org-showcase { padding: 18px; border-radius: 14px; }
+      .org-chart-panel, .org-showcase { padding: 18px; border-radius: 14px; }
       .org-tabs { gap: 7px; margin-bottom: 20px; }
       .org-tab { flex: 1 1 145px; padding-inline: 12px; }
       .org-grid-three, .org-grid-kadus { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .org-grid-leaders { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .org-tree-kadus-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .org-tree-kadus-grid .org-tree-node:last-child { grid-column: 1 / -1; }
     }
     @media (max-width: 430px) {
       .org-grid-leaders, .org-grid-three, .org-grid-kadus { grid-template-columns: 1fr; }
       .org-profile-card { max-width: 300px; width: 100%; margin-inline: auto; }
       .org-tab { flex-basis: 100%; }
+      .org-tree-branches { grid-template-columns: 1fr; padding-top: 0; }
+      .org-tree-branches::before,
+      .org-tree-branches .org-tree-group::before { display: none; }
+      .org-tree-kadus-grid { grid-template-columns: 1fr; }
+      .org-tree-kadus-grid .org-tree-node:last-child { grid-column: auto; }
     }
 
     /* Perangkat Table */

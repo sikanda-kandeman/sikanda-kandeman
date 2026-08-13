@@ -585,6 +585,9 @@ function resetOrgChart() {
     'kades-name-org','sekdes-name-org','kaur-tu-name','kaur-ku-name','kaur-kp-name',
     'kasi-pm-name','kasi-ks-name','kasi-pl-name','kadus1-name','kadus2-name',
     'kadus3-name','kadus4-name','kadus5-name',
+    'chart-kades-name','chart-sekdes-name','chart-kaur-tu-name','chart-kaur-ku-name',
+    'chart-kaur-kp-name','chart-kasi-pm-name','chart-kasi-ks-name','chart-kasi-pl-name',
+    'chart-kadus1-name','chart-kadus2-name','chart-kadus3-name','chart-kadus4-name','chart-kadus5-name',
   ];
   names.forEach(id => {
     const element = document.getElementById(id);
@@ -598,7 +601,7 @@ function resetOrgChart() {
 
 function prepareDynamicLoadingStates() {
   [
-    'berita-grid','galeri-grid','potensi-grid','umkm-grid','agenda-mendatang',
+    'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-dusun-preview','umkm-grid','agenda-mendatang',
     'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
     'perdes-list','poster-edukasi-list',
   ].forEach(id => renderDataState(id, 'loading'));
@@ -861,6 +864,38 @@ function potensiClass(kat) {
 // ════════════════════
 // LOAD BERITA
 // ════════════════════
+function renderBerandaBerita(data) {
+  const el = document.getElementById('beranda-berita-preview');
+  if (!el) return;
+  if (!Array.isArray(data) || data.length === 0) {
+    renderDataState(el, 'empty', 'Belum ada berita atau pengumuman terbaru.');
+    return;
+  }
+
+  el.innerHTML = data.slice(0, 3).map((b, i) => {
+    const featured = i === 0;
+    const isiTeks = beritaPlainText(b.isi);
+    const ringkasan = isiTeks.length > 125 ? isiTeks.substring(0, 125) + '…' : isiTeks;
+    const gambar = b.gambar_url
+      ? `<img src="${safeUrl(b.gambar_url)}" alt="${escHtml(b.judul)}" loading="lazy" decoding="async" onerror="this.remove()" />`
+      : '';
+    return `
+      <button type="button" class="home-news-item ${featured ? 'home-news-item-featured' : 'home-news-item-compact'}"
+        onclick="openBeritaModal(${i})" aria-label="Baca berita: ${escHtml(b.judul)}">
+        <span class="home-news-thumb">
+          <span class="home-news-placeholder" aria-hidden="true"><i class="fa-regular fa-newspaper"></i></span>
+          ${gambar}
+        </span>
+        <span class="home-news-copy">
+          <span class="home-news-category">${escHtml(b.kategori || 'Berita')}</span>
+          <h4>${escHtml(b.judul)}</h4>
+          ${featured && ringkasan ? `<p>${escHtml(ringkasan)}</p>` : ''}
+          <span class="home-news-date"><i class="fa-regular fa-calendar" aria-hidden="true"></i>${fmtTgl(b.tanggal)}</span>
+        </span>
+      </button>`;
+  }).join('');
+}
+
 async function loadBerita() {
   const el = document.getElementById('berita-grid');
   if (!el) return;
@@ -873,16 +908,19 @@ async function loadBerita() {
   if (error) {
     console.error('Gagal memuat berita:', error);
     renderDataState(el, 'error', 'Berita belum dapat dimuat.');
+    renderDataState('beranda-berita-preview', 'error', 'Berita belum dapat dimuat.');
     return;
   }
   if (!data || data.length === 0) {
     _beritaList = [];
     renderDataState(el, 'empty', 'Belum ada berita yang dipublikasikan.');
+    renderBerandaBerita([]);
     return;
   }
 
   // Simpan data global untuk navigasi modal
   _beritaList = data;
+  renderBerandaBerita(data);
 
   const BADGE_MAP = {
     Pemerintahan:'tag-green', Pengumuman:'tag-sky', Kegiatan:'tag-teal',
@@ -1229,31 +1267,31 @@ async function loadPerangkat() {
 
   // ── Isi nama + foto ke org chart ──
   const orgMap = {
-    'kepala desa':           { nameId: 'kades-name-org',  avatarId: 'kades-avatar-org',  initials: 'BW' },
-    'sekretaris desa':       { nameId: 'sekdes-name-org', avatarId: 'sekdes-avatar-org', initials: 'TM' },
-    'kaur tata usaha':       { nameId: 'kaur-tu-name',    avatarId: 'kaur-tu-av',        initials: 'TU' },
-    'kaur tu & umum':        { nameId: 'kaur-tu-name',    avatarId: 'kaur-tu-av',        initials: 'TU' },
-    'kaur tu dan umum':      { nameId: 'kaur-tu-name',    avatarId: 'kaur-tu-av',        initials: 'TU' },
-    'kaur keuangan':         { nameId: 'kaur-ku-name',    avatarId: 'kaur-ku-av',        initials: 'KU' },
-    'kaur perencanaan':      { nameId: 'kaur-kp-name',    avatarId: 'kaur-kp-av',        initials: 'KP' },
-    'kasi pemerintahan':     { nameId: 'kasi-pm-name',    avatarId: 'kasi-pm-av',        initials: 'KP' },
-    'kasi kesejahteraan':    { nameId: 'kasi-ks-name',    avatarId: 'kasi-ks-av',        initials: 'KS' },
-    'kasi pelayanan':        { nameId: 'kasi-pl-name',    avatarId: 'kasi-pl-av',        initials: 'KL' },
-    'kepala dusun randusari':  { nameId: 'kadus1-name', avatarId: 'kadus1-av', initials: 'D1' },
-    'kadus randusari':         { nameId: 'kadus1-name', avatarId: 'kadus1-av', initials: 'D1' },
-    'kepala dusun kandeman':   { nameId: 'kadus2-name', avatarId: 'kadus2-av', initials: 'D2' },
-    'kadus kandeman':          { nameId: 'kadus2-name', avatarId: 'kadus2-av', initials: 'D2' },
-    'kepala dusun gandok':     { nameId: 'kadus3-name', avatarId: 'kadus3-av', initials: 'D3' },
-    'kadus gandok':            { nameId: 'kadus3-name', avatarId: 'kadus3-av', initials: 'D3' },
-    'kepala dusun kaliongkek': { nameId: 'kadus4-name', avatarId: 'kadus4-av', initials: 'D4' },
-    'kadus kaliongkek':        { nameId: 'kadus4-name', avatarId: 'kadus4-av', initials: 'D4' },
-    'kepala dusun johosari':   { nameId: 'kadus5-name', avatarId: 'kadus5-av', initials: 'D5' },
-    'kadus johosari':          { nameId: 'kadus5-name', avatarId: 'kadus5-av', initials: 'D5' },
-    'kepala dusun 1':          { nameId: 'kadus1-name', avatarId: 'kadus1-av', initials: 'D1' },
-    'kepala dusun 2':          { nameId: 'kadus2-name', avatarId: 'kadus2-av', initials: 'D2' },
-    'kepala dusun 3':          { nameId: 'kadus3-name', avatarId: 'kadus3-av', initials: 'D3' },
-    'kepala dusun 4':          { nameId: 'kadus4-name', avatarId: 'kadus4-av', initials: 'D4' },
-    'kepala dusun 5':          { nameId: 'kadus5-name', avatarId: 'kadus5-av', initials: 'D5' },
+    'kepala desa':           { nameId: 'kades-name-org',  chartNameId: 'chart-kades-name',   avatarId: 'kades-avatar-org',  initials: 'BW' },
+    'sekretaris desa':       { nameId: 'sekdes-name-org', chartNameId: 'chart-sekdes-name',  avatarId: 'sekdes-avatar-org', initials: 'TM' },
+    'kaur tata usaha':       { nameId: 'kaur-tu-name',    chartNameId: 'chart-kaur-tu-name', avatarId: 'kaur-tu-av',        initials: 'TU' },
+    'kaur tu & umum':        { nameId: 'kaur-tu-name',    chartNameId: 'chart-kaur-tu-name', avatarId: 'kaur-tu-av',        initials: 'TU' },
+    'kaur tu dan umum':      { nameId: 'kaur-tu-name',    chartNameId: 'chart-kaur-tu-name', avatarId: 'kaur-tu-av',        initials: 'TU' },
+    'kaur keuangan':         { nameId: 'kaur-ku-name',    chartNameId: 'chart-kaur-ku-name', avatarId: 'kaur-ku-av',        initials: 'KU' },
+    'kaur perencanaan':      { nameId: 'kaur-kp-name',    chartNameId: 'chart-kaur-kp-name', avatarId: 'kaur-kp-av',        initials: 'KP' },
+    'kasi pemerintahan':     { nameId: 'kasi-pm-name',    chartNameId: 'chart-kasi-pm-name', avatarId: 'kasi-pm-av',        initials: 'KP' },
+    'kasi kesejahteraan':    { nameId: 'kasi-ks-name',    chartNameId: 'chart-kasi-ks-name', avatarId: 'kasi-ks-av',        initials: 'KS' },
+    'kasi pelayanan':        { nameId: 'kasi-pl-name',    chartNameId: 'chart-kasi-pl-name', avatarId: 'kasi-pl-av',        initials: 'KL' },
+    'kepala dusun randusari':  { nameId: 'kadus1-name', chartNameId: 'chart-kadus1-name', avatarId: 'kadus1-av', initials: 'D1' },
+    'kadus randusari':         { nameId: 'kadus1-name', chartNameId: 'chart-kadus1-name', avatarId: 'kadus1-av', initials: 'D1' },
+    'kepala dusun kandeman':   { nameId: 'kadus2-name', chartNameId: 'chart-kadus2-name', avatarId: 'kadus2-av', initials: 'D2' },
+    'kadus kandeman':          { nameId: 'kadus2-name', chartNameId: 'chart-kadus2-name', avatarId: 'kadus2-av', initials: 'D2' },
+    'kepala dusun gandok':     { nameId: 'kadus3-name', chartNameId: 'chart-kadus3-name', avatarId: 'kadus3-av', initials: 'D3' },
+    'kadus gandok':            { nameId: 'kadus3-name', chartNameId: 'chart-kadus3-name', avatarId: 'kadus3-av', initials: 'D3' },
+    'kepala dusun kaliongkek': { nameId: 'kadus4-name', chartNameId: 'chart-kadus4-name', avatarId: 'kadus4-av', initials: 'D4' },
+    'kadus kaliongkek':        { nameId: 'kadus4-name', chartNameId: 'chart-kadus4-name', avatarId: 'kadus4-av', initials: 'D4' },
+    'kepala dusun johosari':   { nameId: 'kadus5-name', chartNameId: 'chart-kadus5-name', avatarId: 'kadus5-av', initials: 'D5' },
+    'kadus johosari':          { nameId: 'kadus5-name', chartNameId: 'chart-kadus5-name', avatarId: 'kadus5-av', initials: 'D5' },
+    'kepala dusun 1':          { nameId: 'kadus1-name', chartNameId: 'chart-kadus1-name', avatarId: 'kadus1-av', initials: 'D1' },
+    'kepala dusun 2':          { nameId: 'kadus2-name', chartNameId: 'chart-kadus2-name', avatarId: 'kadus2-av', initials: 'D2' },
+    'kepala dusun 3':          { nameId: 'kadus3-name', chartNameId: 'chart-kadus3-name', avatarId: 'kadus3-av', initials: 'D3' },
+    'kepala dusun 4':          { nameId: 'kadus4-name', chartNameId: 'chart-kadus4-name', avatarId: 'kadus4-av', initials: 'D4' },
+    'kepala dusun 5':          { nameId: 'kadus5-name', chartNameId: 'chart-kadus5-name', avatarId: 'kadus5-av', initials: 'D5' },
   };
   data.forEach(p => {
     const key = String(p.jabatan || '').toLowerCase().trim();
@@ -1261,11 +1299,12 @@ async function loadPerangkat() {
     if (!map) return;
 
     // Isi nama
-    const nameEl = document.getElementById(map.nameId);
-    if (nameEl) {
+    [map.nameId, map.chartNameId].forEach(nameId => {
+      const nameEl = document.getElementById(nameId);
+      if (!nameEl) return;
       const nama = String(p.nama || '').replace(/\[.*?\]/g, '').trim();
       nameEl.textContent = nama || '–';
-    }
+    });
 
     // Isi foto potret; inisial dari atribut data menjadi fallback.
     const avEl = document.getElementById(map.avatarId);
@@ -1661,6 +1700,162 @@ document.addEventListener('keydown', event => {
 // ════════════════════
 // LOAD POTENSI
 // ════════════════════
+const DUSUN_ORDER = Object.freeze(['randusari', 'kandeman', 'gandok', 'kaliongkek', 'johosari']);
+const DUSUN_DEFAULTS = Object.freeze({
+  randusari: 'Randusari',
+  kandeman: 'Kandeman',
+  gandok: 'Gandok',
+  kaliongkek: 'Kaliongkek',
+  johosari: 'Johosari',
+});
+let _dusunList = [];
+let _dusunIndex = 0;
+
+function renderBerandaDusun(data) {
+  const el = document.getElementById('beranda-dusun-preview');
+  if (!el) return;
+  const source = Array.isArray(data) ? data : [];
+  const bySlug = Object.fromEntries(source.map(item => [String(item.slug || '').toLowerCase(), item]));
+  _dusunList = DUSUN_ORDER.map(slug => {
+    const item = bySlug[slug] || {};
+    return {
+      slug,
+      nama: item.nama || DUSUN_DEFAULTS[slug],
+      deskripsi: String(item.deskripsi || `Informasi mengenai Dusun ${DUSUN_DEFAULTS[slug]} akan segera dilengkapi.`),
+      lokasi: String(item.lokasi || `Dusun ${DUSUN_DEFAULTS[slug]}, Desa Kandeman, Kecamatan Kandeman`),
+      foto_url: item.foto_url || '',
+    };
+  });
+
+  _dusunIndex = Math.max(0, Math.min(_dusunIndex, _dusunList.length - 1));
+  el.innerHTML = `
+    <div class="home-dusun-tabs" aria-label="Pilih dusun yang ingin ditampilkan">
+      ${_dusunList.map((dusun, index) => `
+        <button type="button" class="home-dusun-tab" data-dusun-index="${index}"
+          aria-selected="${index === _dusunIndex ? 'true' : 'false'}"
+          onclick="selectBerandaDusun(${index})"
+          onkeydown="handleBerandaDusunKey(event, ${index})">${escHtml(dusun.nama)}</button>`).join('')}
+    </div>
+    <div id="beranda-dusun-card"></div>`;
+  renderBerandaDusunCard();
+}
+
+function renderBerandaDusunCard() {
+  const host = document.getElementById('beranda-dusun-card');
+  const dusun = _dusunList[_dusunIndex];
+  if (!host || !dusun) return;
+  const number = String(_dusunIndex + 1).padStart(2, '0');
+  const image = dusun.foto_url
+    ? `<img src="${safeUrl(dusun.foto_url)}" alt="Foto Dusun ${escHtml(dusun.nama)}" loading="lazy" decoding="async" onerror="this.remove()" />`
+    : '';
+  host.innerHTML = `
+    <button type="button" class="home-dusun-stage" onclick="openDusunModal(${_dusunIndex})" aria-label="Buka detail Dusun ${escHtml(dusun.nama)}">
+      <span class="home-dusun-stage-placeholder" aria-hidden="true">${number}</span>
+      ${image}
+      <span class="home-dusun-card-action" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+      <span class="home-dusun-card-copy"><small>Dusun ${number}</small><strong>${escHtml(dusun.nama)}</strong></span>
+    </button>`;
+}
+
+function selectBerandaDusun(index) {
+  if (!_dusunList.length) return;
+  _dusunIndex = Math.max(0, Math.min(Number(index) || 0, _dusunList.length - 1));
+  document.querySelectorAll('.home-dusun-tab').forEach((button, buttonIndex) => {
+    button.setAttribute('aria-selected', String(buttonIndex === _dusunIndex));
+  });
+  renderBerandaDusunCard();
+}
+
+function handleBerandaDusunKey(event, index) {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const lastIndex = _dusunList.length - 1;
+  const nextIndex = event.key === 'Home'
+    ? 0
+    : event.key === 'End'
+      ? lastIndex
+      : (index + (event.key === 'ArrowRight' ? 1 : -1) + _dusunList.length) % _dusunList.length;
+  selectBerandaDusun(nextIndex);
+  document.querySelector(`.home-dusun-tab[data-dusun-index="${nextIndex}"]`)?.focus();
+}
+
+function openDusunModal(index) {
+  if (!_dusunList.length) return;
+  _dusunIndex = Math.max(0, Math.min(Number(index) || 0, _dusunList.length - 1));
+  renderDusunModal();
+  const modal = document.getElementById('dusunModal');
+  modal?.classList.add('open');
+  activateDialog(modal, modal?.querySelector('.dm-close'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDusunModal() {
+  const modal = document.getElementById('dusunModal');
+  modal?.classList.remove('open');
+  document.body.style.overflow = '';
+  deactivateDialog(modal);
+}
+
+function navDusun(direction) {
+  if (!_dusunList.length) return;
+  _dusunIndex = (_dusunIndex + direction + _dusunList.length) % _dusunList.length;
+  renderDusunModal();
+}
+
+function renderDusunModal() {
+  const dusun = _dusunList[_dusunIndex];
+  if (!dusun) return;
+  const number = String(_dusunIndex + 1).padStart(2, '0');
+  const image = document.getElementById('dm-image');
+  const placeholder = document.getElementById('dm-image-placeholder');
+
+  document.getElementById('dm-counter').textContent = `${number} / ${String(_dusunList.length).padStart(2, '0')}`;
+  document.getElementById('dm-title').textContent = `Dusun ${dusun.nama}`;
+  document.getElementById('dm-description').textContent = dusun.deskripsi;
+  document.getElementById('dm-location-text').textContent = dusun.lokasi;
+  placeholder.textContent = number;
+
+  if (dusun.foto_url) {
+    image.src = safeUrl(dusun.foto_url);
+    image.alt = `Foto Dusun ${dusun.nama}`;
+    image.hidden = false;
+    placeholder.hidden = true;
+    image.onerror = () => {
+      image.hidden = true;
+      placeholder.hidden = false;
+    };
+  } else {
+    image.removeAttribute('src');
+    image.alt = '';
+    image.hidden = true;
+    placeholder.hidden = false;
+  }
+}
+
+document.addEventListener('keydown', event => {
+  const modal = document.getElementById('dusunModal');
+  if (!modal?.classList.contains('open')) return;
+  if (event.key === 'Escape') closeDusunModal();
+  if (event.key === 'ArrowLeft') navDusun(-1);
+  if (event.key === 'ArrowRight') navDusun(1);
+});
+
+async function loadDusun() {
+  const el = document.getElementById('beranda-dusun-preview');
+  if (!el) return;
+  const { data, error } = await sb.from('dusun')
+    .select('slug,nama,deskripsi,lokasi,foto_url,urutan,aktif')
+    .eq('aktif', true)
+    .order('urutan', { ascending: true });
+
+  if (error) {
+    console.error('Gagal memuat data dusun:', error);
+    renderDataState(el, 'error', 'Data dusun belum dapat dimuat.');
+    return;
+  }
+  renderBerandaDusun(data || []);
+}
+
 async function loadPotensi() {
   const el = document.getElementById('potensi-grid');
   if (!el) return;
@@ -2753,7 +2948,7 @@ function _initDataLoad() {
   if (!sb) {
     console.error('Supabase client belum tersedia.');
     [
-      'berita-grid','galeri-grid','potensi-grid','umkm-grid','agenda-mendatang',
+      'berita-grid','beranda-berita-preview','galeri-grid','potensi-grid','beranda-dusun-preview','umkm-grid','agenda-mendatang',
       'agenda-lalu','prestasi-grid','kontak-kesehatan-list','arsip-apbdes-list',
       'perdes-list','poster-edukasi-list',
     ].forEach(id => renderDataState(id, 'error'));
@@ -2772,6 +2967,7 @@ function _initDataLoad() {
       ['perangkat', loadPerangkat],
       ['APBDes', loadApbdes],
       ['potensi', loadPotensi],
+      ['dusun', loadDusun],
       ['UMKM', loadUmkm],
       ['dokumen', loadDokumen],
       ['prestasi', loadPrestasi],

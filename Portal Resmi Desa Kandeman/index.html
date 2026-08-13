@@ -681,7 +681,60 @@
     </div>
 
     <div id="perangkat-desa">
-      <div class="org-showcase" id="struktur-org">
+      <div class="org-layout" id="struktur-org">
+        <aside class="org-chart-panel" aria-labelledby="org-chart-heading">
+          <div class="org-chart-heading">
+            <div class="org-chart-kicker">Bagan Struktur</div>
+            <h3 id="org-chart-heading">Hierarki Pemerintahan Desa</h3>
+          </div>
+
+          <div class="org-tree" aria-label="Bagan hierarki perangkat Desa Kandeman">
+            <article class="org-tree-node org-tree-node-primary">
+              <span>Kepala Desa</span>
+              <strong id="chart-kades-name">–</strong>
+            </article>
+
+            <div class="org-tree-line" aria-hidden="true"></div>
+
+            <article class="org-tree-node org-tree-node-secondary">
+              <span>Sekretaris Desa</span>
+              <strong id="chart-sekdes-name">–</strong>
+            </article>
+
+            <div class="org-tree-line" aria-hidden="true"></div>
+
+            <div class="org-tree-branches">
+              <section class="org-tree-group" aria-labelledby="org-tree-kaur-title">
+                <h4 id="org-tree-kaur-title">Kepala Urusan</h4>
+                <article class="org-tree-node"><span>Kaur TU &amp; Umum</span><strong id="chart-kaur-tu-name">–</strong></article>
+                <article class="org-tree-node"><span>Kaur Keuangan</span><strong id="chart-kaur-ku-name">–</strong></article>
+                <article class="org-tree-node"><span>Kaur Perencanaan</span><strong id="chart-kaur-kp-name">–</strong></article>
+              </section>
+
+              <section class="org-tree-group" aria-labelledby="org-tree-kasi-title">
+                <h4 id="org-tree-kasi-title">Kepala Seksi</h4>
+                <article class="org-tree-node"><span>Kasi Pemerintahan</span><strong id="chart-kasi-pm-name">–</strong></article>
+                <article class="org-tree-node"><span>Kasi Kesejahteraan</span><strong id="chart-kasi-ks-name">–</strong></article>
+                <article class="org-tree-node"><span>Kasi Pelayanan</span><strong id="chart-kasi-pl-name">–</strong></article>
+              </section>
+            </div>
+
+            <div class="org-tree-line" aria-hidden="true"></div>
+
+            <section class="org-tree-group org-tree-kadus" aria-labelledby="org-tree-kadus-title">
+              <h4 id="org-tree-kadus-title">Kepala Dusun</h4>
+              <div class="org-tree-kadus-grid">
+                <article class="org-tree-node"><span>Randusari</span><strong id="chart-kadus1-name">–</strong></article>
+                <article class="org-tree-node"><span>Kandeman</span><strong id="chart-kadus2-name">–</strong></article>
+                <article class="org-tree-node"><span>Gandok</span><strong id="chart-kadus3-name">–</strong></article>
+                <article class="org-tree-node"><span>Kaliongkek</span><strong id="chart-kadus4-name">–</strong></article>
+                <article class="org-tree-node"><span>Johosari</span><strong id="chart-kadus5-name">–</strong></article>
+              </div>
+            </section>
+          </div>
+        </aside>
+
+        <div class="org-showcase">
         <div class="org-tabs" role="tablist" aria-label="Kelompok perangkat Desa Kandeman">
           <button type="button" class="org-tab active" role="tab" aria-selected="true" aria-controls="org-panel-pimpinan" data-org-tab="pimpinan">Pimpinan Desa</button>
           <button type="button" class="org-tab" role="tab" aria-selected="false" aria-controls="org-panel-kasi-kaur" data-org-tab="kasi-kaur">Kasi &amp; Kaur</button>
@@ -769,6 +822,7 @@
               <div class="org-card-caption"><div class="org-role">Kadus Johosari</div><h3 class="org-name" id="kadus5-name">–</h3></div>
             </article>
           </div>
+        </div>
         </div>
       </div>
     </div>
