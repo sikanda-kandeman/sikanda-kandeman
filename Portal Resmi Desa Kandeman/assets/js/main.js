@@ -44,9 +44,12 @@
   function toggleNav() {
     const links = document.getElementById('navLinks');
     links.classList.toggle('open');
+    document.getElementById('hamburger')?.setAttribute('aria-expanded', String(links.classList.contains('open')));
   }
   function closeNav() {
     document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('hamburger')?.setAttribute('aria-expanded', 'false');
+    document.querySelectorAll('.nav-item.open').forEach(item => item.classList.remove('open'));
   }
 
   /* Dropdown click on mobile */
@@ -70,6 +73,7 @@
     if (a.hasAttribute('onclick') &&
         a.getAttribute('onclick').includes('handleDropdownClick')) return;
     e.preventDefault();
+    if (a.closest('#mainNav')) setActiveNavForAnchor(hash);
     closeNav();
     // Tunggu menu tertutup dulu (reflow selesai) baru scroll
     requestAnimationFrame(() => {
@@ -147,22 +151,82 @@
   });
 
   /* ── Active nav on scroll ── */
-  const sections = document.querySelectorAll('section[id]');
   const navItems = document.querySelectorAll('.nav-item');
 
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 100) current = s.id;
-    });
+  const NAV_ROUTE_BY_TARGET = Object.freeze({
+    beranda: 'beranda',
+    profil: 'profil',
+    'profil-sejarah': 'profil',
+    'visi-misi': 'profil',
+    'profil-geografis': 'profil',
+    'peta-wilayah': 'profil',
+    'profil-demografi': 'profil',
+    pemerintahan: 'pemerintahan',
+    'struktur-org': 'pemerintahan',
+    'perangkat-desa': 'pemerintahan',
+    lembaga: 'pemerintahan',
+    potensi: 'potensi',
+    transparansi: 'transparansi',
+    apbdes: 'transparansi',
+    realisasi: 'transparansi',
+    layanan: 'layanan',
+    'alur-pelayanan': 'layanan',
+    persyaratan: 'layanan',
+    kesehatan: 'layanan',
+    umkm: 'layanan',
+    'hukum-edukasi': 'layanan',
+    informasi: 'informasi',
+    berita: 'informasi',
+    galeri: 'informasi',
+    agenda: 'informasi',
+    statistik: 'informasi',
+    prestasi: 'prestasi',
+    penghargaan: 'prestasi',
+    capaian: 'prestasi',
+    aspirasi: 'kontak',
+    kontak: 'kontak',
+  });
+
+  function anchorId(anchor) {
+    const rawId = String(anchor || '').replace(/^#/, '');
+    if (!rawId) return '';
+    try { return decodeURIComponent(rawId); } catch { return rawId; }
+  }
+
+  function setActiveNavForAnchor(anchor) {
+    const route = NAV_ROUTE_BY_TARGET[anchorId(anchor)];
+    if (!route) return;
     navItems.forEach(item => {
-      item.classList.remove('active');
       const link = item.querySelector('a');
-      if (link && link.getAttribute('href') === '#' + current) {
-        item.classList.add('active');
-      }
+      item.classList.toggle('active', link?.getAttribute('href') === '#' + route);
     });
-  }, { passive: true });
+  }
+
+  const NAV_SCROLL_BOUNDARIES = Object.freeze([
+    ['beranda', 'beranda'],
+    ['profil', 'profil'],
+    ['pemerintahan', 'pemerintahan'],
+    ['potensi', 'potensi'],
+    ['transparansi', 'transparansi'],
+    ['layanan', 'layanan'],
+    ['informasi', 'informasi'],
+    ['prestasi', 'prestasi'],
+    ['aspirasi', 'kontak'],
+  ]);
+
+  function updateActiveNav() {
+    const threshold = (mainNav?.offsetHeight || 64) + 24;
+    let route = 'beranda';
+    NAV_SCROLL_BOUNDARIES.forEach(([sectionId, sectionRoute]) => {
+      const section = document.getElementById(sectionId);
+      if (section && section.getBoundingClientRect().top <= threshold) route = sectionRoute;
+    });
+    setActiveNavForAnchor('#' + route);
+  }
+
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  window.addEventListener('pageshow', updateActiveNav);
+  requestAnimationFrame(updateActiveNav);
 
   /* ── Search overlay ── */
   function openSearch() {
@@ -302,14 +366,14 @@
   }
 
   function scrollToAnchor(anchor) {
-    const target = document.querySelector(anchor);
+    const id = anchorId(anchor);
+    const target = document.getElementById(id);
     if (!target) return;
-    const NAVBAR  = 64;  // tinggi navbar px — sama dengan CSS height: 64px
-    const MARGIN  = 20;  // ruang napas di atas konten
-    // getBoundingClientRect relatif ke viewport saat ini
-    const rect = target.getBoundingClientRect();
-    const absTop = rect.top + window.scrollY;
-    window.scrollTo({ top: absTop - NAVBAR - MARGIN, behavior: 'smooth' });
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveNavForAnchor('#' + id);
+    if (window.location.hash !== '#' + id) {
+      history.replaceState(null, '', '#' + encodeURIComponent(id));
+    }
   }
 
   function showSearchFeedback(q, found) {

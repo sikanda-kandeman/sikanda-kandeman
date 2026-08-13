@@ -254,9 +254,9 @@
     ══════════════════════════════════════ */
     .container { max-width: 1120px; margin: 0 auto; padding: 0 5%; }
     .section { padding: 96px 0; }
-    /* content-visibility: auto — browser skip render section yang belum terlihat */
+    /* Posisi seluruh section harus stabil agar tujuan navbar selalu akurat. */
     section[id]:not(#beranda),
-    div[id].section { content-visibility: auto; contain-intrinsic-size: 0 600px; }
+    div[id].section { content-visibility: visible; contain-intrinsic-size: none; }
     .section-white { background: #FDFAF5; }
     .section-cream { background: var(--cream); }
     .section-forest { background: var(--forest); }
