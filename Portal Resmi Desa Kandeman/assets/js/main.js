@@ -1442,6 +1442,38 @@ function setApbdesIcon(id, className) {
   if (element) element.className = `fa-solid ${className}`;
 }
 
+function setPublicApbdesPublicationState(state = 'ready', record = null) {
+  const status = document.getElementById('apb-publication-status');
+  const grid = document.querySelector('#transparansi .trans-grid');
+  const pending = state !== 'ready';
+  if (grid) grid.classList.toggle('is-publication-pending', pending);
+  if (!status) return;
+  status.hidden = !pending;
+  status.classList.toggle('is-error', state === 'error');
+  if (!pending) return;
+
+  const icon = status.querySelector('.apb-publication-status-icon i');
+  if (icon) icon.className = `fa-solid ${state === 'error' ? 'fa-triangle-exclamation' : state === 'empty' ? 'fa-circle-info' : 'fa-hourglass-half'}`;
+  const semester = publicApbdesSemester(record);
+  const year = Number(record?.tahun);
+  if (state === 'processing' && Number.isInteger(year)) {
+    setApbdesText('apb-publication-status-title', `Laporan Semester ${semester} sedang dalam proses publikasi`);
+    setApbdesText('apb-publication-status-desc', `Data APBDes Tahun ${year} Semester ${semester} sedang disiapkan oleh Pemerintah Desa Kandeman.`);
+  } else if (state === 'error') {
+    setApbdesText('apb-publication-status-title', 'Laporan APBDes belum dapat dimuat');
+    setApbdesText('apb-publication-status-desc', 'Silakan muat ulang halaman untuk mencoba kembali.');
+  } else {
+    setApbdesText('apb-publication-status-title', 'Laporan APBDes belum dipublikasikan');
+    setApbdesText('apb-publication-status-desc', 'Belum ada data APBDes yang tersedia untuk ditampilkan.');
+  }
+}
+
+function hasPublishedApbdesRealisation(lra) {
+  return Object.entries(LRA_PUBLIC_SECTIONS).some(([section, rows]) => rows.some(([key]) =>
+    lraPublicNumber(lra?.[section]?.[key]?.realisasi) > 0
+  ));
+}
+
 function lraPercent(part, total) {
   return total ? `${Math.round(lraPublicNumber(part) / lraPublicNumber(total) * 10000) / 100}%` : '—';
 }
@@ -1584,6 +1616,7 @@ function renderRealisasiCategory(category = _activeRealisasiCategory) {
 function resetApbdesData(status = 'empty') {
   const unavailable = status === 'error';
   _apbdesPublicState = null;
+  setPublicApbdesPublicationState(unavailable ? 'error' : 'empty');
   setApbdesText('apb-val', 'Rp —');
   setApbdesText('apb-tahun-lbl', 'Anggaran Pendapatan APBDes');
   setApbdesText('apb-sub', unavailable ? 'Data belum dapat dimuat' : 'Belum ada data yang dipublikasikan');
@@ -1614,6 +1647,14 @@ function resetApbdesData(status = 'empty') {
 function renderPublicApbdesRecord(record) {
   if (!record) { resetApbdesData('empty'); return; }
     const lra = normaliseLraData(record);
+    const semester = publicApbdesSemester(record);
+    if (!hasPublishedApbdesRealisation(lra)) {
+      _apbdesPublicState = null;
+      setApbdesText('apb-section-sub', `Status publikasi laporan APBDes Desa Kandeman Tahun ${record.tahun}, Semester ${semester}.`);
+      setPublicApbdesPublicationState('processing', record);
+      return;
+    }
+    setPublicApbdesPublicationState('ready');
     const pendapatanAnggaran = lraPublicTotal(lra, 'pendapatan', 'anggaran');
     const pendapatanRealisasi = lraPublicTotal(lra, 'pendapatan', 'realisasi');
     const belanjaAnggaran = lraPublicTotal(lra, 'belanja', 'anggaran');
@@ -1635,7 +1676,6 @@ function renderPublicApbdesRecord(record) {
     };
 
     setApbdesText('apb-val', fmtRp(pendapatanAnggaran));
-    const semester = publicApbdesSemester(record);
     setApbdesText('apb-tahun-lbl', `Anggaran Pendapatan APBDes ${record.tahun} · Semester ${semester}`);
     setApbdesText('apb-sub', `Realisasi pendapatan: ${fmtRp(pendapatanRealisasi)} (${lraPercent(pendapatanRealisasi, pendapatanAnggaran)})`);
     setApbdesText('apb-section-sub', `Informasi APBDes dan realisasi anggaran Desa Kandeman Tahun ${record.tahun}, Semester ${semester}.`);

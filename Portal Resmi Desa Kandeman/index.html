@@ -93,7 +93,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260813-navbar-v31" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260813-transparansi-v32" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -971,6 +971,15 @@
             <option>Memuat…</option>
           </select>
         </label>
+      </div>
+    </div>
+
+    <div class="apb-publication-status" id="apb-publication-status" role="status" aria-live="polite" hidden>
+      <span class="apb-publication-status-icon" aria-hidden="true"><i class="fa-solid fa-hourglass-half"></i></span>
+      <div>
+        <p class="apb-publication-status-kicker">Status publikasi</p>
+        <h3 id="apb-publication-status-title">Laporan APBDes sedang dalam proses publikasi</h3>
+        <p id="apb-publication-status-desc">Data laporan sedang disiapkan oleh Pemerintah Desa Kandeman.</p>
       </div>
     </div>
 
@@ -2329,15 +2338,6 @@
             <p>Senin – Kamis: 07.30 – 16.00 WIB<br>Jumat: 07.30 – 11.00 WIB<br>Sabtu & Minggu: Tutup</p>
           </div>
         </div>
-        <div class="kontak-card" style="flex-direction:column; align-items:flex-start;">
-          <h4 style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); margin-bottom:8px;">Media Sosial</h4>
-          <div class="sosmed-row">
-            <!-- TODO: Isi URL akun media sosial resmi Desa Kandeman. -->
-            <a href="#" class="sosmed-btn s-fb" title="Facebook" aria-label="Facebook Desa Kandeman"><i class="fa-brands fa-facebook" aria-hidden="true"></i></a>
-            <a href="#" class="sosmed-btn s-ig" title="Instagram" aria-label="Instagram Desa Kandeman"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
-            <a href="#" class="sosmed-btn s-yt" title="YouTube" aria-label="YouTube Desa Kandeman"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
-          </div>
-        </div>
       </div>
 
       <div class="peta-embed" style="border-radius:var(--r-md); overflow:hidden;">
@@ -2553,15 +2553,6 @@
           <li><a href="mailto:kandeman@batangkab.go.id"><i class="fa-solid fa-envelope" style="width:14px; margin-right:6px;"></i>kandeman@batangkab.go.id</a></li>
           <li><a href="#"><i class="fa-solid fa-clock" style="width:14px; margin-right:6px;"></i>Senin–Kamis, 07.30–16.00 WIB<br>Jumat, 07.30–11.00 WIB<br>Sabtu & Minggu: Tutup</a></li>
         </ul>
-        <div style="margin-top:16px;">
-          <p style="font-size:11.5px; margin-bottom:10px; color:rgba(255,255,255,.4);">Ikuti kami:</p>
-          <div style="display:flex; gap:12px;">
-            <!-- TODO: Isi URL akun media sosial resmi Desa Kandeman. -->
-            <a href="#" aria-label="Facebook Desa Kandeman" style="color:rgba(255,255,255,.6); font-size:18px; transition:color .15s;" onmouseover="this.style.color='#7dd3a8'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"><i class="fa-brands fa-facebook" aria-hidden="true"></i></a>
-            <a href="#" aria-label="Instagram Desa Kandeman" style="color:rgba(255,255,255,.6); font-size:18px; transition:color .15s;" onmouseover="this.style.color='#7dd3a8'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
-            <a href="#" aria-label="YouTube Desa Kandeman" style="color:rgba(255,255,255,.6); font-size:18px; transition:color .15s;" onmouseover="this.style.color='#7dd3a8'" onmouseout="this.style.color='rgba(255,255,255,0.6)'"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
-          </div>
-        </div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -2577,6 +2568,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260813-navbar-v31" defer></script>
+  <script src="assets/js/main.js?v=20260813-transparansi-v32" defer></script>
 </body>
 </html>

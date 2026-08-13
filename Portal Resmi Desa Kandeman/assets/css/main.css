@@ -1746,12 +1746,39 @@
     }
     .trans-period-fields select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
     .trans-period-fields select:disabled { cursor: wait; opacity: .62; }
+    .apb-publication-status {
+      display: flex; align-items: flex-start; gap: 16px; margin: 0 0 24px; padding: 22px 24px;
+      color: var(--forest); background: #F7F1E5; border: 1px solid rgba(176,125,42,.25);
+      border-radius: 18px; box-shadow: 0 18px 42px -38px rgba(13,43,26,.52);
+    }
+    .apb-publication-status[hidden] { display: none; }
+    .apb-publication-status.is-error { background: #FFF2EF; border-color: rgba(192,57,43,.22); }
+    .apb-publication-status-icon {
+      width: 44px; height: 44px; flex: 0 0 44px; display: grid; place-items: center;
+      color: #fff; background: var(--gold); border-radius: 12px;
+    }
+    .apb-publication-status.is-error .apb-publication-status-icon { background: #C0392B; }
+    .apb-publication-status-kicker {
+      margin: 1px 0 4px; color: var(--gold); font-size: 9px; font-weight: 700;
+      letter-spacing: .11em; line-height: 1.2; text-transform: uppercase;
+    }
+    .apb-publication-status.is-error .apb-publication-status-kicker { color: #A93226; }
+    .apb-publication-status h3 {
+      margin: 0; color: var(--forest); font-family: 'Cormorant Garamond', serif;
+      font-size: 25px; font-weight: 700; line-height: 1.08;
+    }
+    .apb-publication-status h3 + p { margin: 6px 0 0; color: var(--text-sec); font-size: 12.5px; line-height: 1.55; }
     .trans-grid {
       display: grid;
       grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
       gap: 30px;
       align-items: start;
     }
+    .trans-grid.is-publication-pending { grid-template-columns: minmax(0, 1fr); }
+    .trans-grid.is-publication-pending .apbdes-total,
+    .trans-grid.is-publication-pending .budget-section-title,
+    .trans-grid.is-publication-pending #apb-alokasi,
+    .trans-grid.is-publication-pending #realisasi { display: none; }
     @media (max-width: 860px) { .trans-grid { grid-template-columns: 1fr; } }
 
     .apbdes-total {
@@ -2198,6 +2225,9 @@
       .trans-period-copy { align-items: flex-start; }
       .trans-period-copy h3 { font-size: 21px; }
       .trans-period-fields { grid-template-columns: 1fr; }
+      .apb-publication-status { gap: 12px; padding: 18px; }
+      .apb-publication-status-icon { width: 40px; height: 40px; flex-basis: 40px; }
+      .apb-publication-status h3 { font-size: 21px; }
       .financial-archive { padding: 17px; }
       .financial-archive-heading { gap: 11px; }
       .financial-archive-icon { width: 40px; height: 40px; flex-basis: 40px; border-radius: 11px; }

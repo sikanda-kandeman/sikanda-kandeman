@@ -1499,6 +1499,11 @@ function markApbdesFormDirty() {
   _apbdesLoadGeneration += 1;
 }
 
+function updateApbdesDeleteButton() {
+  const button = document.getElementById('btn-hapus-apb');
+  if (button) button.disabled = _apbdesSaving || !document.getElementById('apb-id')?.value;
+}
+
 function setApbdesFormBusy(isBusy) {
   _apbdesSaving = Boolean(isBusy);
   document.querySelectorAll('#apb-tahun, #apb-semester, #btn-muat-apb, .apb-input-row input').forEach(input => {
@@ -1506,6 +1511,7 @@ function setApbdesFormBusy(isBusy) {
   });
   const button = document.getElementById('btn-simpan-apb');
   if (button) button.disabled = Boolean(isBusy);
+  updateApbdesDeleteButton();
 }
 
 const lraNumber = value => Number.isFinite(Number(value)) ? Number(value) : 0;
@@ -1629,11 +1635,14 @@ async function loadApbdes(options = {}) {
     _loadedApbdesPeriodKey = apbdesPeriodKey(year, semester);
     renderLraInputs(defaultLraData(record || {}));
     renderAdminApbdesPeriods();
+    updateApbdesDeleteButton();
   } catch (error) {
     if (loadGeneration !== _apbdesLoadGeneration) return;
     console.error('Gagal memuat APBDes:', error);
     showToast('Data APBDes belum dapat dimuat.', true);
+    document.getElementById('apb-id').value = '';
     renderLraInputs();
+    updateApbdesDeleteButton();
   }
 }
 
@@ -1799,6 +1808,86 @@ async function simpanApbdes() {
   } finally {
     setApbdesFormBusy(false);
     btn.innerHTML = '<i class="fa-solid fa-check"></i> Simpan Data APBDes';
+  }
+}
+
+function konfirmasiHapusApbdes() {
+  const tahun = Number(document.getElementById('apb-tahun').value);
+  const semester = Number(document.getElementById('apb-semester').value);
+  const tersimpan = document.getElementById('apb-id').value && _apbdesRecords.some(record =>
+    Number(record.tahun) === tahun && apbdesRecordSemester(record) === semester
+  );
+  if (!tersimpan) {
+    showToast('Belum ada data APBDes tersimpan pada periode ini.', true);
+    return;
+  }
+  openConfirm(
+    'Hapus data APBDes?',
+    `Data APBDes ${tahun} Semester ${semester} akan dihapus dari Panel Admin dan Web Utama. Tindakan ini tidak dapat dibatalkan.`,
+    'Hapus APBDes',
+    () => hapusApbdes(tahun, semester),
+  );
+}
+
+function apbdesDeleteErrorMessage(error) {
+  const detail = `${error?.code || ''} ${error?.message || ''} ${error?.details || ''}`.toLowerCase();
+  if (detail.includes('tidak ada data yang terhapus') || detail.includes('row-level security') || detail.includes('permission denied') || error?.code === '42501') {
+    return 'Data APBDes tidak terhapus. Pastikan akun yang digunakan memiliki izin hapus pada tabel APBDes.';
+  }
+  return `Data APBDes gagal dihapus${error?.message ? `: ${error.message}` : '.'}`;
+}
+
+async function hapusApbdes(tahun, semester) {
+  const matchingRows = _apbdesRecords.filter(record =>
+    Number(record.tahun) === Number(tahun) && apbdesRecordSemester(record) === Number(semester)
+  );
+  if (!matchingRows.length) {
+    showToast('Data APBDes yang akan dihapus tidak ditemukan.', true);
+    return;
+  }
+
+  const button = document.getElementById('btn-hapus-apb');
+  _apbdesLoadGeneration += 1;
+  setApbdesFormBusy(true);
+  if (button) button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menghapus...';
+  try {
+    const { data: deletedRows, error } = await sb.from('apbdes').delete()
+      .eq('tahun', Number(tahun))
+      .eq('semester', Number(semester))
+      .select('id');
+    if (error) throw error;
+    if (!deletedRows?.length) throw new Error('Tidak ada data yang terhapus. Kebijakan akses database mungkin menolak penghapusan.');
+
+    _apbdesRecords = _apbdesRecords.filter(record =>
+      Number(record.tahun) !== Number(tahun) || apbdesRecordSemester(record) !== Number(semester)
+    );
+    const nextRecord = _apbdesRecords[0] || null;
+    if (nextRecord) {
+      const nextSemester = apbdesRecordSemester(nextRecord);
+      document.getElementById('apb-id').value = nextRecord.id || '';
+      document.getElementById('apb-tahun').value = Number(nextRecord.tahun);
+      document.getElementById('apb-semester').value = String(nextSemester);
+      _loadedApbdesPeriodKey = apbdesPeriodKey(nextRecord.tahun, nextSemester);
+      renderLraInputs(defaultLraData(nextRecord));
+    } else {
+      document.getElementById('apb-id').value = '';
+      document.getElementById('apb-tahun').value = Number(tahun);
+      document.getElementById('apb-semester').value = String(semester);
+      _loadedApbdesPeriodKey = apbdesPeriodKey(tahun, semester);
+      renderLraInputs(defaultLraData());
+    }
+    _apbdesFormDirty = false;
+    renderAdminApbdesPeriods();
+    showToast(`Data APBDes ${tahun} Semester ${semester} berhasil dihapus`);
+    showLastSaved('APBDes dihapus ' + new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));
+    await loadDashboard();
+  } catch (error) {
+    console.error('Gagal menghapus APBDes:', error);
+    showToast(apbdesDeleteErrorMessage(error), true);
+  } finally {
+    setApbdesFormBusy(false);
+    if (button) button.innerHTML = '<i class="fa-solid fa-trash-can"></i> Hapus Data APBDes';
+    updateApbdesDeleteButton();
   }
 }
 
