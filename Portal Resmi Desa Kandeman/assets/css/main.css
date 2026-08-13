@@ -881,7 +881,7 @@
       min-height: 90vh; display: flex; align-items: center; justify-content: flex-start;
       background:
         linear-gradient(rgba(10,30,18,.82), rgba(10,30,18,.75)),
-        url('../images/tugu-adipura-kandeman.png') center/cover no-repeat;
+        url('../images/hero-desa-kandeman.png') center/cover no-repeat;
       padding: 92px 0 72px;
       color: #fff;
       contain: layout style;
@@ -890,14 +890,14 @@
       .hero {
         background:
           linear-gradient(rgba(10,30,18,.82), rgba(10,30,18,.75)),
-          url('../images/tugu-adipura-kandeman.png') center/cover no-repeat;
+          url('../images/hero-desa-kandeman.png') center/cover no-repeat;
       }
     }
     @media (min-width: 1400px) {
       .hero {
         background:
           linear-gradient(rgba(10,30,18,.82), rgba(10,30,18,.75)),
-          url('../images/tugu-adipura-kandeman.png') center/cover no-repeat;
+          url('../images/hero-desa-kandeman.png') center/cover no-repeat;
       }
     }
     .hero-inner {
