@@ -93,7 +93,7 @@
   }
   </script>
 
-  <link rel="stylesheet" href="assets/css/main.css?v=20260811-beranda-navbar-peta-v21" />
+  <link rel="stylesheet" href="assets/css/main.css?v=20260813-struktur-foto-v29" />
 </head>
 <body>
 <a href="#beranda" class="skip-link">Lewati ke konten utama</a>
@@ -680,160 +680,96 @@
       <p class="section-sub">Susunan pemerintahan Desa Kandeman yang melayani masyarakat.</p>
     </div>
 
-    <div class="org-wrap" id="struktur-org">
-      <div class="org-tree">
+    <div id="perangkat-desa">
+      <div class="org-showcase" id="struktur-org">
+        <div class="org-tabs" role="tablist" aria-label="Kelompok perangkat Desa Kandeman">
+          <button type="button" class="org-tab active" role="tab" aria-selected="true" aria-controls="org-panel-pimpinan" data-org-tab="pimpinan">Pimpinan Desa</button>
+          <button type="button" class="org-tab" role="tab" aria-selected="false" aria-controls="org-panel-kasi-kaur" data-org-tab="kasi-kaur">Kasi &amp; Kaur</button>
+          <button type="button" class="org-tab" role="tab" aria-selected="false" aria-controls="org-panel-kadus" data-org-tab="kadus">Kepala Dusun</button>
+        </div>
 
-        <!-- ── Level 1: Kepala Desa ── -->
-        <div class="org-level">
-          <div class="org-node head">
-            <div class="org-avatar" id="kades-avatar-org"><i class="fa-solid fa-star" style="font-size:14px;"></i></div>
-            <div class="org-name" id="kades-name-org">–</div>
-            <div class="org-role">Kepala Desa</div>
+        <div class="org-status" id="org-status" role="status" hidden></div>
+
+        <div class="org-panel active" id="org-panel-pimpinan" role="tabpanel" data-org-panel="pimpinan">
+          <div class="org-card-grid org-grid-leaders">
+            <article class="org-profile-card org-card-leader">
+              <div class="org-photo" id="kades-avatar-org" data-initials="KD" aria-hidden="true"></div>
+              <div class="org-card-caption">
+                <div class="org-role">Kepala Desa</div>
+                <h3 class="org-name" id="kades-name-org">–</h3>
+              </div>
+            </article>
+            <article class="org-profile-card org-card-leader">
+              <div class="org-photo" id="sekdes-avatar-org" data-initials="SD" aria-hidden="true"></div>
+              <div class="org-card-caption">
+                <div class="org-role">Sekretaris Desa</div>
+                <h3 class="org-name" id="sekdes-name-org">–</h3>
+              </div>
+            </article>
           </div>
         </div>
 
-        <div class="org-connector-v"></div>
-
-        <!-- ── Level 2: Sekretaris Desa ── -->
-        <div class="org-level">
-          <div class="org-node sekdes">
-            <div class="org-avatar av-sky" id="sekdes-avatar-org">SD</div>
-            <div class="org-name" id="sekdes-name-org">–</div>
-            <div class="org-role">Sekretaris Desa</div>
-          </div>
-        </div>
-
-        <div class="org-connector-v"></div>
-
-        <!-- ── Level 3: Kaur + Kasi (sejajar horizontal) ── -->
-        <!-- Garis horizontal induk -->
-        <div style="position:relative; width:100%; display:flex; justify-content:center;">
-          <!-- Garis H dari sekdes ke kaur/kasi -->
-          <svg width="560" height="20" style="overflow:visible; display:block;">
-            <!-- Garis vertikal pendek ke bawah -->
-            <line x1="280" y1="0" x2="280" y2="20" stroke="var(--border)" stroke-width="2"/>
-            <!-- Garis horizontal dari kaur ke kasi -->
-            <line x1="140" y1="20" x2="420" y2="20" stroke="var(--border)" stroke-width="2"/>
-            <!-- Turun ke kolom kiri (Kaur) -->
-            <line x1="140" y1="20" x2="140" y2="40" stroke="var(--border)" stroke-width="2"/>
-            <!-- Turun ke kolom kanan (Kasi) -->
-            <line x1="420" y1="20" x2="420" y2="40" stroke="var(--border)" stroke-width="2"/>
-          </svg>
-        </div>
-
-        <div class="org-mid-row" style="margin-top:-20px;">
-          <!-- Kaur -->
-          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
-            <div class="org-group-label">Kepala Urusan</div>
-            <div class="org-node" style="border-color:#F5E8C8;">
-              <div class="org-avatar av-gold" id="kaur-tu-av">TU</div>
-              <div class="org-name" id="kaur-tu-name">–</div>
-              <div class="org-role">Kaur TU &amp; Umum</div>
-            </div>
-            <div class="org-connector-v" style="height:6px;"></div>
-            <div class="org-node" style="border-color:#F5E8C8;">
-              <div class="org-avatar av-gold" id="kaur-ku-av">KU</div>
-              <div class="org-name" id="kaur-ku-name">–</div>
-              <div class="org-role">Kaur Keuangan</div>
-            </div>
-            <div class="org-connector-v" style="height:6px;"></div>
-            <div class="org-node" style="border-color:#F5E8C8;">
-              <div class="org-avatar av-gold" id="kaur-kp-av">KP</div>
-              <div class="org-name" id="kaur-kp-name">–</div>
-              <div class="org-role">Kaur Perencanaan</div>
+        <div class="org-panel" id="org-panel-kasi-kaur" role="tabpanel" data-org-panel="kasi-kaur" hidden>
+          <div class="org-subgroup">
+            <h3 class="org-subgroup-title">Kepala Urusan</h3>
+            <div class="org-card-grid org-grid-three">
+              <article class="org-profile-card">
+                <div class="org-photo" id="kaur-tu-av" data-initials="TU" aria-hidden="true"></div>
+                <div class="org-card-caption"><div class="org-role">Kaur TU &amp; Umum</div><h3 class="org-name" id="kaur-tu-name">–</h3></div>
+              </article>
+              <article class="org-profile-card">
+                <div class="org-photo" id="kaur-ku-av" data-initials="KU" aria-hidden="true"></div>
+                <div class="org-card-caption"><div class="org-role">Kaur Keuangan</div><h3 class="org-name" id="kaur-ku-name">–</h3></div>
+              </article>
+              <article class="org-profile-card">
+                <div class="org-photo" id="kaur-kp-av" data-initials="KP" aria-hidden="true"></div>
+                <div class="org-card-caption"><div class="org-role">Kaur Perencanaan</div><h3 class="org-name" id="kaur-kp-name">–</h3></div>
+              </article>
             </div>
           </div>
-
-          <!-- Kasi -->
-          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
-            <div class="org-group-label">Kepala Seksi</div>
-            <div class="org-node" style="border-color:#D4EDE8;">
-              <div class="org-avatar av-teal" id="kasi-pm-av">KP</div>
-              <div class="org-name" id="kasi-pm-name">–</div>
-              <div class="org-role">Kasi Pemerintahan</div>
-            </div>
-            <div class="org-connector-v" style="height:6px;"></div>
-            <div class="org-node" style="border-color:#D4EDE8;">
-              <div class="org-avatar av-teal" id="kasi-ks-av">KS</div>
-              <div class="org-name" id="kasi-ks-name">–</div>
-              <div class="org-role">Kasi Kesejahteraan</div>
-            </div>
-            <div class="org-connector-v" style="height:6px;"></div>
-            <div class="org-node" style="border-color:#D4EDE8;">
-              <div class="org-avatar av-teal" id="kasi-pl-av">KL</div>
-              <div class="org-name" id="kasi-pl-name">–</div>
-              <div class="org-role">Kasi Pelayanan</div>
+          <div class="org-subgroup">
+            <h3 class="org-subgroup-title">Kepala Seksi</h3>
+            <div class="org-card-grid org-grid-three">
+              <article class="org-profile-card">
+                <div class="org-photo" id="kasi-pm-av" data-initials="KP" aria-hidden="true"></div>
+                <div class="org-card-caption"><div class="org-role">Kasi Pemerintahan</div><h3 class="org-name" id="kasi-pm-name">–</h3></div>
+              </article>
+              <article class="org-profile-card">
+                <div class="org-photo" id="kasi-ks-av" data-initials="KS" aria-hidden="true"></div>
+                <div class="org-card-caption"><div class="org-role">Kasi Kesejahteraan</div><h3 class="org-name" id="kasi-ks-name">–</h3></div>
+              </article>
+              <article class="org-profile-card">
+                <div class="org-photo" id="kasi-pl-av" data-initials="KL" aria-hidden="true"></div>
+                <div class="org-card-caption"><div class="org-role">Kasi Pelayanan</div><h3 class="org-name" id="kasi-pl-name">–</h3></div>
+              </article>
             </div>
           </div>
         </div>
 
-        <!-- Dari Kepala Desa ke Kadus (garis diagonal kiri) -->
-        <div style="position:relative; width:100%; display:flex; justify-content:center; margin-top:8px;">
-          <svg width="660" height="32" style="overflow:visible; display:block;">
-            <line x1="330" y1="0" x2="330" y2="32" stroke="var(--border)" stroke-width="2" stroke-dasharray="4 3"/>
-            <line x1="66"  y1="32" x2="594" y2="32" stroke="var(--border)" stroke-width="2"/>
-            <line x1="66"  y1="32" x2="66"  y2="52" stroke="var(--border)" stroke-width="2"/>
-            <line x1="198" y1="32" x2="198" y2="52" stroke="var(--border)" stroke-width="2"/>
-            <line x1="330" y1="32" x2="330" y2="52" stroke="var(--border)" stroke-width="2"/>
-            <line x1="462" y1="32" x2="462" y2="52" stroke="var(--border)" stroke-width="2"/>
-            <line x1="594" y1="32" x2="594" y2="52" stroke="var(--border)" stroke-width="2"/>
-          </svg>
-        </div>
-
-        <!-- ── Level 4: Kepala Dusun ── -->
-        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; margin-top:-20px;">
-          <div class="org-group-label" style="margin-bottom:4px;">Kepala Dusun</div>
-          <div class="org-kadus-row" style="flex-wrap:wrap; justify-content:center; gap:8px;">
-            <div class="org-node" style="border-color:#D6EFE3;">
-              <div class="org-avatar av-green" id="kadus1-av">D1</div>
-              <div class="org-name" id="kadus1-name">–</div>
-              <div class="org-role">Kadus Randusari</div>
-            </div>
-            <div class="org-node" style="border-color:#D6EFE3;">
-              <div class="org-avatar av-green" id="kadus2-av">D2</div>
-              <div class="org-name" id="kadus2-name">–</div>
-              <div class="org-role">Kadus Kandeman</div>
-            </div>
-            <div class="org-node" style="border-color:#D6EFE3;">
-              <div class="org-avatar av-green" id="kadus3-av">D3</div>
-              <div class="org-name" id="kadus3-name">–</div>
-              <div class="org-role">Kadus Gandok</div>
-            </div>
-            <div class="org-node" style="border-color:#D6EFE3;">
-              <div class="org-avatar av-green" id="kadus4-av">D4</div>
-              <div class="org-name" id="kadus4-name">–</div>
-              <div class="org-role">Kadus Kaliongkek</div>
-            </div>
-            <div class="org-node" style="border-color:#D6EFE3;">
-              <div class="org-avatar av-green" id="kadus5-av">D5</div>
-              <div class="org-name" id="kadus5-name">–</div>
-              <div class="org-role">Kadus Johosari</div>
-            </div>
+        <div class="org-panel" id="org-panel-kadus" role="tabpanel" data-org-panel="kadus" hidden>
+          <div class="org-card-grid org-grid-kadus">
+            <article class="org-profile-card">
+              <div class="org-photo" id="kadus1-av" data-initials="D1" aria-hidden="true"></div>
+              <div class="org-card-caption"><div class="org-role">Kadus Randusari</div><h3 class="org-name" id="kadus1-name">–</h3></div>
+            </article>
+            <article class="org-profile-card">
+              <div class="org-photo" id="kadus2-av" data-initials="D2" aria-hidden="true"></div>
+              <div class="org-card-caption"><div class="org-role">Kadus Kandeman</div><h3 class="org-name" id="kadus2-name">–</h3></div>
+            </article>
+            <article class="org-profile-card">
+              <div class="org-photo" id="kadus3-av" data-initials="D3" aria-hidden="true"></div>
+              <div class="org-card-caption"><div class="org-role">Kadus Gandok</div><h3 class="org-name" id="kadus3-name">–</h3></div>
+            </article>
+            <article class="org-profile-card">
+              <div class="org-photo" id="kadus4-av" data-initials="D4" aria-hidden="true"></div>
+              <div class="org-card-caption"><div class="org-role">Kadus Kaliongkek</div><h3 class="org-name" id="kadus4-name">–</h3></div>
+            </article>
+            <article class="org-profile-card">
+              <div class="org-photo" id="kadus5-av" data-initials="D5" aria-hidden="true"></div>
+              <div class="org-card-caption"><div class="org-role">Kadus Johosari</div><h3 class="org-name" id="kadus5-name">–</h3></div>
+            </article>
           </div>
         </div>
-
-      </div>
-    </div>
-
-    <!-- Tabel Perangkat -->
-    <div class="mt-48" id="perangkat-desa">
-      <p style="font-size:15px; font-weight:600; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);">Daftar Perangkat Desa Kandeman</p>
-      <div class="tbl-wrap">
-        <table class="perangkat-table">
-          <thead>
-            <tr>
-              <th style="width:40px;">#</th>
-              <th>Nama</th>
-              <th>Jabatan</th>
-              <th>Bidang</th>
-            </tr>
-          </thead>
-          <tbody id="perangkat-tbody">
-            <tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted);font-size:13px;">
-              <i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat data perangkat...
-            </td></tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
@@ -2587,6 +2523,6 @@
 ═══════════════════ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-  <script src="assets/js/main.js?v=20260811-navbar-final-v22" defer></script>
+  <script src="assets/js/main.js?v=20260813-struktur-foto-v29" defer></script>
 </body>
 </html>

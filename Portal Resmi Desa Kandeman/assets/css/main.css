@@ -1403,122 +1403,99 @@
        PEMERINTAHAN
     ══════════════════════════════════════ */
     /* ══════════════════════════════════════
-       ORG CHART — redesign hierarki
+       STRUKTUR ORGANISASI — kartu foto per kelompok
     ══════════════════════════════════════ */
-    .org-wrap { overflow-x: auto; padding-bottom: 8px; }
-
-    /* Container utama — kolom vertikal */
-    .org-tree { display: flex; flex-direction: column; align-items: center; gap: 0; min-width: 720px; }
-
-    /* Setiap baris level */
-    .org-level { display: flex; justify-content: center; align-items: flex-start; gap: 12px; position: relative; }
-
-    /* Connector vertikal antara dua level */
-    .org-connector-v {
-      width: 2px; height: 28px; background: var(--border);
-      margin: 0 auto; flex-shrink: 0;
+    .org-showcase {
+      padding: clamp(22px, 3vw, 34px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255,255,255,.72);
     }
-
-    /* Garis horizontal yang menghubungkan node dalam satu level */
-    .org-hline-wrap { display: flex; justify-content: center; align-items: flex-start; gap: 0; position: relative; }
-    .org-hline-wrap::before {
-      content: ''; position: absolute; top: 0; left: calc(50% - (var(--span, 0px) / 2));
-      width: var(--span, 0px); height: 2px; background: var(--border);
+    .org-tabs {
+      display: flex; flex-wrap: wrap; gap: 9px;
+      margin-bottom: 26px;
     }
-    .org-col { display: flex; flex-direction: column; align-items: center; }
-    .org-branch-v { width: 2px; height: 20px; background: var(--border); margin: 0 auto; }
-
-    /* Node card */
-    .org-node {
-      background: #fff; border: 1.5px solid var(--border);
-      border-radius: 10px; padding: 8px 12px;
-      text-align: center; width: 136px; flex-shrink: 0;
-      transition: border-color .15s, box-shadow .15s;
+    .org-tab {
+      min-height: 42px; padding: 10px 18px;
+      border: 1px solid var(--border); border-radius: 999px;
+      background: #fff; color: var(--text-sec);
+      font-family: inherit; font-size: 12px; font-weight: 700;
+      letter-spacing: .025em; cursor: pointer;
+      transition: color .18s, background .18s, border-color .18s, transform .18s;
     }
-    .org-node:hover { border-color: var(--emerald); box-shadow: 0 4px 14px rgba(13,43,26,.1); }
-
-    /* Level kepala desa */
-    .org-node.head {
-      background: linear-gradient(135deg, var(--forest) 0%, var(--emerald) 100%);
-      color: #fff; border-color: transparent;
-      width: 156px; padding: 12px 14px;
-      box-shadow: 0 6px 20px rgba(13,43,26,.25);
+    .org-tab:hover { border-color: var(--emerald); color: var(--emerald); transform: translateY(-1px); }
+    .org-tab:focus-visible { outline: 3px solid rgba(28,107,62,.22); outline-offset: 2px; }
+    .org-tab.active { background: var(--forest); border-color: var(--forest); color: #fff; }
+    .org-panel[hidden] { display: none; }
+    .org-panel.active { animation: orgPanelIn .24s ease both; }
+    @keyframes orgPanelIn {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .org-node.head:hover { border-color: transparent; box-shadow: 0 8px 28px rgba(13,43,26,.35); }
-
-    /* Level sekdes */
-    .org-node.sekdes {
-      border-color: #9FC5E8; background: #F0F7FD;
-      width: 146px;
+    .org-status {
+      margin-bottom: 20px; padding: 13px 16px;
+      border: 1px solid var(--border); border-radius: 10px;
+      color: var(--text-sec); background: var(--cream); font-size: 13px;
     }
-    .org-node.sekdes .org-role { color: #1A5080; }
-
-    /* Avatar */
-    .org-avatar {
-      width: 32px; height: 32px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 700; margin: 0 auto 6px;
+    .org-card-grid { display: grid; gap: clamp(14px, 2vw, 22px); align-items: stretch; }
+    .org-grid-leaders { grid-template-columns: repeat(2, minmax(0, 280px)); justify-content: center; }
+    .org-grid-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .org-grid-kadus { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .org-subgroup + .org-subgroup { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--border); }
+    .org-subgroup-title {
+      margin-bottom: 14px; color: var(--forest);
+      font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
     }
-    .org-node.head .org-avatar { background: rgba(255,255,255,.2); color: #fff; }
-    .av-green { background: #D6EFE3; color: #0F5C30; }
-    .av-sky   { background: #D6E9F7; color: #1A5080; }
-    .av-gold  { background: #F5E8C8; color: #7A5218; }
-    .av-teal  { background: #D4EDE8; color: #0F5C4A; }
-    .av-plum  { background: #E8E4F8; color: #4A3E7E; }
-
-    /* Teks node */
-    .org-name { font-size: 11.5px; font-weight: 600; color: var(--text); line-height: 1.35; margin-bottom: 2px; }
-    .org-role { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
-    .org-node.head .org-name { color: #fff; font-size: 12px; }
-    .org-node.head .org-role { color: rgba(255,255,255,.75); }
-
-    /* Label grup (Kaur / Kasi / Kadus) */
-    .org-group-label {
-      font-size: 9px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .09em; color: var(--text-muted);
-      border: 1px solid var(--border); border-radius: 20px;
-      padding: 2px 10px; background: var(--cream);
-      margin-bottom: 6px; white-space: nowrap;
+    .org-profile-card {
+      min-width: 0; overflow: hidden;
+      border: 1px solid rgba(13,43,26,.13); border-radius: 15px;
+      background: #fff; box-shadow: 0 10px 28px rgba(13,43,26,.07);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
     }
-
-    /* Section bawah: Kaur + Kasi sejajar */
-    .org-mid-row {
-      display: flex; justify-content: center; gap: 48px;
-      margin-top: 0;
+    .org-profile-card:hover {
+      transform: translateY(-4px); border-color: rgba(28,107,62,.45);
+      box-shadow: 0 16px 36px rgba(13,43,26,.13);
     }
-    .org-mid-group {
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      position: relative;
+    .org-photo {
+      position: relative; display: grid; place-items: center;
+      width: 100%; aspect-ratio: 4 / 5; overflow: hidden;
+      background: linear-gradient(145deg, #dfece5, #f1f5f2);
+      color: var(--emerald); font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(38px, 5vw, 68px); font-weight: 700;
     }
-    /* Garis horizontal di atas group Kaur/Kasi */
-    .org-mid-group::before {
-      content: ''; position: absolute;
-      top: 36px; /* setengah tinggi label */
-      left: 50%; right: -48px;
-      height: 2px; background: var(--border);
+    .org-photo::after { content: attr(data-initials); opacity: .45; }
+    .org-photo.has-photo::after { display: none; }
+    .org-photo img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center top; }
+    .org-card-caption {
+      min-height: 86px; padding: 15px 16px 17px;
+      display: flex; flex-direction: column; justify-content: center;
+      background: var(--forest); color: #fff; text-align: center;
     }
-    .org-mid-group:last-child::before { display: none; }
-
-    /* Kepala Dusun row */
-    .org-kadus-section { display: flex; flex-direction: column; align-items: center; }
-    .org-kadus-row {
-      display: flex; gap: 10px; justify-content: center;
+    .org-role {
+      margin-bottom: 5px; color: var(--mint);
+      font-size: 10px; line-height: 1.3; font-weight: 700;
+      letter-spacing: .075em; text-transform: uppercase;
     }
-    .org-kadus-row .org-node { width: 130px; }
-
-    /* Garis dari Sekdes ke tengah Kaur+Kasi */
-    .org-branch-h {
-      display: flex; align-items: flex-start; position: relative;
+    .org-name {
+      margin: 0; color: #fff; font-family: 'DM Sans', sans-serif;
+      font-size: clamp(13px, 1.35vw, 16px); line-height: 1.35; font-weight: 650;
+      text-wrap: balance;
     }
-    .org-branch-h::before {
-      content: ''; position: absolute; top: 0;
-      left: 25%; right: 25%; height: 2px; background: var(--border);
+    .org-card-leader .org-card-caption { background: linear-gradient(135deg, var(--forest), var(--emerald)); }
+    @media (max-width: 980px) {
+      .org-grid-kadus { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
-
-    @media (max-width: 900px) {
-      .org-tree { min-width: 600px; }
-      .org-mid-row { gap: 24px; }
-      .org-kadus-row .org-node { width: 110px; }
+    @media (max-width: 720px) {
+      .org-showcase { padding: 18px; border-radius: 14px; }
+      .org-tabs { gap: 7px; margin-bottom: 20px; }
+      .org-tab { flex: 1 1 145px; padding-inline: 12px; }
+      .org-grid-three, .org-grid-kadus { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .org-grid-leaders { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 430px) {
+      .org-grid-leaders, .org-grid-three, .org-grid-kadus { grid-template-columns: 1fr; }
+      .org-profile-card { max-width: 300px; width: 100%; margin-inline: auto; }
+      .org-tab { flex-basis: 100%; }
     }
 
     /* Perangkat Table */
@@ -4317,10 +4294,6 @@
       .back-top { bottom: 76px; right: 18px; width: 38px; height: 38px; }
       .prestasi-grid { grid-template-columns: 1fr; }
     }
-    @media (max-width: 480px) {
-      .org-kadus-row { grid-template-columns: 1fr 1fr; }
-    }
-
     /* ══════════════════════════════════════
        INTRO SPLASH SCREEN
     ══════════════════════════════════════ */

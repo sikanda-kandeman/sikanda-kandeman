@@ -775,85 +775,56 @@
 @media (max-width: 560px) {
   .umkm-photo-preview-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-/* Jelajah Dusun */
-.dusun-admin-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+
+/* Struktur organisasi perangkat desa */
+.admin-org-upload-preview {
+  margin-bottom: 12px; align-items: flex-end; gap: 14px; flex-wrap: wrap;
 }
-.dusun-admin-grid > .loading,
-.dusun-admin-grid > .empty { grid-column: 1 / -1; }
-.dusun-admin-item {
-  display: grid;
-  grid-template-columns: 62px minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: center;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--cream-light, #faf8f3);
+.admin-org-upload-preview img {
+  width: 144px; aspect-ratio: 4 / 5; object-fit: cover; object-position: center top;
+  border: 1px solid var(--border); border-radius: 12px; background: var(--surface);
 }
-.dusun-admin-photo {
-  display: grid;
-  place-items: center;
-  width: 62px;
-  height: 54px;
-  overflow: hidden;
-  border-radius: 9px;
-  color: var(--forest);
-  background: var(--mint, #d6efe3);
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  font-weight: 600;
+.admin-org-upload-preview span {
+  max-width: 280px; padding-bottom: 4px; color: var(--text-muted); font-size: 12px; line-height: 1.55;
 }
-.dusun-admin-photo img { width: 100%; height: 100%; object-fit: cover; }
-.dusun-admin-copy { min-width: 0; }
-.dusun-admin-copy small {
-  display: block;
-  color: var(--text-muted);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+.admin-org-groups { display: grid; gap: 24px; }
+.admin-org-group + .admin-org-group { padding-top: 22px; border-top: 1px solid var(--border); }
+.admin-org-group-title {
+  margin-bottom: 12px; color: var(--text-sec); font-size: 11px; font-weight: 700;
+  letter-spacing: .075em; text-transform: uppercase;
 }
-.dusun-admin-copy strong {
-  display: block;
-  margin: 2px 0 4px;
-  color: var(--forest);
-  font-size: 14px;
+.admin-org-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px;
 }
-.dusun-admin-copy span {
-  display: block;
-  overflow: hidden;
-  color: var(--text-muted);
-  font-size: 10.5px;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.admin-org-card {
+  min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px;
+  background: var(--card); transition: border-color .16s, box-shadow .16s, transform .16s;
 }
-.dusun-editor-card { scroll-margin-top: 82px; }
-.dusun-photo-preview.show { display: flex; }
-.dusun-photo-preview img {
-  width: min(100%, 460px);
-  max-height: 240px;
-  object-fit: cover;
+.admin-org-card:hover {
+  border-color: rgba(28,107,62,.45); box-shadow: 0 9px 24px rgba(13,43,26,.09); transform: translateY(-2px);
 }
-.dusun-remove-photo {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  margin-top: 10px;
-  color: var(--danger);
-  font-size: 12px;
-  cursor: pointer;
+.admin-org-photo {
+  width: 100%; aspect-ratio: 4 / 5; overflow: hidden; display: grid; place-items: center;
+  background: linear-gradient(145deg, #e2ece6, #f4f6f4); color: var(--emerald);
+  font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 700;
 }
-.dusun-remove-photo input { width: auto; }
-@media (max-width: 760px) {
-  .dusun-admin-grid { grid-template-columns: 1fr; }
+.admin-org-photo img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center top; }
+.admin-org-card-body { padding: 12px 13px 13px; }
+.admin-org-card-role {
+  margin-bottom: 4px; color: var(--emerald); font-size: 9.5px; font-weight: 700;
+  line-height: 1.35; letter-spacing: .06em; text-transform: uppercase;
 }
-@media (max-width: 480px) {
-  .dusun-admin-item { grid-template-columns: 54px minmax(0, 1fr); }
-  .dusun-admin-photo { width: 54px; height: 50px; }
-  .dusun-admin-item .btn { grid-column: 1 / -1; justify-content: center; }
+.admin-org-card-name {
+  min-height: 39px; color: var(--text); font-size: 13px; font-weight: 600; line-height: 1.45;
+}
+.admin-org-card-actions {
+  display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 560px) {
+  .admin-org-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-org-upload-preview img { width: 120px; }
+}
+@media (max-width: 380px) {
+  .admin-org-grid { grid-template-columns: 1fr; }
 }

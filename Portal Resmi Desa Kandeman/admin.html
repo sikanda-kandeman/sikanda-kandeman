@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   
 
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260809-jelajah-dusun-v9" />
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260813-struktur-foto-v29" />
 </head>
 <body>
 
@@ -84,9 +84,6 @@
       </div>
       <div class="sb-item" onclick="switchPanel('potensi',this)" id="nav-potensi">
         <i class="fa-solid fa-seedling"></i> Potensi Desa
-      </div>
-      <div class="sb-item" onclick="switchPanel('dusun',this)" id="nav-dusun">
-        <i class="fa-solid fa-map-location-dot"></i> Jelajah Dusun
       </div>
       <div class="sb-item" onclick="switchPanel('umkm',this)" id="nav-umkm">
         <i class="fa-solid fa-store"></i> UMKM Desa
@@ -443,8 +440,8 @@
           <div class="panel-intro">
             <div class="panel-intro-icon"><i class="fa-solid fa-user-tie"></i></div>
             <div>
-              <div class="panel-intro-title">Perangkat Desa</div>
-              <div class="panel-intro-sub">Kelola struktur organisasi pemerintah desa</div>
+              <div class="panel-intro-title">Struktur Organisasi Perangkat Desa</div>
+              <div class="panel-intro-sub">Kelola nama, jabatan, urutan, dan foto yang tampil pada kartu struktur organisasi</div>
             </div>
           </div>
           <div class="card">
@@ -479,12 +476,12 @@
               <input type="number" id="p-urutan" value="99" min="1" max="99" style="max-width:120px;" aria-label="p urutan" />
             </div>
             <div class="form-group">
-              <label>Foto profil (JPG/PNG/WEBP, maks 3 MB — opsional)</label>
+              <label>Foto potret (JPG/PNG/WEBP, maks 3 MB — disarankan rasio 4:5)</label>
               <input type="file" id="p-foto-file" accept="image/jpeg,image/png,image/webp" aria-label="p foto file" />
             </div>
-            <div id="p-foto-preview-wrap" style="display:none;margin-bottom:8px;align-items:center;gap:10px;flex-wrap:wrap;">
-              <img id="p-foto-preview" alt="Pratinjau foto perangkat desa" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border);" />
-              <span id="p-foto-preview-name" style="font-size:12px;color:var(--text-muted);"></span>
+            <div id="p-foto-preview-wrap" class="admin-org-upload-preview" style="display:none;">
+              <img id="p-foto-preview" alt="Pratinjau foto perangkat desa" />
+              <span id="p-foto-preview-name"></span>
             </div>
             <input type="hidden" id="p-foto-url" aria-label="p foto url" />
             <div class="form-actions">
@@ -495,16 +492,9 @@
             </div>
           </div>
           <div class="card">
-            <div class="card-title">Daftar perangkat desa</div>
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr><th>#</th><th>Nama</th><th>Jabatan</th><th>Foto</th><th style="width:80px;">Aksi</th></tr>
-                </thead>
-                <tbody id="perangkat-list">
-                  <tr><td colspan="5" class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</td></tr>
-                </tbody>
-              </table>
+            <div class="card-title">Pratinjau kartu struktur organisasi</div>
+            <div id="perangkat-list" class="admin-org-groups">
+              <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
             </div>
           </div>
         </div>
@@ -713,61 +703,6 @@
               <span style="font-size:11px;color:var(--text-muted);"><i class="fa-solid fa-grip-vertical"></i> Seret untuk urutkan</span>
             </div>
             <div id="potensi-list"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat...</div></div>
-          </div>
-        </div>
-
-        <!-- ── JELAJAH DUSUN ── -->
-        <div class="panel" id="panel-dusun">
-          <div class="panel-intro">
-            <div class="panel-intro-icon"><i class="fa-solid fa-map-location-dot"></i></div>
-            <div>
-              <div class="panel-intro-title">Jelajah Dusun</div>
-              <div class="panel-intro-sub">Kelola foto, lokasi, dan detail lima dusun yang tampil pada Beranda</div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">Lima dusun Desa Kandeman</div>
-            <div class="form-hint" style="margin-bottom:14px;">Nama dan urutan dusun sudah ditetapkan. Pilih Edit untuk melengkapi foto, lokasi, dan keterangannya.</div>
-            <div class="dusun-admin-grid" id="dusun-list">
-              <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Memuat data dusun...</div>
-            </div>
-          </div>
-
-          <div class="card dusun-editor-card" id="dusun-editor-card">
-            <div class="card-title" id="dusun-form-title">Pilih dusun yang ingin diedit</div>
-            <input type="hidden" id="dus-slug" />
-            <div class="form-group">
-              <label>Nama dusun</label>
-              <input type="text" id="dus-nama" readonly placeholder="Pilih Edit pada daftar dusun di atas" />
-            </div>
-            <div class="form-group">
-              <label for="dus-lokasi">Lokasi dusun</label>
-              <input type="text" id="dus-lokasi" maxlength="300" placeholder="Contoh: bagian barat Desa Kandeman, dekat Jalan ..." />
-              <div class="form-hint">Tuliskan keterangan lokasi yang mudah dipahami pembaca. Maksimal 300 karakter.</div>
-            </div>
-            <div class="form-group">
-              <label>Detail dusun</label>
-              <textarea id="dus-deskripsi" maxlength="3000" placeholder="Tuliskan pengenalan singkat, ciri wilayah, kegiatan warga, atau informasi lain tentang dusun ini..."></textarea>
-              <div class="form-hint">Maksimal 3.000 karakter. Detail dapat dibuka pembaca dari kartu dusun di Beranda.</div>
-            </div>
-            <div class="form-group">
-              <label>Foto dusun</label>
-              <input type="file" id="dus-foto" accept="image/jpeg,image/png,image/webp" />
-              <div class="form-hint">JPG, PNG, atau WebP; maksimal 3 MB. Kosongkan jika tidak ingin mengganti foto.</div>
-              <div class="img-preview-wrap dusun-photo-preview" id="dus-foto-preview-wrap">
-                <img id="dus-foto-preview" src="" alt="Preview foto dusun" />
-              </div>
-              <label class="dusun-remove-photo" id="dus-hapus-foto-wrap">
-                <input type="checkbox" id="dus-hapus-foto" /> Hapus foto yang tersimpan
-              </label>
-            </div>
-            <div class="form-actions">
-              <button type="button" class="btn" onclick="resetDusunForm()"><i class="fa-solid fa-rotate-left"></i> Batal</button>
-              <button type="button" class="btn btn-primary" id="btn-simpan-dusun" onclick="simpanDusun()" disabled>
-                <i class="fa-solid fa-floppy-disk"></i> Simpan detail dusun
-              </button>
-            </div>
           </div>
         </div>
 
@@ -1414,6 +1349,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/js/supabase-client.js" defer></script>
-<script src="assets/js/admin.js?v=20260809-jelajah-kartu-v11" defer></script>
+<script src="assets/js/admin.js?v=20260813-struktur-foto-v29" defer></script>
 </body>
 </html>
