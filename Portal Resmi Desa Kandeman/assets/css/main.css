@@ -1403,13 +1403,13 @@
        PEMERINTAHAN
     ══════════════════════════════════════ */
     /* ══════════════════════════════════════
-       STRUKTUR ORGANISASI — bagan kiri, kartu foto kanan
+       STRUKTUR ORGANISASI — bagan atas, kartu foto bawah
     ══════════════════════════════════════ */
     .org-layout {
       display: grid;
-      grid-template-columns: minmax(520px, 1.05fr) minmax(360px, .95fr);
-      gap: 18px;
-      align-items: stretch;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
     }
     .org-chart-panel,
     .org-showcase {
@@ -1621,23 +1621,6 @@
       text-wrap: balance;
     }
     .org-card-leader .org-card-caption { background: linear-gradient(135deg, var(--forest), var(--emerald)); }
-    @media (min-width: 1081px) {
-      .org-chart-panel { padding: 26px 22px 28px; }
-      .org-showcase { padding: 26px; }
-      .org-chart-heading { margin-bottom: 22px; }
-      .org-tree-reference-kades { width: min(100%, 260px); }
-      .org-tree-reference-stage-sekdes .org-tree-node { width: min(86%, 240px); }
-      .org-tree-reference-branch { gap: 7px; }
-      .org-tree-reference-branch .org-tree-node { padding: 9px 5px; }
-      .org-tree-reference-branch .org-tree-node span { font-size: 7.5px; }
-      .org-tree-reference-branch .org-tree-node strong { font-size: 10px; }
-      .org-tree-reference-stage h4 { font-size: 8px; }
-      .org-tabs { margin-bottom: 20px; }
-      .org-tab { flex: 1 1 120px; padding-inline: 12px; }
-    }
-    @media (max-width: 1080px) {
-      .org-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    }
     @media (max-width: 900px) {
       .org-tree-reference { max-width: 680px; }
       .org-tree-reference-canvas { padding-inline: 0; }
